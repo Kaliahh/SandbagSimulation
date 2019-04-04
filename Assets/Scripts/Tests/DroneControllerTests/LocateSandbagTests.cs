@@ -14,12 +14,12 @@ namespace Tests
         [Test]
         public void LocateSandbagTestsSimplePasses()
         {
-            Assert.Pass();
+            //if (EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByName("LocateSandbagTestScene1"))
+            //{
+            //    EditorSceneManager.LoadScene("LocateSandbagTestScene1");
+            //}
 
-            if (EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByName("LocateSandbagTestScene1"))
-            {
-                EditorSceneManager.LoadScene("LocateSandbagTestScene1");
-            }
+            EditorSceneManager.LoadScene("LocateSandbagTestScene1");
 
             GameObject drone = GameObject.FindGameObjectWithTag("Drone");
 
@@ -30,9 +30,9 @@ namespace Tests
                 Assert.Fail();
             }
 
-            controller.LocateSandbag();
+            controller.LocateNearestSandbag();
 
-            
+         
 
         }
 
