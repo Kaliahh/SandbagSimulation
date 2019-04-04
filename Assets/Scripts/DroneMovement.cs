@@ -12,7 +12,7 @@ public class DroneMovement : MonoBehaviour
         Step = Speed * Time.deltaTime;
     }
 
-    // Moves the GameObject a Step towards a Vector3 target during a single frame.
+    // Flytter GameObject et Step mod Vector3 target i løbet af en enkelt frame.
     public void FlyTo(Vector3 target)
     {
         transform.position = Vector3.MoveTowards(transform.position, target, Step);
