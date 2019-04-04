@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -25,5 +26,12 @@ namespace Tests
             yield return null;
         }
 
+        [SetUp]
+        public void ResetScene()
+        {
+
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+
+        }
     }
 }
