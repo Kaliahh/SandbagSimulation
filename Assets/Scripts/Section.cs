@@ -14,7 +14,7 @@ public class Section
     // Public Methods
 
     /*
-     * Parameters: float viewDistance
+     * Parameters: float with the drones viewDistance, Vector3 with the drones position.
      * 
      * Return: Vector3[] containing the locations where it is possible for a drone to place a sandbag.
      */
@@ -27,7 +27,8 @@ public class Section
 
         // Array of all sandbag-Gameobjects
         GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
-
+        
+        // Starter med lag 1
         int layer = 1;
 
         // Add sandbags within viewDistance to list
@@ -56,9 +57,9 @@ public class Section
     }
 
     /*
-     * Parameters:
+     * Parameters: Vector3[] containing all the possible locations, Vector3 containing the drones postion, float with the drones viewDistance.
      * 
-     * Return:
+     * Return: Vector3 containing the "best" location to place the sandbag
      */
     public Vector3 FindBestPlace(Vector3[] places, Vector3 position, float viewDistance)
     {
@@ -71,12 +72,20 @@ public class Section
         // Should it be considered if location currently inaccessible, will be accessible upon arrival?
         // Return the first accessible
 
+        Vector3 errorVector = new Vector3(-100f, -100f, -100f);
+
+        // Check om det givne array er gyldigt
+        if (places.Length < 1 || places == null)
+            return errorVector;
+
         // Return the first place the drone can access.
         for (int i = 0; i < places.Length; i++)
             if (IsAccess(places[i], position, viewDistance))
                 return places[i];
+
+
         // No place could be accessed, return (What should be returned?)
-        return new Vector3(-100f, -100f, -100f);
+        return errorVector;
     }
 
     /*
@@ -88,6 +97,12 @@ public class Section
     {
         // Take IsRightDrone into consideration?
         // Use construction nodes as guidelines?
+
+        // Udregn position der er viewDistance tættere på enden.
+        // if(IsRightDrone)
+            // nextSection = position + ((rightMostConstructionNode.position - position).normalized * viewDistance)
+        // else
+            // nextSection = position + ((leftMostConstructionNode.position - position).normalized * viewdistance)
 
         // Position can be assumed to be the same as CurrentSection.
 
@@ -101,7 +116,7 @@ public class Section
     /*
      * Parameters: Vector3 placementLocation, Vector3 position, float viewDistance
      * 
-     * Return: Bool whether or not the drone at given position access the given placementLocation
+     * Return: Bool whether or not the drone at given position access the given placementLocation.
      */
     private bool IsAccess(Vector3 placementLocation, Vector3 position, float viewDistance)
     {

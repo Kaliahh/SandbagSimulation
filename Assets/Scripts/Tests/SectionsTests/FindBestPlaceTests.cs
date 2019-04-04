@@ -26,22 +26,13 @@ namespace Tests
         }
 
         [Test]
-        public void IsAccess_should_return_negative_100_vector_when_no_access()
+        public void FindBestPlace_should_return_errorVector_when_no_access()
         {
             // Arrange 
 
             // Heavy and tedious setup (Please improve!)
             // Create new section
             Section section = new Section(new Vector3(10f, 10f, 10f));
-
-            // Set the minimumSeperation
-            section.MinimumSeperation = 5f;
-
-            // Create a number of drones/obstacles
-            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.tag = "Drone";
-            cube1.transform.position = new Vector3(1f, 1f, 1f);
-            
 
             // Set ViewDistance so that drone can see obstacle
             float viewDistance = 20f;
@@ -50,6 +41,14 @@ namespace Tests
             Vector3[] places = { new Vector3(0f, 0f, 0f) };
             Vector3 position = new Vector3(10f, 10f, 10f);
 
+            // Set the minimumSeperation
+            section.MinimumSeperation = 5f;
+
+            // Create a number of drones/obstacles
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.tag = "Drone";
+            cube1.transform.position = new Vector3(1f, 1f, 1f);
+
             // Act
             Vector3 result = section.FindBestPlace(places, position, viewDistance);
 
@@ -57,21 +56,142 @@ namespace Tests
             Assert.AreEqual(result, new Vector3(-100f, -100f, -100f));
         }
 
-        // A Test behaves as an ordinary method
         [Test]
-        public void FindBestPlaceTestsSimplePasses()
+        public void FindBestPlace_should_return_errorVector_when_no_access_multiple_locations()
         {
-            // Use the Assert class to test conditions
+            Section section = new Section(new Vector3(10f, 10f, 10f));
+            float viewDistance = 20f;
+
+            // Tre locations i en linje
+            Vector3 Location1 = new Vector3(0f, 0f, 0f);
+            Vector3 Location2 = new Vector3(5f, 0f, 0f);
+            Vector3 Location3 = new Vector3(10f, 0f, 0f);
+
+            // Create array of places, with multiple possible locations
+            Vector3[] places = { Location1, Location2, Location3 };
+            Vector3 position = new Vector3(5f, 5f, 5f);
+
+            // Sæt minimumSeperation
+            section.MinimumSeperation = 5f;
+
+            // Lav et antal forhindringer/andre droner
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.tag = "Drone";
+            // For tæt på Location1
+            cube1.transform.position = new Vector3(0f, 1f, 0f);
+
+            GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube2.tag = "Drone";
+            // For tæt på Location2
+            cube1.transform.position = new Vector3(5f, 1f, 0f);
+
+            GameObject cube3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube3.tag = "Drone";
+            // For tæt på Location3
+            cube1.transform.position = new Vector3(10f, 1f, 0f);
+
+            Vector3 result = section.FindBestPlace(places, position, viewDistance);
+
+            // Burde returner fejlværdien, da ingen locationer er tilgængelige
+            Assert.AreEqual(result, new Vector3(-100f, -100f, -100f));
         }
 
-        // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-        // `yield return null;` to skip a frame.
-        [UnityTest]
-        public IEnumerator FindBestPlaceTestsWithEnumeratorPasses()
+        [Test]
+        public void IsAccess_should_return_positive_when_single_obstacle_is_far_away()
         {
-            // Use the Assert class to test conditions.
-            // Use yield to skip a frame.
-            yield return null;
+            Section section = new Section(new Vector3(10f, 10f, 10f));
+            section.MinimumSeperation = 5f;
+
+            // Set ViewDistance so that drone can see obstacle
+            float viewDistance = 20f;
+
+            Vector3 Location = new Vector3(0f, 0f, 0f);
+
+            // Create array of places, with one possible location
+            Vector3[] places = { Location };
+            Vector3 position = new Vector3(10f, 10f, 10f);
+
+            // Create a number of drones/obstacles
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.tag = "Drone";
+            cube1.transform.position = new Vector3(15f, 15f, 15f);
+
+
+
+
+            // Act
+            Vector3 result = section.FindBestPlace(places, position, viewDistance);
+
+            // Assert
+            Assert.AreEqual(result, Location);
         }
+
+        [Test]
+        public void FindBestPlace_should_return_the_only_valid_of_two_locations()
+        {
+            Section section = new Section(new Vector3(10f, 10f, 10f));
+            section.MinimumSeperation = 5f;
+
+            // Set ViewDistance so that drone can see obstacle
+            float viewDistance = 20f;
+
+            Vector3 Location1 = new Vector3(5f, 5f, 5f);
+            Vector3 Location2 = new Vector3(0f, 0f, 0f);
+
+            // Create array of places, with one possible location
+            Vector3[] places = { Location1, Location2 };
+            // Place drone
+            Vector3 position = new Vector3(10f, 10f, 10f);
+
+            // Create a number of drones/obstacles
+            GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube1.tag = "Drone";
+
+            // Placer forhindring mindre end minimumSeperation fra location2
+            cube1.transform.position = new Vector3(6f, 6f, 6f);
+
+            Vector3 result = section.FindBestPlace(places, position, viewDistance);
+
+            Assert.AreEqual(result, Location2);
+        }
+
+        [Test]
+        public void FindBestPlace_should_return_first_available_location()
+        {
+            Section section = new Section(new Vector3(10f, 10f, 10f));
+
+            // Set ViewDistance so drone can see obstacle
+            float viewDistance = 20f;
+
+            Vector3 Location1 = new Vector3(0f, 0f, 0f);
+            Vector3 Location2 = new Vector3(5f, 5f, 5f);
+
+            // Create array of places, with multiple possible locations
+            Vector3[] places = { Location1, Location2 };
+            // Place drone
+            Vector3 position = new Vector3(10f, 10f, 10f);
+
+            Vector3 result = section.FindBestPlace(places, position, viewDistance);
+
+            // Burde returnerer den første af de mulige placeringer
+            Assert.AreEqual(result, Location1);
+        }
+
+        [Test]
+        public void FindBestPlace_should_return_errorVector_when_given_empty_array()
+        {
+            Section section = new Section(new Vector3());
+            float viewDistance = 20f;
+            // Create array of places, with multiple possible locations
+            Vector3[] places = { };
+            // Place drone
+            Vector3 position = new Vector3(10f, 10f, 10f);
+
+            Vector3 result = section.FindBestPlace(places, position, viewDistance);
+
+            // Burde returnerer den første af de mulige placeringer
+            Assert.AreEqual(result, new Vector3(-100f, -100f, -100f));
+        }
+
     }
 }
