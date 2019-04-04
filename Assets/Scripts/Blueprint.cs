@@ -2,14 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blueprint // : MonoBehaviour
+namespace SandbagSimulation
 {
-    private List<Vector3> ConstructionNodes;
-    private int DikeHeight;
-
-    public Blueprint(List<Vector3> nodes, int height)
+    public class Blueprint // : MonoBehaviour
     {
-        ConstructionNodes = nodes;
-        DikeHeight = height;
+        private List<Vector3> ConstructionNodes;
+        private int DikeHeight;
+
+        public Blueprint(List<Vector3> nodes, int height)
+        {
+            ConstructionNodes = nodes;
+            DikeHeight = height;
+        }
     }
 }
+
+

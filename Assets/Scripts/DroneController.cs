@@ -2,71 +2,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DroneController : MonoBehaviour
+namespace SandbagSimulation
 {
-    bool IsFinished;
-    bool HasSandbag;
-    bool IsRightDrone;
-
-    float ViewDistance;
-
-    Section MySection;
-    Blueprint MyBlueprint;
-    DroneMovement MyMovement;
-
-    GameObject MySandbag;
-    GameObject LocatedSandbag;
-    
-    void Start()
+    public class DroneController : MonoBehaviour
     {
-        IsFinished = false;
-        HasSandbag = false;
-        IsRightDrone = (Random.Range(0,2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
-        ViewDistance = 10f;
+        bool IsFinished;
+        bool HasSandbag;
+        bool IsRightDrone;
 
-        MySandbag = null;
-        MyBlueprint = null;
-        MySection = new Section(Vector3.zero);
-        MyMovement = new DroneMovement();
-    }
+        float ViewDistance;
 
-    void Update()
-    {
-        
-    }
+        Section MySection;
+        Blueprint MyBlueprint;
+        DroneMovement MyMovement;
 
-    // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
-    public void LocateSandbag()
-    {
-        GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
+        GameObject MySandbag;
+        GameObject LocatedSandbag;
 
-        float distance = Mathf.Infinity;
-
-        foreach (GameObject sandbag in sandbags)
+        void Start()
         {
-            Vector3 diff = sandbag.transform.position - this.transform.position;
-            float currentDistance = diff.sqrMagnitude;
+            IsFinished = false;
+            HasSandbag = false;
+            IsRightDrone = (Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
+            ViewDistance = 10f;
 
-            if (currentDistance < distance)
+            MySandbag = null;
+            MyBlueprint = null;
+            MySection = new Section(Vector3.zero);
+            MyMovement = new DroneMovement();
+        }
+
+        void Update()
+        {
+
+        }
+
+        // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
+        public void LocateSandbag()
+        {
+            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
+
+            float distance = Mathf.Infinity;
+
+            foreach (GameObject sandbag in sandbags)
             {
-                LocatedSandbag = sandbag;
-                distance = currentDistance;
+                Vector3 diff = sandbag.transform.position - this.transform.position;
+                float currentDistance = diff.sqrMagnitude;
+
+                if (currentDistance < distance)
+                {
+                    LocatedSandbag = sandbag;
+                    distance = currentDistance;
+                }
             }
         }
-    }
 
-    // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
-    void PickUpSandbag()
-    {
-        MySandbag = LocatedSandbag;
-    }
+        // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
+        void PickUpSandbag() => MySandbag = LocatedSandbag;
 
-    // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
-    void PlaceSandbag(Vector3 position)
-    {
-        MySandbag.tag = "PlacedSandbag";
+        // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
+        void PlaceSandbag(Vector3 position)
+        {
+            MySandbag.tag = "PlacedSandbag";
 
-        MySandbag.transform.position = position;
-        MySandbag = null;
+            MySandbag.transform.position = position;
+            MySandbag = null;
+        }
     }
 }
+
+
