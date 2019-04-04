@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Section : MonoBehaviour
+public class Section
 {
     // Properties and fields
     public Vector3 CurrentSection { get; set; }
@@ -26,7 +26,7 @@ public class Section : MonoBehaviour
         List<Vector3> bagsInView = new List<Vector3>();
 
         // Array of all sandbag-Gameobjects
-        GameObject[] sandbags = GameObject.FindGameObjectsWithTag("sandbag");
+        GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
 
         int layer = 1;
 
@@ -75,7 +75,7 @@ public class Section : MonoBehaviour
         for (int i = 0; i < places.Length; i++)
             if (IsAccess(places[i], position, viewDistance))
                 return places[i];
-        // No place could be accessed, return (What?)
+        // No place could be accessed, return (What should be returned?)
         return new Vector3(-100f, -100f, -100f);
     }
 
@@ -106,7 +106,7 @@ public class Section : MonoBehaviour
     private bool IsAccess(Vector3 placementLocation, Vector3 position, float viewDistance)
     {
         // Array of all drone-Gameobjects
-        GameObject[] drones = GameObject.FindGameObjectsWithTag("drone");
+        GameObject[] drones = GameObject.FindGameObjectsWithTag("Drone");
 
         // List of drones that are within viewDistance, does not contain the drone with the position given af parameter.
         List<Vector3> releventPositions = new List<Vector3>();
@@ -127,13 +127,13 @@ public class Section : MonoBehaviour
                         return false;
         }
         */
-
+        
         // Approach 2
         // Add position of drones within viewDistance to list
         for (int i = 0; i < drones.Length; i++)
         {
             Vector3 dronePosition = drones[i].transform.position;
-            if (Vector3.Distance(dronePosition, position) <= viewDistance && dronePosition != position)
+            if (Vector3.Distance(dronePosition, position) <= viewDistance && !dronePosition.Equals(position))
                 releventPositions.Add(dronePosition);
         }
         // If any of the drones in view are too close, return false
@@ -142,7 +142,7 @@ public class Section : MonoBehaviour
             if (Vector3.Distance(releventPositions[i], placementLocation) <= MinimumSeperation)
                 return false;
         }
-
+        
         // Return true if no obstacles were found
         return true;
     }
