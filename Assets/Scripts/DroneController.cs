@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,22 +15,27 @@ namespace SandbagSimulation
 
         Section MySection;
         Blueprint MyBlueprint;
-        DroneMovement MyMovement;
+        //DroneMovement MyMovement;
 
         GameObject MySandbag;
         GameObject LocatedSandbag;
+
+        delegate void Movement(Vector3 target);
+        Movement FlyTo;
 
         void Start()
         {
             IsFinished = false;
             HasSandbag = false;
-            IsRightDrone = (Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
+            IsRightDrone = (UnityEngine.Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
             ViewDistance = 10f;
 
             MySandbag = null;
             MyBlueprint = null;
             MySection = new Section(Vector3.zero);
-            MyMovement = new DroneMovement();
+
+            FlyTo = new DroneMovement().FlyTo;
+
         }
 
         void Update()
@@ -38,7 +44,7 @@ namespace SandbagSimulation
         }
 
         // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
-        public void LocateSandbag()
+        public void LocateNearestSandbag()
         {
             GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
 
