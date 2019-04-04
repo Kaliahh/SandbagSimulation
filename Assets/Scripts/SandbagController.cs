@@ -8,13 +8,17 @@ public class SandbagController : MonoBehaviour
     float Width;
     float Length;
 
+    float Scale;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        Height = 2.0f;
-        Width = 3.5f;
-        Length = 6.0f;
+        Scale = 0.025f;
+
+        Height = 20f * Scale;
+        Width = 35f * Scale;
+        Length = 60f * Scale;
         
         this.transform.localScale = new Vector3(Length, Height, Width);
     }

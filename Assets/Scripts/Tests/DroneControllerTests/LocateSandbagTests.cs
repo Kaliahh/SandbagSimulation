@@ -13,7 +13,12 @@ namespace Tests
         [Test]
         public void LocateSandbagTestsSimplePasses()
         {
-            
+            if (EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByName("LocateSandbagTestScene1"))
+            {
+                EditorSceneManager.LoadScene("LocateSandbagTestScene1");
+            }
+
+
         }
 
         // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
