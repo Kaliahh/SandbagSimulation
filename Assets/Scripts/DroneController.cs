@@ -58,10 +58,7 @@ namespace SandbagSimulation
         }
 
         // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
-        void PickUpSandbag()
-        {
-            MySandbag = LocatedSandbag;
-        }
+        void PickUpSandbag() => MySandbag = LocatedSandbag;
 
         // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
         void PlaceSandbag(Vector3 position)
