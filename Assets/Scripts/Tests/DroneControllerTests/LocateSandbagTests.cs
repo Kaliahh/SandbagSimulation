@@ -4,6 +4,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using UnityEditor.SceneManagement;
+using SandbagSimulation;
 
 namespace Tests
 {
@@ -13,11 +14,25 @@ namespace Tests
         [Test]
         public void LocateSandbagTestsSimplePasses()
         {
+            Assert.Pass();
+
             if (EditorSceneManager.GetActiveScene() != EditorSceneManager.GetSceneByName("LocateSandbagTestScene1"))
             {
                 EditorSceneManager.LoadScene("LocateSandbagTestScene1");
             }
 
+            GameObject drone = GameObject.FindGameObjectWithTag("Drone");
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            if (controller == null)
+            {
+                Assert.Fail();
+            }
+
+            controller.LocateSandbag();
+
+            
 
         }
 
