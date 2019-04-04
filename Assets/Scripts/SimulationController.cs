@@ -4,42 +4,41 @@ using UnityEngine;
 
 public class SimulationController : MonoBehaviour
 {
-    //GameObject References
-    public GameObject drone; //Reference to drone object
+    // GameObject referencer
+    public GameObject Drone;
+    private List<GameObject> Drones;
 
-    private List<GameObject> drones; //List of all instantiated drones
+    // Variable brugeren kan ændre på
+    public int DroneSpeed;
+    public int NumberOfDrones;
 
-    //Variables user can edit
-    public int speed; //Speed of the drones
-    public int numberOfDrones; //Amount of drones
-
-    void Start () //initialization of simulation
+    void Start () 
     {
-        InitializeDrones(); //Spawn the drones
-        SetSpeed(); //Set speed of the drones equal speed variable
+        InitializeDrones();
+        SetDroneSpeed();
 
-        //Blueprint example
+        // Blueprint eksempel
         List<Vector3> nodes = new List<Vector3> { new Vector3(10f, 0f, 0f), new Vector3(-10f, 0f, 0f)};
         Blueprint blueprint = new Blueprint(nodes, 10);
 	}
-    private void InitializeDrones() //Droner spawner
+    private void InitializeDrones()
     {
-        drones = new List<GameObject>();
-        for (int i = 0; i < numberOfDrones; i++)
+        Drones = new List<GameObject>();
+        for (int i = 0; i < NumberOfDrones; i++)
         {
-            drones.Add(Instantiate(drone));
+            Drones.Add(Instantiate(Drone));
         }
     }
-    private void InitializeBlueprints() //Initiale Blueprint
+    private void InitializeBlueprints()
     {
-        foreach (GameObject drone in drones)
+        foreach (GameObject drone in Drones)
         {
             //NEED TO IMPLEMENT BLUEPRINT OF DRONECONTROLLER
         }
     }
-    private void SetSpeed()
+    private void SetDroneSpeed()
     {
-        foreach (GameObject drone in drones)
+        foreach (GameObject drone in Drones)
         {
             //NEED SET THE SPEED OF DRONECONTROLLER 
         }

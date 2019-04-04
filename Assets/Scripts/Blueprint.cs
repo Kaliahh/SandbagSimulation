@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blueprint : MonoBehaviour
+public class Blueprint // : MonoBehaviour
 {
-    private List<Vector3> _constructionNodes; //Dike nodes
-    private int _height; //Dike height
+    private List<Vector3> ConstructionNodes;
+    private int DikeHeight;
 
-    public Blueprint(List<Vector3> nodes, int height) //Contructor
+    public Blueprint(List<Vector3> nodes, int height)
     {
-        _constructionNodes = nodes;
-        _height = height;
+        ConstructionNodes = nodes;
+        DikeHeight = height;
     }
 }

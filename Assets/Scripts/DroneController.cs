@@ -7,25 +7,29 @@ public class DroneController : MonoBehaviour
     bool IsFinished;
     bool HasSandbag;
     bool IsRightDrone;
-    //Blueprint MyBlueprint;
+
     float ViewDistance;
-    //Section MySection;
-    //DroneMovement MyMovement;
+
+    Section MySection;
+    Blueprint MyBlueprint;
+    DroneMovement MyMovement;
+
     GameObject MySandbag;
     GameObject LocatedSandbag;
     
-
-    // Start is called before the first frame update
     void Start()
     {
         IsFinished = false;
         HasSandbag = false;
-        IsRightDrone = (Random.Range(0,2) == 1) ? true : false;
+        IsRightDrone = (Random.Range(0,2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
         ViewDistance = 10f;
+
         MySandbag = null;
+        MyBlueprint = null;
+        MySection = new Section(Vector3.zero);
+        MyMovement = new DroneMovement();
     }
 
-    // Update is called once per frame
     void Update()
     {
         
