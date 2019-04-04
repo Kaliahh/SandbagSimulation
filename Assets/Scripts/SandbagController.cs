@@ -6,9 +6,9 @@ namespace SandbagSimulation
 {
     public class SandbagController : MonoBehaviour
     {
-        float Height;
-        float Width;
-        float Length;
+        public float Height { get; }
+        public float Width { get; }
+        public float Length { get; }
 
         float Scale;
 
