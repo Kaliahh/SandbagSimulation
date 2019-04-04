@@ -12,8 +12,8 @@ public class DroneMovement : MonoBehaviour
         Step = Speed * Time.deltaTime;
     }
 
-    public void FlyTo(Vector3 Target)
+    public void FlyTo(Vector3 target)
     {
-        transform.position = Vector3.MoveTowards(transform.position, Target, Step);
+        transform.position = Vector3.MoveTowards(transform.position, target, Step);
     }
 }
