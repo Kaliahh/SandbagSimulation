@@ -23,6 +23,8 @@ namespace SandbagSimulation
             Length = 60f * Scale;
 
             this.transform.localScale = new Vector3(Length, Height, Width);
+
+            this.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
         // Update is called once per frame

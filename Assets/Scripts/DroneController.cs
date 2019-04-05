@@ -17,11 +17,13 @@ namespace SandbagSimulation
         Blueprint MyBlueprint;
         //DroneMovement MyMovement;
 
-        GameObject MySandbag;
-        GameObject LocatedSandbag;
+        public GameObject MySandbag { get; private set; }
+        public GameObject LocatedSandbag { get; private set; }
 
         delegate void Movement(Vector3 target);
         Movement FlyTo;
+
+        delegate float Rotate();
 
         void Start()
         {
@@ -36,10 +38,14 @@ namespace SandbagSimulation
 
             FlyTo = new DroneMovement().FlyTo;
 
+            LocateNearestSandbag();
+            PickUpSandbag();
+            PlaceSandbag(new Vector3(0, 2, 0));
         }
 
         void Update()
         {
+            //transform.Rotate(new Vector3(20, 0, 0));
 
         }
 
@@ -64,15 +70,74 @@ namespace SandbagSimulation
         }
 
         // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
-        void PickUpSandbag() => MySandbag = LocatedSandbag;
+        public void PickUpSandbag() => MySandbag = LocatedSandbag;
 
         // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
-        void PlaceSandbag(Vector3 position)
+        public void PlaceSandbag(Vector3 position)
         {
             MySandbag.tag = "PlacedSandbag";
 
+            float xAngle = RotateParameterAroundAxis("x");
+            float yAngle = RotateParameterAroundAxis("y");
+            float zAngle = RotateParameterAroundAxis("z");
+
+            MySandbag.transform.Rotate(xAngle, yAngle, zAngle);
+
             MySandbag.transform.position = position;
             MySandbag = null;
+        }
+
+        // TODO: Kom tilbage hertil!
+        public float RotateParameterAroundAxis(string axis)
+        {
+            Vector3 point1 = new Vector3(10, 0, 0);
+            Vector3 point2 = new Vector3(10, 5, 0);
+
+            Vector3 dike = point1 - point2;
+            Vector3 sandbagRotation = MySandbag.transform.rotation.eulerAngles;
+
+            if (axis.CompareTo("x") == 0)
+            {
+                dike = new Vector3(dike.x, 0, 0);
+                sandbagRotation = new Vector3(sandbagRotation.x, 0, 0);
+
+                return Vector3.Angle(dike, sandbagRotation);
+            } 
+
+            else if (axis.CompareTo("y") == 0)
+            {
+                dike = new Vector3(0, dike.y, 0);
+                sandbagRotation = new Vector3(0, sandbagRotation.y, 0);
+
+                return Vector3.Angle(dike, sandbagRotation);
+            }
+
+            else if (axis.CompareTo("z") == 0)
+            {
+                dike = new Vector3(0, 0, dike.z);
+                sandbagRotation = new Vector3(0, 0, sandbagRotation.y);
+
+                return Vector3.Angle(dike, sandbagRotation);
+            }
+
+            else
+            {
+                throw new Exception("Det her burde virkelig ikke kunne lade sig gøre...");
+            }
+        }
+
+        public Vector3 CalculateRelativeRotation()
+        {
+            Vector3 rotation = Vector3.zero;
+
+            Vector3 point1 = new Vector3(10, 0, 0);
+            Vector3 point2 = new Vector3(10, 5, 0);
+
+            Vector3 dike = point1 - point2;
+
+            float angle = Vector3.Angle(dike, MySandbag.transform.localEulerAngles);
+
+            return rotation;
         }
     }
 }
