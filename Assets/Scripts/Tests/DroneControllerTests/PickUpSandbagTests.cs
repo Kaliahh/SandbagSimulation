@@ -8,22 +8,29 @@ using SandbagSimulation;
 
 namespace Tests
 {
-    public class LocateSandbagTests
+    public class PickUpSandbagTests
     {
-        // A Test behaves as an ordinary method
         [Test]
-        public void LocateSandbag_1_Sandbag()
+        public void PickUpSandbagTest()
         {
             // Arrange
             GameObject sandbag = CreateSandbag();
             GameObject drone = CreateDrone();
 
-            // Act
             drone.GetComponent<DroneController>().LocateNearestSandbag();
-            
-            // Assert
-            Assert.AreEqual(drone.GetComponent<DroneController>().LocatedSandbag, sandbag);
 
+            // Act
+            drone.GetComponent<DroneController>().PickUpSandbag();
+
+            // Assert
+            Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, sandbag);
+        }
+
+
+        [SetUp]
+        public void ResetScene()
+        {
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
         }
 
         public GameObject CreateSandbag()
@@ -43,33 +50,6 @@ namespace Tests
             drone.tag = "Drone";
 
             return drone;
-        }
-
-        [Test]
-        public void LocateSandbag_2_Sandbags()
-        {
-            // Arrange
-            GameObject sandbag1 = CreateSandbag();
-            GameObject sandbag2 = CreateSandbag();
-
-            sandbag1.transform.position = new Vector3(10, 2, 0);
-            sandbag2.transform.position = new Vector3(20, 2, 0);
-
-            GameObject drone = CreateDrone();
-
-            drone.transform.position = new Vector3(0, 2, 0);
-
-            // Act
-            drone.GetComponent<DroneController>().LocateNearestSandbag();
-
-            // Assert
-            Assert.AreEqual(drone.GetComponent<DroneController>().LocatedSandbag, sandbag1);
-        }
-
-        [SetUp]
-        public void ResetScene()
-        {
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
         }
     }
 }
