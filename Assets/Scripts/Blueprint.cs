@@ -6,8 +6,8 @@ namespace SandbagSimulation
 {
     public class Blueprint // : MonoBehaviour
     {
-        private List<Vector3> ConstructionNodes;
-        private int DikeHeight;
+        public List<Vector3> ConstructionNodes { get; private set; }
+        public int DikeHeight;
 
         public Blueprint(List<Vector3> nodes, int height)
         {
