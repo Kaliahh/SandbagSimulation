@@ -4,12 +4,11 @@ using UnityEngine;
 
 public class DroneMovement : MonoBehaviour
 {
-    public float Speed { get; set; }
+    public float Speed;
     public float Step { get; private set; }
 
     private void Awake()
     {
-        Speed = 30.0f;
         Step = Speed * Time.deltaTime;
     }
 
