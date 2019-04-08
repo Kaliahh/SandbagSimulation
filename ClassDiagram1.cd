@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SandbagSimulation.Blueprint">
+    <Position X="0.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Assets\Scripts\Blueprint.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SandbagSimulation.DroneController">
+    <Position X="2.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAACAChABIAAABAAAABYAAAAAAFIFACAQSAAgIA=</HashCode>
+      <FileName>Assets\Scripts\DroneController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DroneMovement">
+    <Position X="5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAIAAAAAAAIEA=</HashCode>
+      <FileName>Assets\Scripts\DroneMovement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SandbagSimulation.SandbagController">
+    <Position X="8.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAABCAAAAAAAAIAAEBAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\SandbagController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SandbagSpawner">
+    <Position X="8.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAQAAIAEAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\SandbagSpawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Section">
+    <Position X="0.5" Y="2.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgBAAABAAAAAAABFAAAAAAAAIABAIAAAAAAAEAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Section.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SandbagSimulation.SimulationController">
+    <Position X="10.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAgBSBAAAAAgAAgAAAABEAAAIAAEAAEAIAAAAA=</HashCode>
+      <FileName>Assets\Scripts\SimulationController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
