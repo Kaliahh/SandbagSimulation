@@ -16,17 +16,15 @@ namespace Tests
         }
 
         [Test]
-        public void Constructor_should_assign_CurrentSection()
+        public void FindBestPlace_PassPositionToConstructor_SetProperyCorrectly()
         {
             Vector3 testVector = new Vector3(10, 10, 10);
-            // Create new section
             Section section = new Section(testVector);
-            
             Assert.AreEqual(testVector, section.CurrentSection);
         }
 
         [Test]
-        public void FindBestPlace_should_return_errorVector_when_no_access()
+        public void FindBestPlace_PassSinglePositionWithoutAccess_ReturnErrorVector()
         {
             // Arrange 
 
@@ -57,12 +55,12 @@ namespace Tests
         }
 
         [Test]
-        public void FindBestPlace_should_return_errorVector_when_no_access_multiple_locations()
+        public void FindBestPlace_PassMultiplePositionWithoutAccess_ReturnErrorVector()
         {
             Section section = new Section(new Vector3(10f, 10f, 10f));
             float viewDistance = 20f;
 
-            // Tre locations i en linje
+            // Tre locations på linje
             Vector3 Location1 = new Vector3(0f, 0f, 0f);
             Vector3 Location2 = new Vector3(5f, 0f, 0f);
             Vector3 Location3 = new Vector3(10f, 0f, 0f);
@@ -97,7 +95,7 @@ namespace Tests
         }
 
         [Test]
-        public void IsAccess_should_return_positive_when_single_obstacle_is_far_away()
+        public void FindBestPlace_PassAccessiblePositionAndSingleObstacle_ReturnCorrectPosition()
         {
             Section section = new Section(new Vector3(10f, 10f, 10f));
             section.MinimumSeperation = 5f;
@@ -116,9 +114,6 @@ namespace Tests
             cube1.tag = "Drone";
             cube1.transform.position = new Vector3(15f, 15f, 15f);
 
-
-
-
             // Act
             Vector3 result = section.FindBestPlace(places, position, viewDistance);
 
@@ -127,7 +122,7 @@ namespace Tests
         }
 
         [Test]
-        public void FindBestPlace_should_return_the_only_valid_of_two_locations()
+        public void FindBestPlace_PassOneAccessiblePositionAndOneInAccessiblePosition_ReturnAccessiblePosition()
         {
             Section section = new Section(new Vector3(10f, 10f, 10f));
             section.MinimumSeperation = 5f;
@@ -156,7 +151,7 @@ namespace Tests
         }
 
         [Test]
-        public void FindBestPlace_should_return_first_available_location()
+        public void FindBestPlace_PassMultipleAccessiblePositions_ReturnFirstAccessible()
         {
             Section section = new Section(new Vector3(10f, 10f, 10f));
 
@@ -178,7 +173,7 @@ namespace Tests
         }
 
         [Test]
-        public void FindBestPlace_should_return_errorVector_when_given_empty_array()
+        public void FindBestPlace_PassEmptyArray_ReturnErrorVector()
         {
             Section section = new Section(new Vector3());
             float viewDistance = 20f;
