@@ -23,7 +23,7 @@ namespace Tests
             drone.GetComponent<DroneController>().PickUpSandbag();
 
             // Act
-            drone.GetComponent<DroneController>().PlaceSandbag(position);
+            drone.GetComponent<DroneController>().PlaceSandbag();
 
             // Assert
             Assert.AreEqual(sandbag.transform.position, position);
@@ -40,7 +40,7 @@ namespace Tests
             drone.GetComponent<DroneController>().PickUpSandbag();
 
             // Act
-            drone.GetComponent<DroneController>().PlaceSandbag(Vector3.zero);
+            drone.GetComponent<DroneController>().PlaceSandbag();
 
             // Assert
             Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, null);
@@ -57,7 +57,7 @@ namespace Tests
             drone.GetComponent<DroneController>().PickUpSandbag();
 
             // Act
-            drone.GetComponent<DroneController>().PlaceSandbag(Vector3.zero);
+            drone.GetComponent<DroneController>().PlaceSandbag();
 
             // Assert
             Assert.AreEqual(sandbag.tag, "PlacedSandbag");
