@@ -9,9 +9,9 @@ namespace SandbagSimulation
         public List<Vector3> ConstructionNodes { get; private set; }
         public int DikeHeight;
 
-        public Blueprint(List<Vector3> nodes, int height)
+        public Blueprint(List<Vector3> constructionNodes, int height)
         {
-            ConstructionNodes = nodes;
+            this.ConstructionNodes = constructionNodes;
             DikeHeight = height;
         }
     }
