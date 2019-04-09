@@ -15,7 +15,7 @@ namespace SandbagSimulation
         // Variable brugeren kan ændre på
         public float DroneSpeed;
         public int NumberOfDrones;
-        public int NumberOfSandbags;
+        // public int NumberOfSandbags;
         // TODO: Tilføj DroneViewDistance og en method der kan sætte den hos dronerne
 
         public Vector3 SandbagSpawnPoint; //Sandsæk genereringspunkt
@@ -27,6 +27,11 @@ namespace SandbagSimulation
         public int Height;
 
         void Start()
+        {
+            SetupSimulation();
+        }
+
+        public void SetupSimulation()
         {
             // Object Generering
             InitializeDrones();
