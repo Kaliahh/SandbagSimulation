@@ -3,43 +3,64 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SandbagSpawner : MonoBehaviour
+
+namespace SandbagSimulation
 {
-    public GameObject Sandbag;
-    public Vector3 SpawnPoint;
-
-    // Start is called before the first frame update
-    void Start()
+    public class SandbagSpawner : MonoBehaviour
     {
-        SpawnPoint = new Vector3(2, 0.5f, 2);
-    }
+        public GameObject Sandbag;
+        public Vector3 SpawnPoint;
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (SpawnPointIsFree())
+        float Counter = 0;
+        float WaitTime = 1;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            SpawnSandbag();
-        }
-    }
-
-    void SpawnSandbag()
-    {
-        Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
-    }
-
-    bool SpawnPointIsFree()
-    {
-        GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
-
-        if (sandbags.Length == 0)
-        {
-            return true;
+            SpawnPoint = new Vector3(2, 0.5f, 2);
         }
 
-        else
+        // Update is called once per frame
+        void Update()
         {
-            return false;
+            if (SpawnPointIsFree())
+            {
+                if (Counter > WaitTime)
+                {
+                    Counter = 0;
+                    SpawnSandbag();
+                }
+
+                else
+                {
+                    Counter += Time.deltaTime;
+                }
+
+
+                //Invoke("SpawnSandbag", 2); // Der sker noget mærkeligt hvis man gør det her
+            }
+        }
+
+        void SpawnSandbag()
+        {
+            Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
+        }
+
+        bool SpawnPointIsFree()
+        {
+            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
+
+            if (sandbags.Length == 0)
+            {
+                return true;
+            }
+
+            else
+            {
+                return false;
+            }
         }
     }
 }
+
+
