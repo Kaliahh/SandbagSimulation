@@ -7,80 +7,73 @@ namespace SandbagSimulation
 {
     public class DroneController : MonoBehaviour
     {
-        bool IsFinished;
+        bool IsFinishedBuilding;
         bool IsRightDrone;
         bool NoSandbagFound;
 
         float ViewDistance;
 
-        Section MySection;
-        Blueprint MyBlueprint;
-        DroneMovement MyMovement;
+        public Section MySection { get; private set; }
+        public Blueprint MyBlueprint { get; private set; }
+        public DroneMovement MyMovement { get; private set; }
 
-        public GameObject MySandbag { get; private set; }
+        public GameObject MySandbag;
         public GameObject LocatedSandbag { get; private set; }
 
-        GameObject obj1;
-        GameObject obj2;
-
-        Vector3 StartingPosition;
+        Vector3 HomePosition;
         Vector3 TargetPoint;
+        public Vector3 SandbagPickUpLocation { get; private set; }
 
-        void Start()
+        Vector3 CurrentSection;
+
+        private void Start()
         {
-            IsFinished = false;
+            IsFinishedBuilding = false;
             NoSandbagFound = false;
             IsRightDrone = (UnityEngine.Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
             ViewDistance = 10f;
 
             MySandbag = null;
-            MyBlueprint = new Blueprint(new List<Vector3>(), 4);
             MySection = new Section(Vector3.zero);
 
             MyMovement = this.GetComponent<DroneMovement>();
-            StartingPosition = this.transform.position;
+            HomePosition = this.transform.position;
 
-
-            // Dige nodes
-            obj1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            obj1.transform.position = new Vector3(2, 0.5f, 0);
-            MyBlueprint.ConstructionNodes.Add(obj1.transform.position);
-
-            obj2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            obj2.transform.position = new Vector3(-2, 0.5f, 0);
-            MyBlueprint.ConstructionNodes.Add(obj2.transform.position);
+            CurrentSection = Vector3.zero;
         }
 
-        void Update()
+        private void Update()
         {
-            MyBlueprint.ConstructionNodes[0] = obj1.transform.position;
-            MyBlueprint.ConstructionNodes[1] = obj2.transform.position;
+            // Debug.DrawLine(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], Color.red);
 
-            Debug.DrawLine(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], Color.red);
-
-            if (IsFinished == false)
+            if (IsFinishedBuilding == false)
             {
-                DoStuff();
+                MakeDecision();
             }
 
             else
             {
-                MyMovement.FlyTo(StartingPosition);
+                MyMovement.FlyTo(HomePosition);
             }
         }
 
-        void DoStuff()
+        private void MakeDecision()
         {
-            if (LocatedSandbag == null && MySandbag == null && NoSandbagFound == false)
+            if (LocatedSandbag != null && LocatedSandbag.tag != "Sandbag")
+            {
+                LocatedSandbag = null;
+            }
+
+            if (LocatedSandbag == null && MySandbag == null && InVicinityOf(SandbagPickUpLocation) == false)
+            {
+                MyMovement.FlyTo(SandbagPickUpLocation);
+            }
+
+            else if (LocatedSandbag == null && MySandbag == null && InVicinityOf(SandbagPickUpLocation) == true && NoSandbagFound == false)
             {
                 LocateNearestSandbag();
 
-                if (LocatedSandbag != null)
-                {
-                    TargetPoint = LocatedSandbag.transform.position;
-                }
-
-                else
+                if (LocatedSandbag == null)
                 {
                     NoSandbagFound = true;
                 }
@@ -92,20 +85,43 @@ namespace SandbagSimulation
                 SearchForSandbags();
             }
 
-            else if (LocatedSandbag != null && MySandbag == null && InVicinityOf(TargetPoint) == false)
+            else if (LocatedSandbag != null && MySandbag == null && InVicinityOf(LocatedSandbag.transform.position) == false)
             {
-                FlyToSandbag(TargetPoint);
+                FlyToSandbag(LocatedSandbag.transform.position);
             }
 
-            else if (LocatedSandbag != null && MySandbag == null && InVicinityOf(TargetPoint) == true)
+            else if (LocatedSandbag != null && MySandbag == null && InVicinityOf(LocatedSandbag.transform.position) == true)
             {
                 PickUpSandbag();
             }
+
+            else if (MySandbag != null && CurrentSection == Vector3.zero)
+            {
+                CurrentSection = Vector3.Lerp(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], UnityEngine.Random.Range(0f, 1f));
+            }
+
+            else if (MySandbag != null && CurrentSection != Vector3.zero && InVicinityOf(CurrentSection) == false)
+            {
+                MyMovement.FlyTo(CurrentSection);
+            }
+
+            else if (MySandbag != null && InVicinityOf(CurrentSection) == true)
+            {
+                Vector3 position = new Vector3(this.transform.position.x, this.transform.position.y - 0.5f, this.transform.position.z);
+                MySandbag.GetComponent<SandbagController>().rb.velocity = Vector3.zero;
+                PlaceSandbag(position);
+                CurrentSection = Vector3.zero;
+            }
+
+            else
+            {
+                MyMovement.FlyTo(HomePosition);
+            }
         }
 
-        bool InVicinityOf(Vector3 position)
+        private bool InVicinityOf(Vector3 position)
         {
-            if ((this.transform.position - position).sqrMagnitude < 0.5f)
+            if ((this.transform.position - position).sqrMagnitude < 1.2f)
             {
                 return true;
             }
@@ -116,14 +132,19 @@ namespace SandbagSimulation
             }
         }
 
-        void FlyToSandbag(Vector3 sandbagPosition)
+        private void FlyToSandbag(Vector3 sandbagPosition)
         {
             MyMovement.FlyTo(new Vector3(sandbagPosition.x, sandbagPosition.y + 1f, sandbagPosition.z));
         }
 
-        void SearchForSandbags()
+        private void SearchForSandbags()
         {
-            throw new NotImplementedException();
+            LocateNearestSandbag();
+
+            if (LocatedSandbag != null)
+            {
+                NoSandbagFound = false;
+            }
         }
 
         // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
@@ -184,6 +205,12 @@ namespace SandbagSimulation
 
             MySandbag.transform.Rotate(new Vector3(0, angle + 90, 0));
         }
+
+        public void SetBlueprint(Blueprint blueprint) => MyBlueprint = blueprint;
+
+        public void SetSpeed(float speed) => MyMovement.Speed = speed;
+
+        public void SetSandbagPickUpLocation(Vector3 point) => SandbagPickUpLocation = point;
     }
 }
 
