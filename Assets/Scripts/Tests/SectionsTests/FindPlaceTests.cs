@@ -41,6 +41,7 @@ namespace Tests
             Assert.IsEmpty(result);
         }
 
+        /*
         [Test]
         public void FindPlace_PassSingleSandbag_ReturnTwoPlaces()
         {
@@ -61,8 +62,9 @@ namespace Tests
             cube1.AddComponent(typeof(SandbagController));
 
             Vector3[] result = section.FindPlace(viewDistance, position, constructionNodes);
-            //Assert.AreEqual(result, new Vector3(15f, 10f, 0f));
             Assert.AreEqual(result.Length, 2);
         }
+        */
+
     }
 }
