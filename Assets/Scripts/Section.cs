@@ -40,9 +40,7 @@ namespace SandbagSimulation
             // Breadth first search
             while (q.Count > 0)
             {
-
                 Vector3 current = q.Dequeue();
-                Debug.Log(current.ToString());
                 if (!visited.Contains(current) && IsWithinBorder(current, constructionNodes) && Vector3.Distance(position, current) <= viewDistance)
                 {
                     // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
