@@ -23,9 +23,6 @@ namespace SandbagSimulation
 
                 this.GetComponent<DroneController>().MySandbag.transform.position = sandbagTarget;
                 this.GetComponent<DroneController>().MySandbag.transform.rotation = Quaternion.identity;
-
-                //this.GetComponent<DroneController>().MySandbag.transform.position =
-                //    Vector3.MoveTowards(this.GetComponent<DroneController>().MySandbag.transform.position, sandbagTarget, Step);
             }
         }
     }
