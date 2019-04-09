@@ -12,13 +12,10 @@ namespace SandbagSimulation
         public Vector3 SpawnPoint;
 
         float Counter = 0;
-        float WaitTime = 1;
+        float WaitTime = 0.5f;
 
         // Start is called before the first frame update
-        void Start()
-        {
-            SpawnPoint = new Vector3(2, 0.5f, 2);
-        }
+        // void Start() => SpawnPoint = new Vector3(2, 0.5f, 2);
 
         // Update is called once per frame
         void Update()
@@ -36,15 +33,11 @@ namespace SandbagSimulation
                     Counter += Time.deltaTime;
                 }
 
-
-                //Invoke("SpawnSandbag", 2); // Der sker noget mærkeligt hvis man gør det her
+                // Invoke("SpawnSandbag", 5); // Der sker noget mærkeligt hvis man gør det her
             }
         }
 
-        void SpawnSandbag()
-        {
-            Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
-        }
+        void SpawnSandbag() => Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
 
         bool SpawnPointIsFree()
         {
