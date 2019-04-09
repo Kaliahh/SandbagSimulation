@@ -9,42 +9,43 @@ namespace SandbagSimulation
     {
         bool IsFinishedBuilding;
         bool IsRightDrone;
-        bool NoSandbagFound;
 
         float ViewDistance;
 
         public Section MySection { get; private set; }
         public Blueprint MyBlueprint { get; private set; }
-        public DroneMovement MyMovement { get; private set; }
+        public DroneMovement MyMovement; //{ get; private set; }
 
         public GameObject MySandbag;
         public GameObject LocatedSandbag { get; private set; }
 
-        Vector3 HomePosition;
-        Vector3 TargetPoint;
         public Vector3 SandbagPickUpLocation { get; private set; }
 
         Vector3 CurrentSection;
+        Vector3 DroneTargetPoint;
+        Vector3 HomePosition;
+        Vector3 TargetPoint;
 
         private void Start()
         {
             IsFinishedBuilding = false;
-            NoSandbagFound = false;
             IsRightDrone = (UnityEngine.Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
-            ViewDistance = 10f;
+            ViewDistance = 50f;
 
             MySandbag = null;
             MySection = new Section(Vector3.zero);
 
             MyMovement = this.GetComponent<DroneMovement>();
+
             HomePosition = this.transform.position;
 
             CurrentSection = Vector3.zero;
+            TargetPoint = Vector3.zero;
         }
 
         private void Update()
         {
-            // Debug.DrawLine(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], Color.red);
+            //Debug.DrawLine(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], Color.red);
 
             if (IsFinishedBuilding == false)
             {
@@ -69,20 +70,9 @@ namespace SandbagSimulation
                 MyMovement.FlyTo(SandbagPickUpLocation);
             }
 
-            else if (LocatedSandbag == null && MySandbag == null && InVicinityOf(SandbagPickUpLocation) == true && NoSandbagFound == false)
+            else if (LocatedSandbag == null && MySandbag == null && InVicinityOf(SandbagPickUpLocation) == true)
             {
                 LocateNearestSandbag();
-
-                if (LocatedSandbag == null)
-                {
-                    NoSandbagFound = true;
-                }
-            }
-
-            else if (LocatedSandbag == null && MySandbag == null && NoSandbagFound == true)
-            {
-                //TODO: Implementer det her
-                SearchForSandbags();
             }
 
             else if (LocatedSandbag != null && MySandbag == null && InVicinityOf(LocatedSandbag.transform.position) == false)
@@ -97,26 +87,41 @@ namespace SandbagSimulation
 
             else if (MySandbag != null && CurrentSection == Vector3.zero)
             {
-                CurrentSection = Vector3.Lerp(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], UnityEngine.Random.Range(0f, 1f));
+                CurrentSection = Vector3.Lerp(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], 0.5f);
             }
 
-            else if (MySandbag != null && CurrentSection != Vector3.zero && InVicinityOf(CurrentSection) == false)
+            else if (MySandbag != null && CurrentSection != Vector3.zero && InVicinityOf(CurrentSection) == false && TargetPoint == Vector3.zero)
             {
                 MyMovement.FlyTo(CurrentSection);
             }
 
-            else if (MySandbag != null && InVicinityOf(CurrentSection) == true)
+            else if (MySandbag != null && InVicinityOf(CurrentSection) == true && TargetPoint == Vector3.zero)
             {
-                Vector3 position = new Vector3(this.transform.position.x, this.transform.position.y - 0.5f, this.transform.position.z);
-                MySandbag.GetComponent<SandbagController>().rb.velocity = Vector3.zero;
-                PlaceSandbag(position);
-                CurrentSection = Vector3.zero;
+                TargetPoint = FindPlace();
+                DroneTargetPoint = new Vector3(TargetPoint.x, TargetPoint.y + 1, TargetPoint.z);
+            }
+
+            else if (MySandbag != null && TargetPoint != Vector3.zero && InVicinityOf(DroneTargetPoint) == false)
+            {
+                MyMovement.FlyTo(DroneTargetPoint);
+            }
+
+            else if (MySandbag != null && TargetPoint != Vector3.zero && InVicinityOf(DroneTargetPoint) == true)
+            {
+                PlaceSandbag();
+                TargetPoint = Vector3.zero;
+                DroneTargetPoint = Vector3.zero;
             }
 
             else
             {
                 MyMovement.FlyTo(HomePosition);
             }
+        }
+
+        private Vector3 FindPlace()
+        {
+            return Vector3.Lerp(MyBlueprint.ConstructionNodes[0], MyBlueprint.ConstructionNodes[1], UnityEngine.Random.Range(0f, 1f));
         }
 
         private bool InVicinityOf(Vector3 position)
@@ -137,29 +142,23 @@ namespace SandbagSimulation
             MyMovement.FlyTo(new Vector3(sandbagPosition.x, sandbagPosition.y + 1f, sandbagPosition.z));
         }
 
-        private void SearchForSandbags()
-        {
-            LocateNearestSandbag();
+        //private void SearchForSandbags()
+        //{
+        //    LocateNearestSandbag();
 
-            if (LocatedSandbag != null)
-            {
-                NoSandbagFound = false;
-            }
-        }
+        //    if (LocatedSandbag != null)
+        //    {
+        //        NoSandbagFound = false;
+        //    }
+        //}
+        /* */
 
         // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
         public void LocateNearestSandbag()
         {
             GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
 
-            //if (sandbags.Length == 0)
-            //{
-            //    NoSandbagFound = true;
-            //    return;
-            //}
-
-            //TODO: Det her skal være ViewDistance
-            float distance = Mathf.Infinity;
+            float distance = ViewDistance;
 
             foreach (GameObject sandbag in sandbags)
             {
@@ -180,17 +179,23 @@ namespace SandbagSimulation
         {
             MySandbag = LocatedSandbag;
             MySandbag.tag = "PickedUpSandbag";
+
+            MySandbag.GetComponent<Rigidbody>().isKinematic = true;
             LocatedSandbag = null;
         }
 
         // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
-        public void PlaceSandbag(Vector3 position)
+        public void PlaceSandbag()
         {
             MySandbag.tag = "PlacedSandbag";
 
-            RotateSandbag(position);
+            // MySandbag.GetComponent<SandbagController>().rb.velocity = Vector3.zero;
+            RotateSandbag(this.transform.position);
 
-            MySandbag.transform.position = position;
+            // MySandbag.transform.position = new Vector3(this.transform.position.x, this.transform.position.y - 1f, this.transform.position.z);
+
+            MySandbag.GetComponent<Rigidbody>().isKinematic = false;
+
             MySandbag = null;
         }
 
@@ -208,7 +213,11 @@ namespace SandbagSimulation
 
         public void SetBlueprint(Blueprint blueprint) => MyBlueprint = blueprint;
 
-        public void SetSpeed(float speed) => MyMovement.Speed = speed;
+        //public void SetSpeed(float speed) => MyMovement.Speed = speed;
+        public void SetSpeed(float speed)
+        {
+            MyMovement.Speed = speed;
+        }
 
         public void SetSandbagPickUpLocation(Vector3 point) => SandbagPickUpLocation = point;
     }
