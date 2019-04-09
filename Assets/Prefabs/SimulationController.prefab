@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5131902707113105678}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.090025, y: -2.1357126, z: 0.34292924}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -47,12 +47,12 @@ MonoBehaviour:
   Drone: {fileID: 7703018631019882326, guid: b6cb62098821cd847a0240134ed6dd21, type: 3}
   SandBag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
   DroneSpeed: 5
-  NumberOfDrones: 10
+  NumberOfDrones: 6
   NumberOfSandbags: 10
-  SandbagSpawnPoint: {x: 5, y: 0, z: 0}
-  DroneSpawnPoint: {x: -5, y: 0, z: 0}
-  Node1: {x: 10, y: 0, z: 0}
-  Node2: {x: -10, y: 0, z: 0}
+  SandbagSpawnPoint: {x: 3, y: 1, z: 0}
+  DroneSpawnPoint: {x: 0, y: 3, z: 0}
+  Node1: {x: 10, y: 3, z: 40}
+  Node2: {x: -10, y: 3, z: 40}
   Height: 0
 --- !u!114 &3014202476018166865
 MonoBehaviour:
