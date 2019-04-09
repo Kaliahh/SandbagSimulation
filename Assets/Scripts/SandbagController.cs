@@ -12,6 +12,8 @@ namespace SandbagSimulation
 
         float Scale;
 
+        public Rigidbody rb;
+
 
         // Start is called before the first frame update
         void Start()
@@ -25,6 +27,8 @@ namespace SandbagSimulation
             this.transform.localScale = new Vector3(Length, Height, Width);
 
             this.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            rb = GetComponent<Rigidbody>();
         }
 
         // Update is called once per frame
