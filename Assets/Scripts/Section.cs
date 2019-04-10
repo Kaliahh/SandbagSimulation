@@ -43,6 +43,7 @@ namespace SandbagSimulation
                 Vector3 current = q.Dequeue();
                 if (!visited.Contains(current) && IsWithinBorder(current, blueprint, sandbag.Height) && Vector3.Distance(position, current) <= viewDistance)
                 {
+                    // Centrum af de sandsække der er til højre og venstre i lagene over og under
                     Vector3 rightMiddle = Vector3.Lerp(new Vector3(current.x + sandbag.Length, current.y, current.z), current, 0.5f);
                     Vector3 leftMiddle = Vector3.Lerp(new Vector3(current.x - sandbag.Length, current.y, current.z), current, 0.5f);
                     //Debug.Log("Current: " + current.ToString());
@@ -96,15 +97,6 @@ namespace SandbagSimulation
          */
         public Vector3 FindBestPlace(Vector3[] places, Vector3 position, float viewDistance)
         {
-            // Find the first location where it is possible for a drone to access
-
-            // Need viewDistance
-
-            // For each possible location
-            // Determine if any other drones are at, or too close to location, (maybe determine if anyone is heading there)
-            // Should it be considered if location currently inaccessible, will be accessible upon arrival?
-            // Return the first accessible
-
             Vector3 errorVector = new Vector3(-100f, -100f, -100f);
 
             // Check om det givne array er gyldigt
@@ -115,7 +107,6 @@ namespace SandbagSimulation
             for (int i = 0; i < places.Length; i++)
                 if (IsAccess(places[i], position, viewDistance))
                     return places[i];
-
 
             // No place could be accessed, return (What should be returned?)
             return errorVector;
@@ -129,7 +120,7 @@ namespace SandbagSimulation
         public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, List<Vector3> constructionNodes)
         {
             // Sorter efter x-værdi
-            Vector3[] sortedVectors = constructionNodes.OrderBy(v => v.x).ToArray<Vector3>();
+            Vector3[] sortedVectors = constructionNodes.OrderBy(v => v.x).ToArray<Vector3>();     // Måske unødvendig
             Vector3 firstNode = constructionNodes[0];
             Vector3 lastNode = constructionNodes[constructionNodes.Count - 1];
             Vector3 nextSection;
@@ -162,13 +153,15 @@ namespace SandbagSimulation
          */
         private bool IsAccess(Vector3 placementLocation, Vector3 position, float viewDistance)
         {
+            // Der gøres ikke nogne forsøg på at forudsige om der er adgang ved ankomst
+
             // Array of all drone-Gameobjects
             GameObject[] drones = GameObject.FindGameObjectsWithTag("Drone");
 
             // List of drones that are within viewDistance, does not contain the drone with the position given af parameter.
             List<Vector3> releventPositions = new List<Vector3>();
 
-            // her er skrevet rto forskellige tilgange, der burde virke ens(Bekræft!), afgør hvilken der er hurtigere og anvend denne.
+            // her er skrevet to forskellige tilgange, der burde virke ens(Bekræft!), afgør hvilken der er hurtigere og anvend denne.
             // Begge tilgange består umiddelbart tests.
 
             /*
@@ -223,7 +216,7 @@ namespace SandbagSimulation
         private bool IsInView(Vector3 dronePosition, Vector3 target, float viewDistance, float sandbagHeight)
         {
             // Check at raycast ikke finder noget lige over sandsækken
-            target.y += sandbagHeight / 2;  // Igen, usikkerhed kan skabe problemer
+            target = Vector3.Lerp(target, new Vector3(target.x, target.y + sandbagHeight, target.z), 0.5f);
             float distance = Vector3.Distance(dronePosition, target);
             // True hvis der er lineOfSight og er inden for viewDistance
             return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
@@ -240,8 +233,14 @@ namespace SandbagSimulation
          */
         private bool IsWithinBorder(Vector3 position, Blueprint blueprint, float sandbagHeight)
         {
-            Vector3[] sortedVectors = blueprint.ConstructionNodes.OrderBy(v => v.x).ToArray<Vector3>();
-            return position.x > sortedVectors[0].x && position.x < sortedVectors[sortedVectors.Length - 1].x && position.y <= blueprint.DikeHeight * sandbagHeight ? true : false;
+            Vector3[] sortedVectors = blueprint.ConstructionNodes.OrderBy(v => v.x).ToArray<Vector3>();     // Måske unødvendig
+            if (position.y + sandbagHeight >= blueprint.DikeHeight * sandbagHeight || position.y >= blueprint.DikeHeight * sandbagHeight)
+            {
+                return position.x > sortedVectors[0].x && position.x < sortedVectors[sortedVectors.Length - 1].x ? true : false;
+            }
+            else
+                return true;
+            //return position.x > sortedVectors[0].x && position.x < sortedVectors[sortedVectors.Length - 1].x && position.y <= blueprint.DikeHeight * sandbagHeight ? true : false;
         }
 
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance)
