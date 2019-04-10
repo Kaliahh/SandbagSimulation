@@ -21,7 +21,7 @@ namespace Tests
         public void FindPlace_PassValid_ReturnValid()
         {
             Vector3 position = new Vector3(10f, 10f, 0f);
-            Section section = new Section(position);
+            Section section = new Section();
             float viewDistance = 5f;
             List<Vector3> constructionNodes = new List<Vector3>();
             // Left
@@ -31,7 +31,7 @@ namespace Tests
 
             // Lav sandsæk lige under dronen
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            cube1.tag = "Sandbag";
+            cube1.tag = "PlacedSandbag";
             cube1.transform.position = new Vector3(10f, 7f, 0f);
             cube1.AddComponent(typeof(SphereCollider));
             cube1.AddComponent(typeof(SandbagController));
@@ -46,7 +46,7 @@ namespace Tests
         public void FindPlace_PassSingleSandbag_ReturnTwoPlaces()
         {
             Vector3 position = new Vector3(10f, 3f, 0f);
-            Section section = new Section(position);
+            Section section = new Section();
             float viewDistance = 10f;
             List<Vector3> constructionNodes = new List<Vector3>();
             // Left

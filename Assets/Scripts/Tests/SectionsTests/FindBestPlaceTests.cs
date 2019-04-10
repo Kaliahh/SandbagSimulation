@@ -20,7 +20,7 @@ namespace Tests
         public void FindBestPlace_PassPositionToConstructor_SetProperyCorrectly()
         {
             Vector3 testVector = new Vector3(10, 10, 10);
-            Section section = new Section(testVector);
+            Section section = new Section();
             Assert.AreEqual(testVector, section.CurrentSection);
         }
 
@@ -31,7 +31,7 @@ namespace Tests
 
             // Heavy and tedious setup (Please improve!)
             // Create new section
-            Section section = new Section(new Vector3(10f, 10f, 10f));
+            Section section = new Section();
 
             // Set ViewDistance so that drone can see obstacle
             float viewDistance = 20f;
@@ -58,7 +58,7 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassMultiplePositionWithoutAccess_ReturnErrorVector()
         {
-            Section section = new Section(new Vector3(10f, 10f, 10f));
+            Section section = new Section();
             float viewDistance = 20f;
 
             // Tre locations på linje
@@ -98,7 +98,7 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassAccessiblePositionAndSingleObstacle_ReturnCorrectPosition()
         {
-            Section section = new Section(new Vector3(10f, 10f, 10f));
+            Section section = new Section();
             section.MinimumSeperation = 5f;
 
             // Set ViewDistance so that drone can see obstacle
@@ -125,7 +125,7 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassOneAccessiblePositionAndOneInAccessiblePosition_ReturnAccessiblePosition()
         {
-            Section section = new Section(new Vector3(10f, 10f, 10f));
+            Section section = new Section();
             section.MinimumSeperation = 5f;
 
             // Set ViewDistance so that drone can see obstacle
@@ -154,7 +154,7 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassMultipleAccessiblePositions_ReturnFirstAccessible()
         {
-            Section section = new Section(new Vector3(10f, 10f, 10f));
+            Section section = new Section();
 
             // Set ViewDistance so drone can see obstacle
             float viewDistance = 20f;
@@ -176,7 +176,7 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassEmptyArray_ReturnErrorVector()
         {
-            Section section = new Section(new Vector3());
+            Section section = new Section();
             float viewDistance = 20f;
             // Create array of places, with multiple possible locations
             Vector3[] places = { };

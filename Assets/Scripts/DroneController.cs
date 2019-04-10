@@ -33,7 +33,7 @@ namespace SandbagSimulation
             ViewDistance = 50f;
 
             MySandbag = null;
-            MySection = new Section(Vector3.zero);
+            MySection = new Section();
 
             MyMovement = this.GetComponent<DroneMovement>();
 

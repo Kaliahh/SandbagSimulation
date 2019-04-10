@@ -21,7 +21,7 @@ namespace Tests
         public void FindNextSection_PassIsRightDrone_ReturnPositionRightOfOrigin()
         {
             Vector3 position = new Vector3(10f, 10f, 0f);
-            Section section = new Section(position);
+            Section section = new Section();
             float viewDistance = 5f;
             List<Vector3> constructionNodes = new List<Vector3>();
             // Left
@@ -38,7 +38,7 @@ namespace Tests
         public void FindNextSection_PassIsNotRightDrone_ReturnPositionLeftOfOrigin()
         {
             Vector3 position = new Vector3(10f, 10f, 0f);
-            Section section = new Section(position);
+            Section section = new Section();
             float viewDistance = 5f;
             List<Vector3> constructionNodes = new List<Vector3>();
             // Left
@@ -55,7 +55,7 @@ namespace Tests
         public void FindNextSection_PassGoalEqualsPosition_ReturnSamePosition()
         {
             Vector3 position = new Vector3(20f, 10f, 0f);
-            Section section = new Section(position);
+            Section section = new Section();
             float viewDistance = 5f;
             List<Vector3> constructionNodes = new List<Vector3>();
             // Left

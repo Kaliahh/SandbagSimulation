@@ -13,7 +13,7 @@ namespace SandbagSimulation
         public float MinimumSeperation { get; set; }
 
         // Constructor
-        public Section(Vector3 location) { CurrentSection = location; }
+        //public Section(Vector3 location) { CurrentSection = location; }
 
         // Public Methods
 
@@ -43,7 +43,7 @@ namespace SandbagSimulation
                 Vector3 current = q.Dequeue();
                 if (!visited.Contains(current) && IsWithinBorder(current, constructionNodes) && Vector3.Distance(position, current) <= viewDistance)
                 {
-                    Debug.Log("Current: " + current.ToString());
+                    //Debug.Log("Current: " + current.ToString());
                     // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
                     if (IsEmpty(position, current))
                     {
@@ -51,14 +51,14 @@ namespace SandbagSimulation
                         Vector3 below1 = new Vector3(current.x + sandbag.Length / 2, current.y - sandbag.Height, current.z);
                         Vector3 below2 = new Vector3(current.x - sandbag.Length / 2, current.y - sandbag.Height, current.z);
                         // Hvis jorden ikke er ved y = 0, så skal jordens starthøjde lægges til sandbag.height i udtrykket (Current.y er højden af sandsækkens midte)
-                        Debug.Log("Below: " + below1.ToString() + " " + below2.ToString());
-                        Debug.Log(IsInView(position, below1, viewDistance, sandbag.Height).ToString() + " " + IsInView(position, below2, viewDistance, sandbag.Height).ToString());
+                        //Debug.Log("Below: " + below1.ToString() + " " + below2.ToString());
+                        //Debug.Log(IsInView(position, below1, viewDistance, sandbag.Height).ToString() + " " + IsInView(position, below2, viewDistance, sandbag.Height).ToString());
                         if (IsInView(position, below1, viewDistance, sandbag.Height) && IsInView(position, below2, viewDistance, sandbag.Height) || current.y < sandbag.Height)
                         {
-                            Debug.Log("Adding: " + current.ToString());
+                            //Debug.Log("Adding: " + current.ToString());
                             places.Add(current);
                         }
-                        // Tilføj placeringer under, hvis de kan ses (Afgør om det egentlig er sandsække, så den ikke går under jorden) (Dur ikke hvis jorden har collider?)
+                        // Tilføj placeringer under, hvis de kan ses 
                         if (IsInView(position, below1, viewDistance, sandbag.Height) && below1.y > 0)
                             q.Enqueue(below1);
                         if (IsInView(position, below2, viewDistance, sandbag.Height) && below2.y > 0)
@@ -127,26 +127,26 @@ namespace SandbagSimulation
         {
             // Sorter efter x-værdi
             Vector3[] sortedVectors = constructionNodes.OrderBy(v => v.x).ToArray<Vector3>();
-
+            Vector3 firstNode = constructionNodes[0];
+            Vector3 lastNode = constructionNodes[constructionNodes.Count - 1];
             Vector3 nextSection;
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
             if (isRightDrone)
                 if (CurrentSection.Equals(sortedVectors[sortedVectors.Length - 1]))
                     return CurrentSection;
                 else
-                    nextSection = position + ((constructionNodes[constructionNodes.Count - 1] - position).normalized * viewDistance);
+                    nextSection = position + ((lastNode - position).normalized * viewDistance);
             else
                 if (CurrentSection.Equals(sortedVectors[0]))
                 return CurrentSection;
             else
-                nextSection = position + ((constructionNodes[0] - position).normalized * viewDistance);
+                nextSection = position + ((firstNode - position).normalized * viewDistance);
 
             // Behold den samme højde
             nextSection.y = position.y;
-            // Position can be assumed to be the same as CurrentSection. Mulighed for at fjerne en parameter
-
-            // Alternativ måde at skrive det på, en linje, men ikke ligefrem køn at se på, ikke tilpasset nested if-else
-            // return ((isRightDrone ? constructionNodes[constructionNodes.Count - 1] : constructionNodes[0]) - position).normalized * viewDistance;
+            // behold samme z-koordinat (Skal ændres hvis der bliver mulighed for brede diger)
+            if (firstNode.z == lastNode.z)
+                nextSection.z = firstNode.z;
 
             return nextSection;
         }
