@@ -28,8 +28,9 @@ namespace Tests
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
             // Right
             constructionNodes.Add(new Vector3(20f, 0f, 0f));
+            Blueprint blueprint = new Blueprint(constructionNodes, 10);
 
-            Vector3 result = section.FindNextSection(viewDistance, position, true, constructionNodes);
+            Vector3 result = section.FindNextSection(viewDistance, position, true, blueprint);
             //Assert.AreEqual(result, new Vector3(15f, 10f, 0f));
             Assert.Greater(result.x, position.x);
         }
@@ -45,8 +46,9 @@ namespace Tests
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
             // Right
             constructionNodes.Add(new Vector3(20f, 0f, 0f));
+            Blueprint blueprint = new Blueprint(constructionNodes, 10);
 
-            Vector3 result = section.FindNextSection(viewDistance, position, false, constructionNodes);
+            Vector3 result = section.FindNextSection(viewDistance, position, false, blueprint);
             //Assert.AreEqual(result, new Vector3(15f, 10f, 0f));
             Assert.Greater(position.x, result.x);
         }
@@ -62,8 +64,9 @@ namespace Tests
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
             // Right
             constructionNodes.Add(new Vector3(20f, 0f, 0f));
+            Blueprint blueprint = new Blueprint(constructionNodes, 10);
 
-            Vector3 result = section.FindNextSection(viewDistance, position, true, constructionNodes);
+            Vector3 result = section.FindNextSection(viewDistance, position, true, blueprint);
             //Assert.AreEqual(result, new Vector3(15f, 10f, 0f));
             Assert.AreEqual(position.x, result.x);
         }

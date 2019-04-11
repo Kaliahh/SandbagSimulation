@@ -17,10 +17,11 @@ namespace Tests
         }
 
         [Test]
-        public void FindBestPlace_PassPositionToConstructor_SetProperyCorrectly()
+        public void FindBestPlace_SetProperty_SetProperyCorrectly()
         {
             Vector3 testVector = new Vector3(10, 10, 10);
             Section section = new Section();
+            section.CurrentSection = testVector;
             Assert.AreEqual(testVector, section.CurrentSection);
         }
 
