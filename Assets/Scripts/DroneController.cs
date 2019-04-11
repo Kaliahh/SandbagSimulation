@@ -50,6 +50,8 @@ namespace SandbagSimulation
 
             MySection.CurrentSection = Vector3.zero;
             TargetPoint = Vector3.zero;
+
+            this.transform.Rotate(90, 0, 0);
         }
 
         private void Update()

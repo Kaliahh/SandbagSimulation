@@ -28,6 +28,7 @@ namespace Tests
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
             // Right
             constructionNodes.Add(new Vector3(20f, 0f, 0f));
+            Blueprint blueprint = new Blueprint(constructionNodes, 10);
 
             // Lav sandsæk lige under dronen
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -36,7 +37,7 @@ namespace Tests
             cube1.AddComponent(typeof(SphereCollider));
             cube1.AddComponent(typeof(SandbagController));
 
-            Vector3[] result = section.FindPlace(viewDistance, position, constructionNodes);
+            Vector3[] result = section.FindPlace(viewDistance, position, blueprint);
             //Assert.AreEqual(result, new Vector3(15f, 10f, 0f));
             Assert.IsEmpty(result);
         }

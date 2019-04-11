@@ -48,7 +48,6 @@ MonoBehaviour:
   SandBag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
   DroneSpeed: 5
   NumberOfDrones: 6
-  NumberOfSandbags: 10
   SandbagSpawnPoint: {x: 3, y: 1, z: 0}
   DroneSpawnPoint: {x: 0, y: 3, z: 0}
   Node1: {x: 10, y: 3, z: 40}
