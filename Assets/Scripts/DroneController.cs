@@ -13,7 +13,6 @@ namespace SandbagSimulation
         bool IsFirstSandbagPlaced;
 
         int Step;
-        int NumberOfSteps;
 
         float ViewDistance;
         float SafeHeight;
@@ -38,6 +37,7 @@ namespace SandbagSimulation
         Vector3 SandbagTargetPoint;
 
         Vector3 AboveSection;
+        Vector3 AboveTarget;
 
         Action<Vector3> FlyTo;
 
@@ -53,7 +53,6 @@ namespace SandbagSimulation
             SafeHeight = 2f;
 
             Step = 0;
-            NumberOfSteps = 60;
 
             MySandbag = null;
             MySection = new Section();
@@ -200,41 +199,76 @@ namespace SandbagSimulation
                 case 0:
                     FlyTo(SandbagPickUpLocation);
                     if (InVicinityOf(SandbagPickUpLocation))
-                        Stepper();
+                        Step++;
                     break;
 
                 case 1:
                     LocateNearestSandbag();
                     if (LocatedSandbag != null)
-                        Stepper();
-                    // TODO: Gå til et senere step med else
+                        Step++;
+                    else
+                        Step = 0;
                     break;
 
                 case 2:
                     FlyToSandbag(LocatedSandbag.transform.position);
                     if (InVicinityOf(LocatedSandbag.transform.position))
-                        Stepper();
+                        Step++;
                     break;
 
                 case 3:
                     PickUpSandbag();
                     if (MySandbag != null)
                     {
-                        Stepper();
+                        Step++;
 
-                        if (MySection.CurrentSection != Vector3.zero)
+                        if (MySection.CurrentSection == Vector3.zero)
                         {
                             MySection.CurrentSection = BlueprintCentre;
+                            AboveSection = CalculateAbovePoint(MySection.CurrentSection);
                         }
-                            
                     }
                     // TODO: Måske else?
+                    break;
 
+                case 4: //TODO: Skal deles op i flere steps. Spring FindFirstSandbagPlace over hvis det ikke er nødvendigt
+                    FlyTo(AboveSection);
+                    if (InVicinityOf(AboveSection))
+                    {
+                        Step++;
+                        // TODO: De kommer alle ind i den her lige nu
+                        if (HasBuildingBegun == false /* && IsCurrentSectionCenter() == true */)
+                            FindFirstSandbagPlace();
+
+                        else
+                            FindNextSandbagPlace();
+                        
+                    }
 
                     break;
 
-                case 4:
-                    
+                case 5:
+                    FlyTo(AboveTarget);
+                    if (InVicinityOf(AboveTarget))
+                        Step++;
+                    break;
+
+                case 6:
+                    FlyTo(DroneTargetPoint);
+                    if (InVicinityOf(DroneTargetPoint))
+                        Step++;
+                    break;
+
+                case 7:
+                    PlaceSandbag();
+                    Step++;
+                    break;
+
+                case 8:
+                    FlyTo(AboveTarget);
+                    if (InVicinityOf(AboveTarget))
+                        Step = 0;
+                    break;
 
                 default:
                     Step = 0;
@@ -242,19 +276,50 @@ namespace SandbagSimulation
             }
         }
 
-        private void Stepper()
+        private void FindNextSandbagPlace()
         {
-            Step = (Step + 1) % NumberOfSteps; 
+            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
+
+            if (PossiblePlaces == null)
+            {
+                MySection.CurrentSection = MySection.FindNextSection(ViewDistance, this.transform.position, IsRightDrone, MyBlueprint);
+                AboveSection = CalculateAbovePoint(MySection.CurrentSection);
+            }
+            else
+            {
+                SandbagTargetPoint = MySection.FindBestPlace(PossiblePlaces, this.transform.position, ViewDistance);
+                DroneTargetPoint = new Vector3(SandbagTargetPoint.x, SandbagTargetPoint.y + DroneSandbagDistance, SandbagTargetPoint.z);
+                AboveTarget = CalculateAbovePoint(SandbagTargetPoint);
+            }
+        }
+
+        private void FindFirstSandbagPlace()
+        {
+            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
+
+            if (PossiblePlaces == null)
+            {
+                // TODO: ret 0.5 til sandsæks højde * 0.5
+                SandbagTargetPoint = new Vector3(BlueprintCentre.x, 0.5f, BlueprintCentre.z);
+                DroneTargetPoint = new Vector3(SandbagTargetPoint.x, SandbagTargetPoint.y + DroneSandbagDistance, SandbagTargetPoint.z);
+                AboveTarget = CalculateAbovePoint(SandbagTargetPoint);
+                HasBuildingBegun = true;
+            }
+
+            else if (PossiblePlaces != null)
+            {
+                HasBuildingBegun = true;
+            }
         }
 
         private bool IsCurrentSectionCenter()
         {
-            return MySection.CurrentSection == CalculateAbovePoint(BlueprintCentre);
+            return MySection.CurrentSection == BlueprintCentre;
         }
 
         private Vector3 CalculateAbovePoint(Vector3 point)
         {
-            return new Vector3(point.x, MyBlueprint.DikeHeight + SafeHeight, point.z);
+            return new Vector3(point.x, 0.5f * MyBlueprint.DikeHeight + SafeHeight, point.z);
         }
 
         private bool InVicinityOf(Vector3 position)
