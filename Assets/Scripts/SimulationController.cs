@@ -18,12 +18,12 @@ namespace SandbagSimulation
         // public int NumberOfSandbags;
         // TODO: Tilføj DroneViewDistance og en method der kan sætte den hos dronerne
 
-        public Vector3 SandbagSpawnPoint; //Sandsæk genereringspunkt
-        public Vector3 DroneSpawnPoint; //Drone genereringspunkt
+        public Vector3 SandbagSpawnPoint; // Sandsæk genereringspunkt
+        public Vector3 DroneSpawnPoint;   // Drone genereringspunkt
 
         // Variable for diget (Lige nu kun 2 nodes)
-        public Vector3 Node1; //Starten af diget
-        public Vector3 Node2; //Enden af diget
+        public Vector3 Node2; // Enden af diget
+        public Vector3 Node1; // Starten af diget
         public int Height;
 
         void Start()
@@ -91,7 +91,7 @@ namespace SandbagSimulation
             foreach (GameObject drone in Drones)
             {
                 // TODO: Virker ikke
-                // drone.GetComponent<DroneController>().SetSpeed(DroneSpeed);
+                drone.GetComponent<DroneController>().SetSpeed(DroneSpeed);
             }
         }
 
