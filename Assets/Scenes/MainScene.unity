@@ -333,12 +333,12 @@ PrefabInstance:
     - target: {fileID: 5131902707113105677, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: Node1.x
-      value: 50
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5131902707113105677, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: Node2.x
-      value: 50
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5131902707113105677, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
