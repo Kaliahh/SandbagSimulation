@@ -193,7 +193,7 @@ namespace SandbagSimulation
         {
             // Bruger raycast til at afgøre om der er en sandsæk i positionen
             //return !Physics.Linecast(dronePosition, target);
-            return !Physics.Raycast(dronePosition, target - dronePosition, Vector3.Distance(dronePosition, target));
+            return Physics.Raycast(dronePosition, target - dronePosition, Vector3.Distance(dronePosition, target));
         }
 
         /*
