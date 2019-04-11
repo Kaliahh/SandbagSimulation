@@ -117,21 +117,21 @@ namespace SandbagSimulation
          * 
          * Return:
          */
-        public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, List<Vector3> constructionNodes)
+        public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, Blueprint blueprint)
         {
             // Sorter efter x-værdi
-            Vector3[] sortedVectors = constructionNodes.OrderBy(v => v.x).ToArray<Vector3>();     // Måske unødvendig
-            Vector3 firstNode = constructionNodes[0];
-            Vector3 lastNode = constructionNodes[constructionNodes.Count - 1];
+            //Vector3[] sortedVectors = blueprint.ConstructionNodes.OrderBy(v => v.x).ToArray<Vector3>();     // Måske unødvendig
+            Vector3 firstNode = blueprint.ConstructionNodes[0];
+            Vector3 lastNode = blueprint.ConstructionNodes[blueprint.ConstructionNodes.Count - 1];
             Vector3 nextSection;
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
             if (isRightDrone)
-                if (CurrentSection.Equals(sortedVectors[sortedVectors.Length - 1]))
+                if (CurrentSection.Equals(lastNode))
                     return CurrentSection;
                 else
                     nextSection = position + ((lastNode - position).normalized * viewDistance);
             else
-                if (CurrentSection.Equals(sortedVectors[0]))
+                if (CurrentSection.Equals(firstNode))
                 return CurrentSection;
             else
                 nextSection = position + ((firstNode - position).normalized * viewDistance);
