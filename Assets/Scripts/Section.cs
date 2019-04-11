@@ -44,16 +44,16 @@ namespace SandbagSimulation
                 if (!visited.Contains(current) && IsWithinBorder(current, blueprint, sandbag.Height) && Vector3.Distance(position, current) <= viewDistance)
                 {
                     // Centrum af de sandsække der er til højre og venstre i lagene over og under
-                    Vector3 rightMiddle = Vector3.Lerp(new Vector3(current.x + sandbag.Length, current.y, current.z), current, 0.5f);
-                    Vector3 leftMiddle = Vector3.Lerp(new Vector3(current.x - sandbag.Length, current.y, current.z), current, 0.5f);
+                    Vector3 rightMiddle = Vector3.Lerp(new Vector3(current.x, current.y, current.z + sandbag.Length), current, 0.5f);
+                    Vector3 leftMiddle = Vector3.Lerp(new Vector3(current.x, current.y, current.z - sandbag.Length), current, 0.5f);
                     //Debug.Log("Current: " + current.ToString());
                     // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
                     if (IsEmpty(position, current))
                     {
                         // Tilføj kun hvis der er sække eller jord under dem (Midten af sækken er lavere end højden af en enkelt sandsæk)
 
-                        Vector3 below1 = new Vector3(rightMiddle.x, current.y - sandbag.Height, current.z);
-                        Vector3 below2 = new Vector3(leftMiddle.x, current.y - sandbag.Height, current.z);
+                        Vector3 below1 = new Vector3(current.x, current.y - sandbag.Height, rightMiddle.z);
+                        Vector3 below2 = new Vector3(current.x, current.y - sandbag.Height, leftMiddle.z);
                         // Hvis jorden ikke er ved y = 0, så skal jordens starthøjde lægges til sandbag.height i udtrykket (Current.y er højden af sandsækkens midte)
                         //Debug.Log("Below: " + below1.ToString() + " " + below2.ToString());
                         //Debug.Log(IsInView(position, below1, viewDistance, sandbag.Height).ToString() + " " + IsInView(position, below2, viewDistance, sandbag.Height).ToString());
@@ -73,14 +73,14 @@ namespace SandbagSimulation
                     {
                         // Enqueue omkringliggende sandsække positioner (Udregning burde gøres mere sikker, da der kan være regnefelj/approximationer)
                         // Ved siden af, x-akse
-                        q.Enqueue(new Vector3(current.x + sandbag.Length, current.y, current.z));
-                        q.Enqueue(new Vector3(current.x - sandbag.Length, current.y, current.z));
+                        q.Enqueue(new Vector3(current.x, current.y, current.z + sandbag.Length));
+                        q.Enqueue(new Vector3(current.x, current.y, current.z - sandbag.Length));
                         // Ved siden af, z-akse
                         //q.Enqueue(new Vector3(current.x, current.y, current.z + sandbag.Width));
                         //q.Enqueue(new Vector3(current.x, current.y, current.z - sandbag.Width));
                         // Over - Overvej at bruge Vector3.lerp
-                        q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, current.z));
-                        q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, current.z));
+                        q.Enqueue(new Vector3(current.x, current.y + sandbag.Height, rightMiddle.z));
+                        q.Enqueue(new Vector3(current.x, current.y + sandbag.Height, leftMiddle.z));
 
                     }
                     visited.Add(current);
@@ -139,8 +139,8 @@ namespace SandbagSimulation
             // Behold den samme højde
             nextSection.y = position.y;
             // behold samme z-koordinat (Skal ændres hvis der bliver mulighed for brede diger)
-            if (firstNode.z == lastNode.z)
-                nextSection.z = firstNode.z;
+            if (firstNode.x == lastNode.x)
+                nextSection.x = firstNode.x;
 
             return nextSection;
         }
@@ -233,14 +233,13 @@ namespace SandbagSimulation
          */
         private bool IsWithinBorder(Vector3 position, Blueprint blueprint, float sandbagHeight)
         {
-            Vector3[] sortedVectors = blueprint.ConstructionNodes.OrderBy(v => v.x).ToArray<Vector3>();     // Måske unødvendig
+            Vector3[] sortedVectors = blueprint.ConstructionNodes.OrderBy(v => v.z).ToArray<Vector3>();     // Måske unødvendig
             if (position.y + sandbagHeight >= blueprint.DikeHeight * sandbagHeight || position.y >= blueprint.DikeHeight * sandbagHeight)
             {
-                return position.x > sortedVectors[0].x && position.x < sortedVectors[sortedVectors.Length - 1].x ? true : false;
+                return position.z > sortedVectors[0].z && position.z < sortedVectors[sortedVectors.Length - 1].z ? true : false;
             }
             else
                 return true;
-            //return position.x > sortedVectors[0].x && position.x < sortedVectors[sortedVectors.Length - 1].x && position.y <= blueprint.DikeHeight * sandbagHeight ? true : false;
         }
 
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance)
