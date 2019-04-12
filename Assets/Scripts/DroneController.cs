@@ -10,7 +10,6 @@ namespace SandbagSimulation
         bool IsFinishedBuilding;
         bool IsRightDrone;
         bool HasBuildingBegun;
-        bool IsFirstSandbagPlaced;
 
         int Step;
 
@@ -42,7 +41,6 @@ namespace SandbagSimulation
         {
             IsFinishedBuilding = false;
             HasBuildingBegun = false;
-            IsFirstSandbagPlaced = false;
             IsRightDrone = (UnityEngine.Random.Range(0, 2) == 1) ? true : false; // Halvdelen af alle droner flyver til høre, resten til venstre
 
             ViewDistance = 50f;
@@ -165,18 +163,41 @@ namespace SandbagSimulation
             if (InVicinityOf(AboveSection))
             {
                 Step++;
+
                 FindSandbagPlace();
             }
         }
 
         private void FindSandbagPlace()
         {
-            // TODO: De kommer alle ind i den her lige nu
-            if (HasBuildingBegun == false /* && IsCurrentSectionCenter() == true */)
+            if (HasBuildingBegun == false && IsFirstSandbagPlaced() == false)
+            {
                 FindFirstSandbagPlace();
+            }
+
+            else if (HasBuildingBegun == false && IsFirstSandbagPlaced() == true)
+            {
+                HasBuildingBegun = true;
+                FindNextSandbagPlace();
+            }
 
             else
+            {
                 FindNextSandbagPlace();
+            }
+        }
+
+        private bool IsFirstSandbagPlaced()
+        {
+            GameObject placedSandbag = GameObject.FindGameObjectWithTag("PlacedSandbag");
+
+            if (placedSandbag != null && Vector3.Distance(this.transform.position, placedSandbag.transform.position) <= ViewDistance)
+            {
+                return true;
+            }
+
+            else
+                return false;
         }
 
         private void FlyToAboveTarget()
@@ -299,6 +320,7 @@ namespace SandbagSimulation
         {
             MySandbag = LocatedSandbag;
             MySandbag.tag = "PickedUpSandbag";
+            MySandbag.layer = 2;
 
             MySandbag.GetComponent<Rigidbody>().isKinematic = true;
             LocatedSandbag = null;
@@ -308,6 +330,7 @@ namespace SandbagSimulation
         public void PlaceSandbag()
         {
             MySandbag.tag = "PlacedSandbag";
+            MySandbag.layer = 0;
 
             // MySandbag.GetComponent<SandbagController>().rb.velocity = Vector3.zero;
             RotateSandbag(this.transform.position);
