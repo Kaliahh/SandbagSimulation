@@ -7,11 +7,12 @@ namespace SandbagSimulation
 {
     public class UI : MonoBehaviour
     {
+        private Text Time; //Tid
+        private Text SandbagsLeft; //Amount of sandbags left before simulation is ended
 
         //UI sider
         private GameObject StartMenu; //Startmenu
         private GameObject RunTime; //UI når simulationen kører
-        
 
         void Start()
         {
@@ -20,9 +21,10 @@ namespace SandbagSimulation
             StartMenu.SetActive(true);
             RunTime.SetActive(false);
         }
-        public void ChangeTime(float value) //Metode til at opdatere køretiden som vises på skærmen over tid
+        public void ChangeTime(float seconds) //Metode til at opdatere køretiden som vises på skærmen over tid
         {
-            RunTime.transform.Find("Time").GetComponent<Text>().text = "Time: " + value; //Sætter ui teksten
+            int Seconds = ((int)seconds);
+           RunTime.transform.Find("Time").GetComponent<Text>().text = "Time: " + Seconds; //Sætter ui teksten
         }
 
         public void SimulationStarted()
