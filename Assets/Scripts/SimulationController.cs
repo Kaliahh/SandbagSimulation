@@ -26,9 +26,25 @@ namespace SandbagSimulation
         public Vector3 Node1; // Starten af diget
         public int Height;
 
+        //UI
+        private GameObject UI; //Reference til UI
+        private float RunTimeSeconds; //Tid simulationen har været i gang
+
+        //Simulation tilstand
+        public bool SimulationStarted;
+
         void Start()
         {
-            SetupSimulation();
+            UI = GameObject.Find("UI"); //Finder UI
+            SimulationStarted = false; //Fortæller at simulationen ikke må starte fordi brugeren skal sætte den i gang
+        }
+
+        void Update()
+        {
+            if (SimulationStarted == true)
+            {
+                UpdateUITime();
+            }
         }
 
         public void SetupSimulation()
@@ -104,6 +120,36 @@ namespace SandbagSimulation
         //        Instantiate(SandBag, NewPos, Quaternion.identity);
         //    }
         //}
+
+
+
+
+
+
+
+
+
+
+
+        //UI Methods
+        public void UpdateUITime() //Opdaterer køretiden af simulationen ud på UI
+        {
+            RunTimeSeconds += Time.deltaTime; //Adderer tiden der er gået mellem sidste frame og lægger tallet til den totale køretid
+            UI.GetComponent<UI>().ChangeTime(RunTimeSeconds); //Skiver køretiden ud på UI
+        }
+
+        public void Quit() //Lukker applicationen
+        {
+            Debug.Log("Quit");
+            Application.Quit();
+        }
+
+        public void StartSimulation() //Starter simulationen
+        {
+            SimulationStarted = true;
+            UI.GetComponent<UI>().SimulationStarted();
+            SetupSimulation();
+        }
     }
 }
 
