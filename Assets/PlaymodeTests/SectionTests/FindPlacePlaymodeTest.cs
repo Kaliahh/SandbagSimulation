@@ -64,7 +64,7 @@ namespace Tests
             yield return null;
 
             Vector3[] result = section.FindPlace(viewDistance, position, blueprint);
-            Assert.AreEqual(result.Length, 2);
+            Assert.AreEqual(2, result.Length);
         }
 
         [UnityTest]
@@ -113,7 +113,7 @@ namespace Tests
             yield return null;
 
             Vector3[] result = section.FindPlace(viewDistance, position, blueprint);
-            Assert.AreEqual(result.Length, 2);
+            Assert.AreEqual(2, result.Length);
         }
 
         [UnityTest]
@@ -138,12 +138,12 @@ namespace Tests
 
             yield return null;
 
-            float lenght = cube1.GetComponent<SandbagController>().Length;
+            float length = cube1.GetComponent<SandbagController>().Length;
 
             // Lav sandsæk uden for viewdistance
             GameObject cube2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube2.tag = "PlacedSandbag";
-            cube2.transform.position = new Vector3(10f + lenght, 0f, 0f);
+            cube2.transform.position = new Vector3(10f + 1.5f, 0f, 0f);
             cube2.AddComponent(typeof(SphereCollider));
             cube2.AddComponent(typeof(SandbagController));
 
@@ -152,6 +152,8 @@ namespace Tests
             yield return null;
 
             Vector3[] result = section.FindPlace(viewDistance, position, blueprint);
+            foreach(Vector3 res in result)
+                Debug.Log(res.ToString());
             Assert.AreEqual(3, result.Length);
         }
 
@@ -178,7 +180,9 @@ namespace Tests
             yield return null;
 
             Vector3[] result = section.FindPlace(viewDistance, position, blueprint);
-            Assert.AreEqual(result.Length, 2);
+            foreach (Vector3 place in result)
+                Debug.Log(place.ToString());
+            Assert.AreEqual(2, result.Length);
         }
 
         [UnityTest]
@@ -236,7 +240,7 @@ namespace Tests
             }
 
 
-            Assert.AreEqual(3, result.Length);
+            Assert.IsNotNull(result);
         }
     }
 }
