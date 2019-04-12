@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace SandbagSimulation
 {
+    // Styrer simulatinoen
     public class SimulationController : MonoBehaviour
     {
         // GameObject referencer
@@ -15,11 +16,11 @@ namespace SandbagSimulation
         // Variable brugeren kan ændre på
         public float DroneSpeed;
         public int NumberOfDrones;
-        // public int NumberOfSandbags;
         // TODO: Tilføj DroneViewDistance og en method der kan sætte den hos dronerne
 
-        public Vector3 SandbagSpawnPoint; // Sandsæk genereringspunkt
-        public Vector3 DroneSpawnPoint;   // Drone genereringspunkt
+        // Genereringpunkter for droner of sandsække
+        public Vector3 SandbagSpawnPoint;
+        public Vector3 DroneSpawnPoint;
 
         // Variable for diget (Lige nu kun 2 nodes)
         public Vector3 Node2; // Enden af diget
@@ -31,19 +32,19 @@ namespace SandbagSimulation
             SetupSimulation();
         }
 
+        // Sætter simulationen op
         public void SetupSimulation()
         {
-            // Object Generering
+            // Genererer objekter
             InitializeDrones();
             SetDroneSpeed();
             InitializeBlueprints();
 
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
-
-            //InitializeSandBags();
         }
 
+        // Definerer punktet for alle droner hvor de kan samle sandsække op
         private void SetDroneSandbagPickUpLocation()
         {
             Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
@@ -53,7 +54,7 @@ namespace SandbagSimulation
             }
         }
 
-        // Instansierer droner
+        // Instansierer droner i et gitter 
         private void InitializeDrones() 
         {
             float j = 0;
@@ -61,10 +62,10 @@ namespace SandbagSimulation
 
             for (int i = 0; i < NumberOfDrones; i++)
             {
+                // TODO: lav gitteret i varierende størrelse
                 if (i % 3 == 0)
-                {
                     j++;
-                }
+
                 Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x + j * 3, DroneSpawnPoint.y, DroneSpawnPoint.z + (i % 3) * 3);
 
                 Drones.Add(Instantiate(Drone, NewDroneSpawnPoint, Quaternion.identity));
@@ -90,20 +91,9 @@ namespace SandbagSimulation
         {
             foreach (GameObject drone in Drones)
             {
-                // TODO: Virker ikke
                 drone.GetComponent<DroneController>().SetSpeed(DroneSpeed);
             }
         }
-
-        // Generer sandsække
-        //private void InitializeSandBags() 
-        //{
-        //    for (int i = 0; i < NumberOfSandbags; i++)
-        //    {
-        //        Vector3 NewPos = SandbagSpawnPoint + new Vector3(2f * i, 0f, 0f); //Logik for genereringspunkt for enkelte sandsække
-        //        Instantiate(SandBag, NewPos, Quaternion.identity);
-        //    }
-        //}
     }
 }
 
