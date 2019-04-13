@@ -94,6 +94,11 @@ namespace SandbagSimulation
                 Step = 1;
             }
 
+            if (SandbagTargetPoint == new Vector3(-100f, -100f, -100f))
+            {
+                Step = 0; // TODO: Skal ikke være 0;
+            }
+
             // Dikterer rækkefølgen af handlinger dronen skal foretage. En opskrift for diget
             switch (Step)
             {
