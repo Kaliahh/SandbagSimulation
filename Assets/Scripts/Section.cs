@@ -66,8 +66,8 @@ namespace SandbagSimulation
                     {
                         if (current.y > sandbag.Height)
                         {
-                            Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z + 0.2f);
-                            Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z - 0.2f);
+                            Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z);
+                            Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z);
                             if (!IsEmpty(position, belowLeft) && !IsEmpty(position, belowRight))
                                 places.Add(current);
                         }
@@ -82,9 +82,9 @@ namespace SandbagSimulation
                             q.Enqueue(adjecent[i]);
                         // Over
                         if (!IsEmpty(position, adjecent[0]))
-                            q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, leftMiddle.z + 0.1f));
+                            q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, leftMiddle.z));
                         if (!IsEmpty(position, adjecent[1]))
-                            q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, rightMiddle.z - 0.1f));
+                            q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, rightMiddle.z));
                     }
                     // Afrunder for at minimere gentagelser grundet regnefejl
                     current.x = (float)System.Math.Round(current.x, 1);
@@ -241,9 +241,9 @@ namespace SandbagSimulation
         {
             // Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
             Vector3[] adjecent = new Vector3[2];
-            adjecent[0] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.First(), sandbag.Length + 0.25f);
+            adjecent[0] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.First(), sandbag.Length);
             adjecent[0].y = position.y;
-            adjecent[1] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.Last(), sandbag.Length + 0.25f);
+            adjecent[1] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.Last(), sandbag.Length);
             adjecent[1].y = position.y;
 
             return adjecent;
