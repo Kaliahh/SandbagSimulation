@@ -64,7 +64,7 @@ namespace SandbagSimulation
                     // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
                     if (IsEmpty(position, current))
                     {
-                        if (current.y > sandbag.Height)
+                        if (current.y >= sandbag.Height)
                         {
                             Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z);
                             Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z);
@@ -144,16 +144,19 @@ namespace SandbagSimulation
             Vector3 nextSection;
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
             if (isRightDrone)
+            {
                 if (CurrentSection.Equals(lastNode))
                     return CurrentSection;
                 else
                     nextSection = Vector3.MoveTowards(position, lastNode, viewDistance);
+            }
             else
+            {
                 if (CurrentSection.Equals(firstNode))
-                return CurrentSection;
-            else
-                nextSection = Vector3.MoveTowards(position, firstNode, viewDistance);
-
+                    return CurrentSection;
+                else
+                    nextSection = Vector3.MoveTowards(position, firstNode, viewDistance);
+            }
             // Behold den samme højde
             nextSection.y = position.y;
 
