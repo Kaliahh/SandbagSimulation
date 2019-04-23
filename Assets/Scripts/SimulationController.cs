@@ -11,12 +11,15 @@ namespace SandbagSimulation
         // GameObject referencer
         public GameObject Drone;
         public GameObject SandBag;
+
         private List<GameObject> Drones;
 
         // Variable brugeren kan ændre på
         public float DroneSpeed;
+        public float DroneViewDistance; 
         public int NumberOfDrones;
-        // TODO: Tilføj DroneViewDistance og en method der kan sætte den hos dronerne
+
+        private int NumOfFinishedDrones;
 
         // Genereringpunkter for droner of sandsække
         public Vector3 SandbagSpawnPoint;
@@ -29,7 +32,29 @@ namespace SandbagSimulation
 
         void Start()
         {
+            NumOfFinishedDrones = 0;
             SetupSimulation();
+        }
+
+        void Update()
+        {
+            if (NumOfFinishedDrones == NumberOfDrones)
+            {
+                foreach (GameObject drone in Drones)
+                {
+                    if (drone.GetComponent<DroneController>().MySandbag != null)
+                    {
+                        //drone.GetComponent<DroneController>().MySandbag.SetActive(false);
+
+                        Destroy(drone.GetComponent<DroneController>().MySandbag);
+                    }
+
+                    // drone.SetActive(false);
+                    Destroy(drone);
+                }
+
+                NumOfFinishedDrones = 0;
+            }
         }
 
         // Sætter simulationen op
@@ -38,20 +63,11 @@ namespace SandbagSimulation
             // Genererer objekter
             InitializeDrones();
             SetDroneSpeed();
+            SetDroneViewDistance();
             InitializeBlueprints();
 
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
-        }
-
-        // Definerer punktet for alle droner hvor de kan samle sandsække op
-        private void SetDroneSandbagPickUpLocation()
-        {
-            Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
-            foreach (GameObject drone in Drones)
-            {
-                drone.GetComponent<DroneController>().SetSandbagPickUpLocation(location);
-            }
         }
 
         // Instansierer droner i et gitter 
@@ -59,6 +75,8 @@ namespace SandbagSimulation
         {
             float j = 0;
             Drones = new List<GameObject>();
+
+            bool isRightDrone = true;
 
             for (int i = 0; i < NumberOfDrones; i++)
             {
@@ -69,7 +87,18 @@ namespace SandbagSimulation
                 Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x + j * 3, DroneSpawnPoint.y, DroneSpawnPoint.z + (i % 3) * 3);
 
                 Drones.Add(Instantiate(Drone, NewDroneSpawnPoint, Quaternion.identity));
+                Drones[i].GetComponent<DroneController>().IsRightDrone = isRightDrone;
+                Drones[i].GetComponent<DroneController>().FinishedBuilding += FinishedDronesCounter;
+
+                isRightDrone = !isRightDrone;
+
             }
+        }
+
+        private void FinishedDronesCounter(object sender, EventArgs e)
+        {
+            NumOfFinishedDrones++;
+            Debug.Log(NumOfFinishedDrones);
         }
 
         // Genererer blueprints og giver dem til dronerne
@@ -86,12 +115,30 @@ namespace SandbagSimulation
             }
         }
 
+        // Definerer punktet for alle droner hvor de kan samle sandsække op
+        private void SetDroneSandbagPickUpLocation()
+        {
+            Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
+            foreach (GameObject drone in Drones)
+            {
+                drone.GetComponent<DroneController>().SetSandbagPickUpLocation(location);
+            }
+        }
+
         // Sætter dronernes fart
         private void SetDroneSpeed() 
         {
             foreach (GameObject drone in Drones)
             {
                 drone.GetComponent<DroneController>().SetSpeed(DroneSpeed);
+            }
+        }
+
+        private void SetDroneViewDistance()
+        {
+            foreach (GameObject drone in Drones)
+            {
+                drone.GetComponent<DroneController>().SetViewDistance(DroneViewDistance);
             }
         }
     }
