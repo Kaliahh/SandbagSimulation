@@ -44,10 +44,16 @@ namespace SandbagSimulation
             q.Enqueue(startingBag);
             // Breadth first search
             int count = 0;
-            while (q.Count > 0 && count++ < 1000)
+            while (q.Count > 0 && count++ < 2000)
             {
                 Vector3 current = q.Dequeue();
-                if (!visited.Contains(current) && IsWithinBorder(current, blueprint, sandbag.Height) && Vector3.Distance(position, current) <= viewDistance)
+                Vector3 temp = new Vector3
+                (
+                    (float)System.Math.Round(current.x, 1),
+                    (float)System.Math.Round(current.y, 1),
+                    (float)System.Math.Round(current.z, 1)
+                );
+                if (!visited.Contains(temp) && IsWithinBorder(current, blueprint, sandbag.Height) && Vector3.Distance(position, current) <= viewDistance)
                 {
                     Vector3[] adjecent = FindAdjecent(current, blueprint, sandbag);
 
@@ -58,31 +64,47 @@ namespace SandbagSimulation
                     // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
                     if (IsEmpty(position, current))
                     {
-                        // Tilføj kun hvis der er sække eller jord under dem (Midten af sækken er lavere end højden af en enkelt sandsæk)
-                        Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z);
-                        Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z);
-                        bool belowLeftInView = IsInView(position, belowLeft, viewDistance, sandbag.Height);
-                        bool belowRightInView = IsInView(position, belowRight, viewDistance, sandbag.Height);
-                        if (belowLeftInView && belowRightInView || current.y < sandbag.Height)
+                        if (current.y > sandbag.Height)
+                        {
+                            Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z + 0.2f);
+                            Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z - 0.2f);
+                            if (!IsEmpty(position, belowLeft) && !IsEmpty(position, belowRight))
+                                places.Add(current);
+                        }
+                        else
                             places.Add(current);
-                        // Tilføj placeringer under, hvis de er synlige for dronen
-                        if (belowLeftInView && belowLeft.y > 0)
-                            q.Enqueue(belowLeft);
-                        if (belowRightInView && belowRight.y > 0)
-                            q.Enqueue(belowRight);
                     }
                     else
                     {
                         // Enqueue omkringliggende sandsække positioner
+                        // Ved siden af
                         for (int i = 0; i < adjecent.Length; i++)
                             q.Enqueue(adjecent[i]);
                         // Over
-                        q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, leftMiddle.z));
-                        q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, rightMiddle.z));
+                        if (!IsEmpty(position, adjecent[0]))
+                            q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, leftMiddle.z + 0.1f));
+                        if (!IsEmpty(position, adjecent[1]))
+                            q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, rightMiddle.z - 0.1f));
                     }
+                    // Afrunder for at minimere gentagelser grundet regnefejl
+                    current.x = (float)System.Math.Round(current.x, 1);
+                    current.y = (float)System.Math.Round(current.y, 1);
+                    current.z = (float)System.Math.Round(current.z, 1);
                     visited.Add(current);
                 }
             }
+            /*
+            // Skriv de besøgte positioner til en fil, for debugging.
+            using (System.IO.StreamWriter file =
+                new System.IO.StreamWriter(@"C:\Users\jakob\Desktop\log.txt"))
+            {
+                foreach (Vector3 item in visited)
+                {
+                    file.WriteLine(item.ToString());
+                }
+                file.WriteLine("Done!");
+            }
+            */
             return places.ToArray();
         }
 
@@ -155,12 +177,19 @@ namespace SandbagSimulation
          * Parameters: Vector3 position of the drone, Vector3 position to evaluate.
          * 
          * Return: Bool whether or not the target position is empty.
+         * 
+         * Vigtigt at sandsække med tagget "PickedUpSandbag" sættes i lag 2 der ignorer raycast, for at undgå at blokerer dronens syn
          */
         private bool IsEmpty(Vector3 dronePosition, Vector3 target)
         {
-            // Dronen flyver rundt med en sandsæk (Collider!) lige under sig, hver gang denne funktion bliver kaldt
-            // Bruger raycast til at afgøre om der er en sandsæk i positionen
-            //return !Physics.Raycast(dronePosition, target - dronePosition, Vector3.Distance(dronePosition, target));
+            /* linjer til debugging
+            // Tegner blå linjer hvis position er tom, og en rød linje hvis den ikke er tom.
+            if(Physics.Linecast(dronePosition, target))
+                Debug.DrawLine(dronePosition, target, Color.red, 0.5f);
+            else
+                Debug.DrawLine(dronePosition, target, Color.blue, 0.5f);
+                */
+            // Bruger linecast til at afgøre om der er et objekt positionen.
             return !Physics.Linecast(dronePosition, target);
         }
 
@@ -172,7 +201,7 @@ namespace SandbagSimulation
         private bool IsInView(Vector3 dronePosition, Vector3 target, float viewDistance, float sandbagHeight)
         {
             // Check at raycast ikke finder noget lige over sandsækken
-            target = Vector3.Lerp(target, new Vector3(target.x, target.y + sandbagHeight + 0.075f, target.z), 0.5f);
+            target = Vector3.Lerp(target, new Vector3(target.x, target.y + sandbagHeight + 0.1f, target.z), 0.5f);
             float distance = Vector3.Distance(dronePosition, target);
             // True hvis der er lineOfSight og er inden for viewDistance
             //return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
@@ -212,9 +241,9 @@ namespace SandbagSimulation
         {
             // Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
             Vector3[] adjecent = new Vector3[2];
-            adjecent[0] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.First(), sandbag.Length + 0.15f);
+            adjecent[0] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.First(), sandbag.Length + 0.25f);
             adjecent[0].y = position.y;
-            adjecent[1] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.Last(), sandbag.Length + 0.15f);
+            adjecent[1] = Vector3.MoveTowards(position, blueprint.ConstructionNodes.Last(), sandbag.Length + 0.25f);
             adjecent[1].y = position.y;
 
             return adjecent;
