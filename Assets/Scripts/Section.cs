@@ -105,6 +105,12 @@ namespace SandbagSimulation
                 file.WriteLine("Done!");
             }
             */
+
+            if (places.Count == 0)
+            {
+                return null;
+            }
+
             return places.ToArray();
         }
 
