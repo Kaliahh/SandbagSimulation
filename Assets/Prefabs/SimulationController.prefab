@@ -46,12 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Drone: {fileID: 7703018631019882326, guid: b6cb62098821cd847a0240134ed6dd21, type: 3}
   SandBag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
-  DroneSpeed: 5
-  NumberOfDrones: 6
-  SandbagSpawnPoint: {x: 3, y: 1, z: 0}
-  DroneSpawnPoint: {x: 0, y: 3, z: 0}
-  Node1: {x: 10, y: 3, z: 40}
+  DroneSpeed: 10
+  DroneViewDistance: 10
+  NumberOfDrones: 8
+  SandbagSpawnPoint: {x: 0, y: 1, z: 0}
+  DroneSpawnPoint: {x: 5, y: 3, z: 0}
   Node2: {x: -10, y: 3, z: 40}
+  Node1: {x: 10, y: 3, z: 40}
   Height: 0
 --- !u!114 &3014202476018166865
 MonoBehaviour:
