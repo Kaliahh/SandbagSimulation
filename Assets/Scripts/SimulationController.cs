@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace SandbagSimulation
 {
@@ -65,15 +66,28 @@ namespace SandbagSimulation
             SetDroneSpeed();
             SetDroneViewDistance();
             InitializeBlueprints();
+            GiveDroneList();
 
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
         }
 
+        private void GiveDroneList()
+        {
+            foreach (GameObject drone in Drones)
+            {
+                List<GameObject> list = Drones
+                    .Where(p => p != drone)
+                    .ToList();
+
+                drone.GetComponent<DroneController>().SetOtherDrones(list);
+            }
+        }
+
         // Instansierer droner i et gitter 
         private void InitializeDrones() 
         {
-            float j = 0;
+            // float j = 0;
             Drones = new List<GameObject>();
 
             bool isRightDrone = true;
@@ -81,10 +95,10 @@ namespace SandbagSimulation
             for (int i = 0; i < NumberOfDrones; i++)
             {
                 // TODO: lav gitteret i varierende størrelse
-                if (i % 3 == 0)
-                    j++;
+                //if (i % 3 == 0)
+                //    j++;
 
-                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x + j * 3, DroneSpawnPoint.y, DroneSpawnPoint.z + (i % 3) * 3);
+                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x/* + j * 3*/, DroneSpawnPoint.y, DroneSpawnPoint.z + /* (i % 3) */ i * 3);
 
                 Drones.Add(Instantiate(Drone, NewDroneSpawnPoint, Quaternion.identity));
                 Drones[i].GetComponent<DroneController>().IsRightDrone = isRightDrone;

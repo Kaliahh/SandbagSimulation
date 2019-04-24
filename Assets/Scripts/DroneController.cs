@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,10 +24,11 @@ namespace SandbagSimulation
         public GameObject MySandbag { get; private set; }
         public GameObject LocatedSandbag { get; private set; }
 
+        private List<GameObject> OtherDrones; // TODO: Implementer undgåelse af andre droner
+
         public Vector3 SandbagPickUpLocation { get; private set; }
 
         public event EventHandler FinishedBuilding;
-
 
         Vector3 BlueprintCentre;
         Vector3[] PossiblePlaces;
@@ -216,13 +217,13 @@ namespace SandbagSimulation
                 else
                     Step++;
             }
-            // Step++;
         }
 
         // Flyver dronen hen til det sted den skal være, for at placere sandsækken rigtigt
         private void FlyToDroneTarget()
         {
             FlyTo(DroneTargetPoint);
+
             if (InVicinityOf(DroneTargetPoint))
                 Step++;
         }
@@ -230,6 +231,8 @@ namespace SandbagSimulation
         // Placerer den sandsæk dronen bære rundt på
         private void PlaceMySandbag()
         {
+
+
             PlaceSandbag();
             Step++;
         }
@@ -421,6 +424,9 @@ namespace SandbagSimulation
         private bool IsPlaceStillAvailable()
         {
             return !Physics.Linecast(this.transform.position, SandbagTargetPoint);
+
+            
+            //return !Physics.Linecast(this.transform.position, SandbagTargetPoint, 10) && !Physics.Linecast(this.transform.position, SandbagTargetPoint, 9);
         }
 
         #endregion
@@ -433,6 +439,8 @@ namespace SandbagSimulation
         public void SetSandbagPickUpLocation(Vector3 point) => SandbagPickUpLocation = point;
 
         public void SetViewDistance(float distance) => ViewDistance = distance;
+
+        public void SetOtherDrones(List<GameObject> list) => OtherDrones = list;
         #endregion
     }
 }

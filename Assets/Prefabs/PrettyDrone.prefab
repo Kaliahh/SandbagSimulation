@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: 5058359658988735208}
   - component: {fileID: 5058359658988735209}
   - component: {fileID: 8426632041600724918}
-  m_Layer: 0
+  - component: {fileID: 3403334914809765587}
+  m_Layer: 9
   m_Name: PrettyDrone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,4 +148,17 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.017320508, y: 0.020000005, z: 0.020000001}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &3403334914809765587
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5058359658988768331}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Radius: 0.03
   m_Center: {x: 0, y: 0, z: 0}
