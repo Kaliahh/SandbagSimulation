@@ -147,7 +147,7 @@ namespace SandbagSimulation
             Vector3 targetNode = isRightDrone ? blueprint.ConstructionNodes.Last() : blueprint.ConstructionNodes.First();
             // Samme højde som nuværende section
             targetNode.y = CurrentSection.y;
-            Vector3 nextSection;
+            
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
             if (CurrentSection.Equals(targetNode))
                return CurrentSection;

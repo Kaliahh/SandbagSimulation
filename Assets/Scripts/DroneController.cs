@@ -377,6 +377,7 @@ namespace SandbagSimulation
             MySandbag = LocatedSandbag;
             MySandbag.tag = "PickedUpSandbag";
             MySandbag.layer = 2;
+            this.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
             MySandbag.GetComponent<Rigidbody>().isKinematic = true;
             LocatedSandbag = null;
@@ -387,6 +388,7 @@ namespace SandbagSimulation
         {
             MySandbag.tag = "PlacedSandbag";
             MySandbag.layer = 0;
+            this.gameObject.layer = 2; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
             // MySandbag.GetComponent<SandbagController>().rb.velocity = Vector3.zero;
             RotateSandbag(this.transform.position);
