@@ -29,7 +29,7 @@ namespace SandbagSimulation
         // Variable for diget (Lige nu kun 2 nodes)
         public Vector3 Node2; // Enden af diget
         public Vector3 Node1; // Starten af diget
-        public int Height;
+        public int DikeHeight;
 
         void Start()
         {
@@ -72,7 +72,7 @@ namespace SandbagSimulation
             SetDroneSandbagPickUpLocation();
         }
 
-        private void GiveDroneList()
+        public void GiveDroneList()
         {
             foreach (GameObject drone in Drones)
             {
@@ -85,7 +85,7 @@ namespace SandbagSimulation
         }
 
         // Instansierer droner i et gitter 
-        private void InitializeDrones() 
+        public void InitializeDrones() 
         {
             // float j = 0;
             Drones = new List<GameObject>();
@@ -98,7 +98,7 @@ namespace SandbagSimulation
                 //if (i % 3 == 0)
                 //    j++;
 
-                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x/* + j * 3*/, DroneSpawnPoint.y, DroneSpawnPoint.z + /* (i % 3) */ i * 3);
+                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x/* + j * 3*/, DroneSpawnPoint.y, DroneSpawnPoint.z + /* (i % 3) */ i * 5);
 
                 Drones.Add(Instantiate(Drone, NewDroneSpawnPoint, Quaternion.identity));
                 Drones[i].GetComponent<DroneController>().IsRightDrone = isRightDrone;
@@ -116,11 +116,11 @@ namespace SandbagSimulation
         }
 
         // Genererer blueprints og giver dem til dronerne
-        private void InitializeBlueprints() 
+        public void InitializeBlueprints() 
         {
             // Blueprint generering
             List<Vector3> ConstructionNodes = new List<Vector3> { Node1, Node2 };
-            Blueprint blueprint = new Blueprint(ConstructionNodes, 10);
+            Blueprint blueprint = new Blueprint(ConstructionNodes, DikeHeight);
 
             // Giver en kopi af blueprintet til hver drone
             foreach (GameObject drone in Drones) 
@@ -130,7 +130,7 @@ namespace SandbagSimulation
         }
 
         // Definerer punktet for alle droner hvor de kan samle sandsække op
-        private void SetDroneSandbagPickUpLocation()
+        public void SetDroneSandbagPickUpLocation()
         {
             Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
             foreach (GameObject drone in Drones)
@@ -140,7 +140,7 @@ namespace SandbagSimulation
         }
 
         // Sætter dronernes fart
-        private void SetDroneSpeed() 
+        public void SetDroneSpeed() 
         {
             foreach (GameObject drone in Drones)
             {
@@ -148,7 +148,7 @@ namespace SandbagSimulation
             }
         }
 
-        private void SetDroneViewDistance()
+        public void SetDroneViewDistance()
         {
             foreach (GameObject drone in Drones)
             {
