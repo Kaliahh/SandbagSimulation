@@ -32,10 +32,10 @@ public class Point
     public bool Empty(Vector3 dronePosition)
     {
         // Tegner blå linjer hvis position er tom, og en rød linje hvis den ikke er tom.
-        if (Physics.Linecast(dronePosition, Position))
-            Debug.DrawLine(dronePosition, Position, Color.red, 0.75f);
-        else
-            Debug.DrawLine(dronePosition, Position, Color.blue, 0.75f);
+        //if (Physics.Linecast(dronePosition, Position))
+        //    Debug.DrawLine(dronePosition, Position, Color.red, 0.75f);
+        //else
+        //    Debug.DrawLine(dronePosition, Position, Color.blue, 0.75f);
 
         // Bruger linecast til at afgøre om der er et objekt positionen.
         //Collider[] intersecting = Physics.OverlapSphere(Position, 0.01f);
