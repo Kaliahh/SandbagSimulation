@@ -49,7 +49,7 @@ namespace SandbagSimulation {
         private Vector3 FindMiddleOfDike()
         {
             //https://www.purplemath.com/modules/midpoint.htm midpoint formel
-            Blueprint blueprint = GetComponent<SimulationController>().blueprint;
+            Blueprint blueprint = GetComponent<SimulationController>().Blueprint;
             Vector3 result;
 
             //Finder midten af diget ud fra alle punkter
@@ -78,7 +78,7 @@ namespace SandbagSimulation {
         {
             //Kameraet bliver placeret ved sandsækkes genereringspunkt
             Vector3 result = GetComponent<SandbagSpawner>().SpawnPoint;
-            result.y = GetComponent<SimulationController>().blueprint.DikeHeight / 2;
+            result.y = GetComponent<SimulationController>().Blueprint.DikeHeight / 2;
             return result;
         }
 
