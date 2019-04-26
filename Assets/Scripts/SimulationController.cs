@@ -30,7 +30,7 @@ namespace SandbagSimulation
         public Vector3 Node2; // Enden af diget
         public Vector3 Node1; // Starten af diget
         public int DikeHeight;
-        public Blueprint blueprint;
+        public Blueprint Blueprint;
         void Start()
         {
             NumOfFinishedDrones = 0;
@@ -120,12 +120,12 @@ namespace SandbagSimulation
         {
             // Blueprint generering
             List<Vector3> ConstructionNodes = new List<Vector3> { Node1, Node2 };
-            blueprint = new Blueprint(ConstructionNodes, DikeHeight);
+            Blueprint = new Blueprint(ConstructionNodes, DikeHeight);
 
             // Giver en kopi af blueprintet til hver drone
             foreach (GameObject drone in Drones) 
             {
-                drone.GetComponent<DroneController>().SetBlueprint(blueprint);
+                drone.GetComponent<DroneController>().SetBlueprint(Blueprint);
             }
         }
 
