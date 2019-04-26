@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 5058359658985738315}
   - component: {fileID: 5058359658986836619}
   - component: {fileID: 5058359658988735214}
-  - component: {fileID: 5058359658988735215}
   - component: {fileID: 5058359658988735208}
   - component: {fileID: 5058359658988735209}
+  - component: {fileID: 7237551316120336151}
   - component: {fileID: 8426632041600724918}
   - component: {fileID: 3403334914809765587}
   m_Layer: 9
@@ -97,20 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270218e6f3459e6438e1bdac769e15b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRightDrone: 0
---- !u!114 &5058359658988735215
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5058359658988768331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d147a9fdc327eb945a92b85a6d96760d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 10
+  IsFinishedBuilding: 0
 --- !u!114 &5058359658988735208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,6 +123,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Factor: 0.7
+--- !u!114 &7237551316120336151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5058359658988768331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f95abb84278300b4899d767ba64d1d1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 5
+  OtherDrones: []
 --- !u!65 &8426632041600724918
 BoxCollider:
   m_ObjectHideFlags: 0
