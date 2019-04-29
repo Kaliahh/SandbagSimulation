@@ -17,8 +17,6 @@ namespace SandbagSimulation
         // Flytter GameObject et Step mod Vector3 target i løbet af en enkelt frame.
         public void FlyTo(Vector3 target)
         {
-            Step = Speed * Time.deltaTime;
-
             //if (IsPathBlocked(target) == true)
             //{
             //    // Flyv udenom eller bliv
@@ -29,8 +27,9 @@ namespace SandbagSimulation
             //    // this.transform.position = Vector3.MoveTowards(this.transform.position, target, Step);
             //}
 
-            this.transform.position = Vector3.MoveTowards(this.transform.position, target, Step);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, target, Speed * Time.deltaTime);
 
+            // Hvis der er blevet samlet en sandsæk op, følger den med dronen
             if (this.GetComponent<DroneController>().MySandbag != null)
             {
                 Vector3 sandbagTarget = new Vector3(this.transform.position.x, this.transform.position.y - 1f, this.transform.position.z);

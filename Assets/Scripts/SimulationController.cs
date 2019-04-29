@@ -39,6 +39,8 @@ namespace SandbagSimulation
 
         void Update()
         {
+            Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
+
             if (NumOfFinishedDrones == NumberOfDrones)
             {
                 foreach (GameObject drone in Drones)
