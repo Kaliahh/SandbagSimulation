@@ -17,9 +17,9 @@ GameObject:
   - component: {fileID: 7237551316120336151}
   - component: {fileID: 8426632041600724918}
   - component: {fileID: 3403334914809765587}
-  m_Layer: 9
+  m_Layer: 2
   m_Name: PrettyDrone
-  m_TagString: Untagged
+  m_TagString: Drone
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
