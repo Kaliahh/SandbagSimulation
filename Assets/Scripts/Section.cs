@@ -153,7 +153,8 @@ namespace SandbagSimulation
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance, float sandbagHeight)
         {
             GameObject result = GameObject.FindGameObjectsWithTag("PlacedSandbag")
-                                       .FirstOrDefault(v => Vector3.Distance(position, v.transform.position) < viewDistance && new Point(v.transform.position).InView(position, viewDistance, sandbagHeight));
+                                       .FirstOrDefault(v => Vector3.Distance(position, v.transform.position) < viewDistance &&
+                                                       new Point(v.transform.position).InView(position, viewDistance, sandbagHeight));
             return result == null ? ErrorVector : result.transform.position;
         }
     }

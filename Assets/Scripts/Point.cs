@@ -15,12 +15,17 @@ public class Point
      * 
      * Return: Bool whether or not the drone at given position access the given placementLocation.
      */
-    public bool Access(Vector3 position, float viewDistance, float minDistance)
+    public bool Access(Vector3 dronePosition, float viewDistance, float minDistance)
     {
-        // Bruger linq
-        return GameObject.FindGameObjectsWithTag("Drone")
-            // .Where(v => Vector3.Distance(position, v.transform.position) < viewDistance)
-            .FirstOrDefault(v => Vector3.Distance(v.transform.position, Position) <= minDistance) == null ? true : false;
+        // Find Droner inden for viewdistance
+        GameObject[] dronesInView = GameObject.
+            FindGameObjectsWithTag("Drone").
+            Where(v => (Vector3.Distance(v.transform.position, dronePosition) <= viewDistance)).ToArray();
+        if (dronesInView.Length < 1)
+            return true;
+        else
+            return dronesInView.
+                FirstOrDefault(v => (Vector3.Distance(v.transform.position, Position) <= minDistance)) == null ? true : false;
     }
 
     /*
@@ -52,7 +57,8 @@ public class Point
     public bool InView(Vector3 dronePosition, float viewDistance, float sandbagHeight)
     {
         // Check at raycast ikke finder noget lige over sandsækken
-        Vector3 target = Vector3.Lerp(Position, new Vector3(Position.x, Position.y + sandbagHeight + 0.1f, Position.z), 0.5f);
+        Vector3 target = Vector3.Lerp(Position, new Vector3(Position.x, Position.y + sandbagHeight + 0.4f, Position.z), 0.5f);
+        //Vector3 target = new Vector3(Position.x, Position.y + sandbagHeight, Position.z);
         float distance = Vector3.Distance(dronePosition, target);
         // True hvis der er lineOfSight og er inden for viewDistance
         //return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
