@@ -18,8 +18,9 @@ public class Point
     public bool Access(Vector3 position, float viewDistance, float minDistance)
     {
         // Bruger linq
-        return GameObject.FindGameObjectsWithTag("Drone").
-            FirstOrDefault(v => (Vector3.Distance(v.transform.position, Position) <= minDistance)) == null ? true : false;
+        return GameObject.FindGameObjectsWithTag("Drone")
+            // .Where(v => Vector3.Distance(position, v.transform.position) < viewDistance)
+            .FirstOrDefault(v => Vector3.Distance(v.transform.position, Position) <= minDistance) == null ? true : false;
     }
 
     /*
@@ -98,12 +99,20 @@ public class Point
     {
         // Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
         Point[] adjecent = new Point[2];
-        Vector3 ad1 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.First(), sandbag.Length);
-        ad1.y = Position.y;
-        Vector3 ad2 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.Last(), sandbag.Length);
-        ad2.y = Position.y;
+
+        //Vector3 ad1 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.First(), sandbag.Length);
+        Vector3 ad1 = (blueprint.ConstructionNodes.First() - blueprint.ConstructionNodes.Last()).normalized * sandbag.Length;
+        ad1 = Position + ad1;
+        //ad1.y = Position.y;
+
+        //Vector3 ad2 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.Last(), sandbag.Length);
+        Vector3 ad2 = (blueprint.ConstructionNodes.Last() - blueprint.ConstructionNodes.First()).normalized * sandbag.Length;
+        ad2 = Position + ad2;
+        //ad2.y = Position.y;
+
         adjecent[0] = new Point(ad1);
         adjecent[1] = new Point(ad2);
+
         return adjecent;
     }
 }
