@@ -17,16 +17,6 @@ namespace SandbagSimulation
         // Flytter GameObject et Step mod Vector3 target i løbet af en enkelt frame.
         public void FlyTo(Vector3 target)
         {
-            //if (IsPathBlocked(target) == true)
-            //{
-            //    // Flyv udenom eller bliv
-            //}
-
-            //else
-            //{
-            //    // this.transform.position = Vector3.MoveTowards(this.transform.position, target, Step);
-            //}
-
             Vector3 direction = target - this.transform.position;
 
             //direction += AvoidCollision(direction);

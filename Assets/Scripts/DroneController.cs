@@ -10,10 +10,10 @@ namespace SandbagSimulation
     {
         #region Fields
 
+        private bool IsHomeAndDone;
+        private bool HasBuildingBegun;
+        public bool IsRightDrone;
         public bool IsFinishedBuilding;
-        bool IsHomeAndDone;
-        public bool IsRightDrone { get; set; }
-        bool HasBuildingBegun;
 
         int Step;
 
@@ -46,12 +46,13 @@ namespace SandbagSimulation
 
         #endregion
 
-        private void Start()
+        private void Start() // TODO: Start skal ryddes lidt op, måske med kommentarer til?
         { 
             IsFinishedBuilding = false;
             HasBuildingBegun = false;
             IsHomeAndDone = false;
 
+            // TODO: Lidt nogle magiske tal
             DroneSandbagDistance = 1f;
             SafeHeight = 2f;
             Step = 0;
@@ -59,10 +60,12 @@ namespace SandbagSimulation
             MySandbag = null;
             SandbagTargetPoint = new Point(Vector3.zero);
 
+            // Setup for MySection
             MySection = new Section();
             MySection.CurrentSection = Vector3.zero;
             MySection.MinimumSeperation = 1;
 
+            // Henter FlyTo method fra DroneMover, så programmet ikke behøver at referere til en anden class
             FlyTo = this.GetComponent<DroneMover>().FlyTo;
 
             HomePosition = this.transform.position;
@@ -85,7 +88,7 @@ namespace SandbagSimulation
 
                 else
                 {
-                    this.FlyTo(HomePosition);
+                    FlyTo(HomePosition);
 
                     if (InVicinityOf(this.transform.position, HomePosition))
                     {
@@ -103,8 +106,6 @@ namespace SandbagSimulation
         // Beslutter hvad dronen skal foretage sig for hver frame
         private void MakeDecision()
         {
-            //Debug.Log(Step);
-
             // Hvis dronen har fundet en sandsæk, men den ikke er tagged med "Sandbag" sættes LocatedSandbag til null
             if (LocatedSandbag != null && LocatedSandbag.tag != "Sandbag")
             {
@@ -112,10 +113,9 @@ namespace SandbagSimulation
                 Step = 1;
             }
 
-            // Det her forudsætter at algoritmen der finder placeringer er perfekt
+            // Hvis dronen skulle få en ErrorVector, søger den igen efter et sted at placere sandsækken
             if (SandbagTargetPoint.Position == new Vector3(-100f, -100f, -100f))
             {
-                //IsFinishedBuilding = true;
                 Debug.Log("Error vector");
                 SandbagTargetPoint.Position = Vector3.zero;
                 Step = 5;
@@ -157,6 +157,7 @@ namespace SandbagSimulation
         private void FlyToSandbagPickUpLocation()
         {
             FlyTo(SandbagPickUpLocation);
+
             if (InVicinityOf(this.transform.position, SandbagPickUpLocation))
                 Step++;
         }
@@ -166,8 +167,10 @@ namespace SandbagSimulation
         private void FindSandbagLocation()
         {
             LocateNearestSandbag();
+
             if (LocatedSandbag != null)
                 Step++;
+
             else
                 Step = 0;
         }
@@ -176,6 +179,7 @@ namespace SandbagSimulation
         private void FlyToLocatedSandbag()
         {
             FlyTo(DroneTargetPoint);
+
             if (InVicinityOf(this.transform.position, DroneTargetPoint))
                 Step++;
         }
@@ -184,6 +188,7 @@ namespace SandbagSimulation
         private void PickUpLocatedSandbag()
         {
             PickUpSandbag();
+
             if (MySandbag != null)
             {
                 Step++;
@@ -202,6 +207,7 @@ namespace SandbagSimulation
         private void FlyToSection()
         {
             FlyTo(AboveSection);
+
             if (InVicinityOf(this.transform.position, AboveSection))
                 Step++;
         }
@@ -227,7 +233,6 @@ namespace SandbagSimulation
                         return;
                     }
                 }
-                
 
                 if (IsPlaceStillAvailable(this.transform.position, SandbagTargetPoint) == false)
                 {
@@ -251,8 +256,6 @@ namespace SandbagSimulation
         // Placerer den sandsæk dronen bære rundt på
         private void PlaceMySandbag()
         {
-
-
             PlaceSandbag();
             Step++;
         }
@@ -262,6 +265,7 @@ namespace SandbagSimulation
         private void ReturnToAboveTarget()
         {
             FlyTo(AboveTarget);
+
             if (InVicinityOf(this.transform.position, AboveTarget))
                 Step = 0;
         }
@@ -289,7 +293,7 @@ namespace SandbagSimulation
                 return true;
             }
 
-            else //TODO: Det her er måske farligt
+            else //TODO: Det her er potentielt farligt
                 return false;
         }
 
@@ -378,7 +382,7 @@ namespace SandbagSimulation
         }
 
         // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
-        public void LocateNearestSandbag()
+        public void LocateNearestSandbag() // TODO: Kunne bare være FindGameObjectWithTag, der er kun én
         {
             // TODO: Tags er måske en smule snyd. Skal i stedet kigge efter sandsække i et bestemt område
             GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
@@ -409,10 +413,10 @@ namespace SandbagSimulation
         {
             MySandbag = LocatedSandbag;
             MySandbag.tag = "PickedUpSandbag"; 
-            MySandbag.layer = 2;
+            MySandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
             this.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
-            MySandbag.GetComponent<Rigidbody>().isKinematic = true;
+            MySandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
             LocatedSandbag = null;
         }
 
@@ -420,12 +424,12 @@ namespace SandbagSimulation
         public void PlaceSandbag()
         {
             MySandbag.tag = "PlacedSandbag";
-            MySandbag.layer = 0;
+            MySandbag.layer = 0; // Linecasts rammer igen sandsækken
             this.gameObject.layer = 2; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
             RotateSandbag();
 
-            MySandbag.GetComponent<Rigidbody>().isKinematic = false;
+            MySandbag.GetComponent<Rigidbody>().isKinematic = false;  // Bliver igen påvirket af tyngdekraft
             MySandbag = null;
         }
 

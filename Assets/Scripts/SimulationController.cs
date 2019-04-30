@@ -39,6 +39,7 @@ namespace SandbagSimulation
 
         void Update()
         {
+            // Tegner en rød streg hvor diget skal ligge, kun i scene view
             Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
 
             if (NumOfFinishedDrones == NumberOfDrones)
@@ -47,12 +48,9 @@ namespace SandbagSimulation
                 {
                     if (drone.GetComponent<DroneController>().MySandbag != null)
                     {
-                        //drone.GetComponent<DroneController>().MySandbag.SetActive(false);
-
                         Destroy(drone.GetComponent<DroneController>().MySandbag);
                     }
 
-                    // drone.SetActive(false);
                     Destroy(drone);
                 }
 
@@ -74,6 +72,7 @@ namespace SandbagSimulation
             SetDroneSandbagPickUpLocation();
         }
 
+        // Giver hver drone en liste der indeholder alle droner, undtaget den selv
         public void GiveDroneList()
         {
             foreach (GameObject drone in Drones)
@@ -86,7 +85,7 @@ namespace SandbagSimulation
             }
         }
 
-        // Instansierer droner i et gitter 
+        // Instansierer droner i en række 
         public void InitializeDrones() 
         {
             // float j = 0;
@@ -96,7 +95,7 @@ namespace SandbagSimulation
 
             for (int i = 0; i < NumberOfDrones; i++)
             {
-                // TODO: lav gitteret i varierende størrelse
+                // TODO: Lav gitteret (i varierende størrelse)
                 //if (i % 3 == 0)
                 //    j++;
 
@@ -111,6 +110,7 @@ namespace SandbagSimulation
             }
         }
 
+        // Tæller op hvor mange droner der er færdige med at bygge, ud fra dronens event, FinishedBuilding
         private void FinishedDronesCounter(object sender, EventArgs e)
         {
             NumOfFinishedDrones++;
@@ -135,6 +135,7 @@ namespace SandbagSimulation
         public void SetDroneSandbagPickUpLocation()
         {
             Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
+
             foreach (GameObject drone in Drones)
             {
                 drone.GetComponent<DroneController>().SetSandbagPickUpLocation(location);
@@ -150,6 +151,7 @@ namespace SandbagSimulation
             }
         }
 
+        // Sætter hvor langt dronen kan se
         public void SetDroneViewDistance()
         {
             foreach (GameObject drone in Drones)

@@ -18,14 +18,17 @@ public class Point
     public bool Access(Vector3 dronePosition, float viewDistance, float minDistance)
     {
         // Find Droner inden for viewdistance
-        GameObject[] dronesInView = GameObject.
-            FindGameObjectsWithTag("Drone").
-            Where(v => (Vector3.Distance(v.transform.position, dronePosition) <= viewDistance)).ToArray();
+        GameObject[] dronesInView = GameObject
+            .FindGameObjectsWithTag("Drone")
+            .Where(v => (Vector3.Distance(v.transform.position, dronePosition) <= viewDistance))
+            .ToArray();
+
         if (dronesInView.Length < 1)
             return true;
+
         else
-            return dronesInView.
-                FirstOrDefault(v => (Vector3.Distance(v.transform.position, Position) <= minDistance)) == null ? true : false;
+            return dronesInView
+                .FirstOrDefault(v => (Vector3.Distance(v.transform.position, Position) <= minDistance)) == null ? true : false;
     }
 
     /*
@@ -58,8 +61,10 @@ public class Point
     {
         // Check at raycast ikke finder noget lige over sandsækken
         Vector3 target = Vector3.Lerp(Position, new Vector3(Position.x, Position.y + sandbagHeight + 0.4f, Position.z), 0.5f);
+
         //Vector3 target = new Vector3(Position.x, Position.y + sandbagHeight, Position.z);
         float distance = Vector3.Distance(dronePosition, target);
+
         // True hvis der er lineOfSight og er inden for viewDistance
         //return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
         // Samme resultat, forskellige metoder.
@@ -76,8 +81,10 @@ public class Point
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();
         Vector3 lastNode = blueprint.ConstructionNodes.Last();
+
         if (OnLine(blueprint, maxDistance) && WithinHeight(blueprint, sandbagHeight))
             return true;
+
         else
             return false;
     }
@@ -87,10 +94,14 @@ public class Point
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();
         Vector3 lastNode = blueprint.ConstructionNodes.Last();
+
+        // TODO: Skal gøres mere læsbar, en masse magiske variabel navne
         Vector2 n = new Vector2(lastNode.x, lastNode.z) - new Vector2(firstNode.x, firstNode.z);
         Vector2 pa = new Vector2(firstNode.x, firstNode.z) - new Vector2(Position.x, Position.z);
+
         Vector2 c = n * (Vector2.Dot(n, pa) / Vector2.Dot(n, n));
         Vector2 d = pa - c;
+
         return (float)System.Math.Sqrt(Vector2.Dot(d, d)) <= maxDistance ? true : false;
     }
 
@@ -100,21 +111,17 @@ public class Point
         return Position.y / sandbagHeight > blueprint.DikeHeight ? false : true;
     }
 
-    // Returner et array af tilstødende positioner til punktet.
+    // Returnerer et array af tilstødende positioner til punktet.
     public Point[] Adjecent(Blueprint blueprint, SandbagController sandbag)
     {
-        // Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
+        // TODO: Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
         Point[] adjecent = new Point[2];
 
-        //Vector3 ad1 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.First(), sandbag.Length);
         Vector3 ad1 = (blueprint.ConstructionNodes.First() - blueprint.ConstructionNodes.Last()).normalized * sandbag.Length;
         ad1 = Position + ad1;
-        //ad1.y = Position.y;
 
-        //Vector3 ad2 = Vector3.MoveTowards(Position, blueprint.ConstructionNodes.Last(), sandbag.Length);
         Vector3 ad2 = (blueprint.ConstructionNodes.Last() - blueprint.ConstructionNodes.First()).normalized * sandbag.Length;
         ad2 = Position + ad2;
-        //ad2.y = Position.y;
 
         adjecent[0] = new Point(ad1);
         adjecent[1] = new Point(ad2);

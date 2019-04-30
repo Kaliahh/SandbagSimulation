@@ -130,7 +130,7 @@
 //                    AboveSection = Actions.CalculateAbovePoint(this.GetComponent<DroneController>().MySection.CurrentSection);
 //                }
 //            }
-//            // TODO: Måske else?
+//            // 
 //        }
 
 //        // Flyver dronen hen til et punkt over dens aktuelle sektion

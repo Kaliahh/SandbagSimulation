@@ -12,12 +12,8 @@ namespace SandbagSimulation
         public Vector3 SpawnPoint;
 
         float Counter = 0;
-        float WaitTime = 0.5f;
+        public float WaitTime = 0.5f;
 
-        // Start is called before the first frame update
-        // void Start() => SpawnPoint = new Vector3(2, 0.5f, 2);
-
-        // Update is called once per frame
         void Update()
         {
             if (SpawnPointIsFree())
@@ -32,13 +28,13 @@ namespace SandbagSimulation
                 {
                     Counter += Time.deltaTime;
                 }
-
-                // Invoke("SpawnSandbag", 5); // Der sker noget mærkeligt hvis man gør det her
             }
         }
 
         void SpawnSandbag() => Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
 
+        // Tjekker om der er en sandsæk i spawnpointet
+        // Returnerer sand hvis der ingen sandsæk er
         bool SpawnPointIsFree()
         {
             GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");

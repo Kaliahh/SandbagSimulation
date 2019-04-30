@@ -11,7 +11,6 @@ public class Rotator : MonoBehaviour
         Speed = Random.Range(-60f, 60f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         transform.Rotate(new Vector3(0, 0, Speed) * Time.deltaTime);

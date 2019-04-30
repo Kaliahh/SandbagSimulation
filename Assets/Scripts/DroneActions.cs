@@ -65,7 +65,7 @@
 
 //            if (possiblePlaces == null)
 //            {
-//                // TODO: ret 0.5 til sandsæks højde * 0.5
+//                // 
 //                SandbagTargetPoint = new Vector3(BlueprintCentre.x, 0.5f, BlueprintCentre.z);
 //                SetDroneTargetPoint(SandbagTargetPoint);
 //                AboveTarget = CalculateAbovePoint(SandbagTargetPoint);
@@ -128,7 +128,7 @@
 //        // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
 //        public void LocateNearestSandbag()
 //        {
-//            // TODO: Tags er måske en smule snyd. Skal i stedet kigge efter sandsække i et bestemt område
+//            // 
 //            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
 
 //            float distance = ViewDistance;

@@ -32,35 +32,41 @@ namespace SandbagSimulation
 
             // Bliver kun brugt til at finde højde og bredde af sandsække, skal findes på en bedre måde (Statiske properties i SandbagController?)
             SandbagController sandbag = Object.FindObjectOfType<SandbagController>();
+
             // Find en sandsæk til at bruge som udgangspunkt
             Vector3 startingBag = FindStartingPlace(position, viewDistance, sandbag.Height);
+
             if (startingBag.Equals(ErrorVector))
             {
                 Debug.Log("No startingpoint found");
                 return null;
             }
 
-            MaximumPlacementDeviation = 0.5f;
+            MaximumPlacementDeviation = 0.5f; // TODO: Magisk tal
 
-            Queue<Vector3> q = new Queue<Vector3>();
+            Queue<Vector3> pointQueue = new Queue<Vector3>();
             List<Vector3> visited = new List<Vector3>();
-            q.Enqueue(startingBag);
+
+            pointQueue.Enqueue(startingBag);
+
             // Breadth first search
             int count = 0;
-            while (q.Count > 0 && count++ < 2000)
+            while (pointQueue.Count > 0 && count++ < 2000)
             {
-                Point current = new Point(q.Dequeue());
+                Point current = new Point(pointQueue.Dequeue());
                 Vector3 temp = new Vector3
                 (
                     (float)System.Math.Round(current.Position.x, 1),
                     (float)System.Math.Round(current.Position.y, 1),
                     (float)System.Math.Round(current.Position.z, 1)
                 );
+
                 if (!visited.Contains(temp)
                     && current.WithinBorder(blueprint, sandbag.Height, MaximumPlacementDeviation)
                     && Vector3.Distance(position, current.Position) <= viewDistance)
                 {
                     Point[] adjecent = current.Adjecent(blueprint, sandbag);
+
                     // Centrum af de sandsække der er til højre og venstre i lagene over og under
                     Vector3 leftMiddle = Vector3.Lerp(current.Position, adjecent[0].Position, 0.5f);
                     Vector3 rightMiddle = Vector3.Lerp(current.Position, adjecent[1].Position, 0.5f);
@@ -78,31 +84,38 @@ namespace SandbagSimulation
 
                             // Tiføj positioner under, hvis de er tomme
                             else if (belowLeft.Empty(position))
-                                q.Enqueue(belowLeft.Position);
+                                pointQueue.Enqueue(belowLeft.Position);
 
                             else if (belowRight.Empty(position))
-                                q.Enqueue(belowRight.Position); 
+                                pointQueue.Enqueue(belowRight.Position); 
                         }
                         else
                             places.Add(current.Position);
                     }
+
                     else
                     {
                         // Enqueue omkringliggende sandsække positioner
                         // Ved siden af
                         for (int i = 0; i < adjecent.Length; i++)
-                            q.Enqueue(adjecent[i].Position);
+                        {
+                            pointQueue.Enqueue(adjecent[i].Position);
+                        }
+                            
                         // Over
                         if (!adjecent[0].Empty(position))
-                            q.Enqueue(new Vector3(leftMiddle.x, current.Position.y + sandbag.Height, leftMiddle.z));
+                            pointQueue.Enqueue(new Vector3(leftMiddle.x, current.Position.y + sandbag.Height, leftMiddle.z));
+
                         if (!adjecent[1].Empty(position))
-                            q.Enqueue(new Vector3(rightMiddle.x, current.Position.y + sandbag.Height, rightMiddle.z));
+                            pointQueue.Enqueue(new Vector3(rightMiddle.x, current.Position.y + sandbag.Height, rightMiddle.z));
                     }
                     visited.Add(temp);
                 }
             }
+
             if (places.Count == 0)
                 return null;
+
             return places.ToArray();
         }
 
@@ -127,6 +140,7 @@ namespace SandbagSimulation
                 if (point.Access(position, viewDistance, MinimumSeperation))
                     return places[i];
             }
+
             // No place could be accessed, return (What should be returned?)
             return ErrorVector;
         }
@@ -139,12 +153,14 @@ namespace SandbagSimulation
         public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, Blueprint blueprint)
         {
             Vector3 targetNode = isRightDrone ? blueprint.ConstructionNodes.Last() : blueprint.ConstructionNodes.First();
+
             // Samme højde som nuværende section
             targetNode.y = CurrentSection.y;
 
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
             if (CurrentSection.Equals(targetNode))
                 return CurrentSection;
+
             else
                 return Vector3.MoveTowards(position, targetNode, viewDistance);
         }
@@ -153,8 +169,9 @@ namespace SandbagSimulation
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance, float sandbagHeight)
         {
             GameObject result = GameObject.FindGameObjectsWithTag("PlacedSandbag")
-                                       .FirstOrDefault(v => Vector3.Distance(position, v.transform.position) < viewDistance &&
-                                                       new Point(v.transform.position).InView(position, viewDistance, sandbagHeight));
+                                       .FirstOrDefault(v => Vector3.Distance(position, v.transform.position) < viewDistance 
+                                                            && new Point(v.transform.position).InView(position, viewDistance, sandbagHeight));
+
             return result == null ? ErrorVector : result.transform.position;
         }
     }
