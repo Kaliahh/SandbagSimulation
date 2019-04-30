@@ -23,11 +23,7 @@ namespace SandbagSimulation
 
             Debug.DrawLine(this.transform.position, this.transform.position + direction.normalized);
 
-            //this.transform.position = Vector3.MoveTowards(this.transform.position, direction.normalized, Speed * Time.deltaTime);
-
             this.transform.position += ((direction.magnitude > 1) ? direction.normalized : direction) * Speed * Time.deltaTime;
-
-            //this.transform.position = Vector3.MoveTowards(this.transform.position, (direction.magnitude > 1) ? direction.normalized : direction, Speed * Time.deltaTime);
 
             // Hvis der er blevet samlet en sandsæk op, følger den med dronen
             if (this.GetComponent<DroneController>().MySandbag != null)
