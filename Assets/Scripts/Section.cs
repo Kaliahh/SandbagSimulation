@@ -72,11 +72,14 @@ namespace SandbagSimulation
                         {
                             Point belowLeft = new Point(new Vector3(leftMiddle.x, current.Position.y - sandbag.Height, leftMiddle.z));
                             Point belowRight = new Point(new Vector3(rightMiddle.x, current.Position.y - sandbag.Height, rightMiddle.z));
+
                             if (!belowLeft.Empty(position) && !belowRight.Empty(position))
                                 places.Add(current.Position);
+
                             // Tiføj positioner under, hvis de er tomme
                             else if (belowLeft.Empty(position))
                                 q.Enqueue(belowLeft.Position);
+
                             else if (belowRight.Empty(position))
                                 q.Enqueue(belowRight.Position); 
                         }
