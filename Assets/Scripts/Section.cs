@@ -51,8 +51,7 @@ namespace SandbagSimulation
             pointQueue.Enqueue(startingBag);
 
             // Breadth first search
-            int count = 0;
-            while (pointQueue.Count > 0 && count++ < 2000)
+            while (pointQueue.Count > 0)
             {
                 Point current = new Point(pointQueue.Dequeue());
                 Vector3 temp = new Vector3
