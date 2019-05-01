@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270218e6f3459e6438e1bdac769e15b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsRightDrone: 0
   IsFinishedBuilding: 0
 --- !u!114 &5058359658988735208
 MonoBehaviour:
@@ -122,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2476a17ec37a5a44b9ad6f94ffe8a72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Factor: 0.7
+  Factor: 0.35
 --- !u!114 &7237551316120336151
 MonoBehaviour:
   m_ObjectHideFlags: 0

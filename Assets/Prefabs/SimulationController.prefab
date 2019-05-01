@@ -50,10 +50,10 @@ MonoBehaviour:
   DroneViewDistance: 10
   NumberOfDrones: 8
   SandbagSpawnPoint: {x: 0, y: 1, z: 0}
-  DroneSpawnPoint: {x: 5, y: 3, z: 0}
+  DroneSpawnPoint: {x: 5, y: 1, z: 0}
   Node2: {x: -10, y: 3, z: 40}
   Node1: {x: 10, y: 3, z: 40}
-  Height: 0
+  DikeHeight: 0
 --- !u!114 &3014202476018166865
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,3 +68,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sandbag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
   SpawnPoint: {x: 2, y: 0.5, z: 2}
+  WaitTime: 0.5
