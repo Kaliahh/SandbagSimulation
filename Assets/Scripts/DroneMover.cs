@@ -21,7 +21,7 @@ namespace SandbagSimulation
 
             //direction += AvoidCollision(direction);
 
-            Debug.DrawLine(this.transform.position, this.transform.position + direction.normalized);
+            //Debug.DrawLine(this.transform.position, this.transform.position + direction.normalized);
 
             this.transform.position += ((direction.magnitude > 1) ? direction.normalized : direction) * Speed * Time.deltaTime;
 
@@ -63,7 +63,7 @@ namespace SandbagSimulation
 
         private void MoveSandbag()
         {
-            Vector3 sandbagTarget = new Vector3(this.transform.position.x, this.transform.position.y - 1f, this.transform.position.z);
+            Vector3 sandbagTarget = new Vector3(this.transform.position.x, this.transform.position.y - this.GetComponent<DroneController>().DroneSandbagDistance, this.transform.position.z);
 
             this.GetComponent<DroneController>().MySandbag.transform.position = sandbagTarget;
             this.GetComponent<DroneController>().MySandbag.transform.rotation = Quaternion.identity;
