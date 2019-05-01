@@ -470,8 +470,8 @@ namespace SandbagSimulation
 
         private bool PlaceHasFoundation(Vector3 dronePosition, Vector3 targetPoint)
         {
-            Vector3 foundationPoint1 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.First());
-            Vector3 foundationPoint2 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.Last());
+            Vector3 foundationPoint1 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.First(), MyBlueprint.ConstructionNodes.Last());
+            Vector3 foundationPoint2 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.Last(), MyBlueprint.ConstructionNodes.First());
 
             bool isFirstFoundation = Physics.Linecast(dronePosition, foundationPoint1); 
             bool isSecondFoundation = Physics.Linecast(dronePosition, foundationPoint2);
@@ -482,12 +482,14 @@ namespace SandbagSimulation
             return isFirstFoundation && isSecondFoundation;
         }
 
-        private Vector3 FindFoundationPoint(Vector3 targetPoint, Vector3 blueprintNode)
+        private Vector3 FindFoundationPoint(Vector3 targetPoint, Vector3 blueprintNodeFrom, Vector3 blueprintNodeTo)
         {
             SandbagController sandbag = MySandbag.GetComponent<SandbagController>();
 
-            Vector3 foundationPoint = Vector3.MoveTowards(targetPoint, blueprintNode, sandbag.Length / 2);
-            foundationPoint.y = foundationPoint.y - sandbag.Height;
+            Vector3 foundationPoint = (blueprintNodeTo - blueprintNodeFrom).normalized * sandbag.Length / 2;
+
+            foundationPoint = targetPoint + foundationPoint;
+            foundationPoint.y = targetPoint.y - sandbag.Height;
 
             return foundationPoint;
         }
