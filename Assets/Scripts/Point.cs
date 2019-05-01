@@ -60,14 +60,11 @@ public class Point
     public bool InView(Vector3 dronePosition, float viewDistance, float sandbagHeight)
     {
         // Check at raycast ikke finder noget lige over sandsækken
-        Vector3 target = Vector3.Lerp(Position, new Vector3(Position.x, Position.y + sandbagHeight + 0.4f, Position.z), 0.5f);
-
-        //Vector3 target = new Vector3(Position.x, Position.y + sandbagHeight, Position.z);
+        float additionalHeight = 0.1f;
+        Vector3 target = new Vector3(Position.x, Position.y + sandbagHeight + additionalHeight, Position.z);
         float distance = Vector3.Distance(dronePosition, target);
 
         // True hvis der er lineOfSight og er inden for viewDistance
-        //return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
-        // Samme resultat, forskellige metoder.
         return (distance < viewDistance) ? !Physics.Linecast(dronePosition, target) : false;
     }
 
