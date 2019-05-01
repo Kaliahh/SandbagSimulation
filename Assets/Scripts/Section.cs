@@ -39,6 +39,7 @@ namespace SandbagSimulation
             if (startingBag.Equals(ErrorVector))
             {
                 Debug.Log("No startingpoint found");
+                Debug.DrawLine(position, position + new Vector3(0, 10, 0), Color.red, 1);
                 return null;
             }
 
