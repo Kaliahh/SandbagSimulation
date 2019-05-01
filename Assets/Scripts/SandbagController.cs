@@ -16,11 +16,11 @@ namespace SandbagSimulation
         // Start is called before the first frame update
         void Start()
         {
-            Scale = 0.025f;
+            Scale = 0.1f;
 
-            Height = 20f * Scale;
-            Width = 35f * Scale;
-            Length = 60f * Scale;
+            Height = 0.10f;
+            Width = 0.35f;
+            Length = 0.60f;
 
             this.transform.localScale = new Vector3(Length, Height, Width);
 
