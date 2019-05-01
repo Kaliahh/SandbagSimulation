@@ -31,6 +31,7 @@ namespace SandbagSimulation
         public Vector3 Node1; // Starten af diget
         public int DikeHeight;
         public Blueprint Blueprint;
+
         void Start()
         {
             NumOfFinishedDrones = 0;
@@ -41,6 +42,8 @@ namespace SandbagSimulation
         {
             // Tegner en rød streg hvor diget skal ligge, kun i scene view
             Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
+            Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.First() + new Vector3(0, 10, 0));
+            Debug.DrawLine(Blueprint.ConstructionNodes.Last(), Blueprint.ConstructionNodes.Last() + new Vector3(0, 10, 0));
 
             if (NumOfFinishedDrones == NumberOfDrones)
             {
@@ -134,7 +137,8 @@ namespace SandbagSimulation
         // Definerer punktet for alle droner hvor de kan samle sandsække op
         public void SetDroneSandbagPickUpLocation()
         {
-            Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + 5, SandbagSpawnPoint.z);
+            float metersAboveGround = 1.5f;
+            Vector3 location = new Vector3(SandbagSpawnPoint.x, SandbagSpawnPoint.y + metersAboveGround, SandbagSpawnPoint.z);
 
             foreach (GameObject drone in Drones)
             {
