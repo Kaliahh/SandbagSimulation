@@ -32,13 +32,13 @@ namespace SandbagSimulation
         public event EventHandler FinishedBuilding;
 
         public Vector3 BlueprintCentre { get; private set; }
-        public Vector3[] PossiblePlaces { get; private set; }
+        public Vector3[] PossiblePlaces { get; set; }
 
         public Vector3 DroneTargetPoint { get; private set; }
         public Point SandbagTargetPoint { get; private set; }
 
         public Vector3 AboveSection { get; set; }
-        public Vector3 AboveTarget { get; private set; }
+        public Vector3 AboveTarget { get; set; }
 
         public Vector3 HomePosition { get; private set; }
 
@@ -90,7 +90,7 @@ namespace SandbagSimulation
             MySandbag = null;
             SandbagTargetPoint = new Point(Vector3.zero);
 
-            // Setup for MySection
+            // Opsætning af MySection
             MySection = new Section();
             MySection.CurrentSection = Vector3.zero;
             MySection.MinimumSeperation = 1;
