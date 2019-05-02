@@ -35,6 +35,7 @@ namespace SandbagSimulation
         void Start()
         {
             NumOfFinishedDrones = 0;
+            NumberOfDrones = ((int)Vector3.Distance(Node1, Node2) + 8) / 4;
             SetupSimulation();
         }
 
