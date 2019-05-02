@@ -10,21 +10,21 @@ namespace Tests
 {
     public class PickUpSandbagTests
     {
-        [Test]
-        public void PickUpSandbagTest()
-        {
-            // Arrange
-            GameObject sandbag = CreateSandbag();
-            GameObject drone = CreateDrone();
+        //[Test]
+        //public void PickUpSandbagTest()
+        //{
+        //    // Arrange
+        //    GameObject sandbag = CreateSandbag();
+        //    GameObject drone = CreateDrone();
 
-            drone.GetComponent<DroneController>().LocateNearestSandbag();
+        //    drone.GetComponent<DroneController>().LocateNearestSandbag();
 
-            // Act
-            drone.GetComponent<DroneController>().PickUpSandbag();
+        //    // Act
+        //    drone.GetComponent<DroneController>().PickUpSandbag();
 
-            // Assert
-            Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, sandbag);
-        }
+        //    // Assert
+        //    Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, sandbag);
+        //}
 
 
         [SetUp]

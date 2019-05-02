@@ -10,58 +10,58 @@ namespace Tests
 {
     public class PlaceSandbagTests
     {
-        [Test]
-        public void PlaceSandbagTest_Position()
-        {
-            // Arrange
-            GameObject sandbag = CreateSandbag();
-            GameObject drone = CreateDrone();
-            Vector3 position = new Vector3(0, 10, 0);
+        //[Test]
+        //public void PlaceSandbagTest_Position()
+        //{
+        //    // Arrange
+        //    GameObject sandbag = CreateSandbag();
+        //    GameObject drone = CreateDrone();
+        //    Vector3 position = new Vector3(0, 10, 0);
 
-            sandbag.transform.position = Vector3.zero;
-            drone.GetComponent<DroneController>().LocateNearestSandbag();
-            drone.GetComponent<DroneController>().PickUpSandbag();
+        //    sandbag.transform.position = Vector3.zero;
+        //    drone.GetComponent<DroneController>().LocateNearestSandbag();
+        //    drone.GetComponent<DroneController>().PickUpSandbag();
 
-            // Act
-            drone.GetComponent<DroneController>().PlaceSandbag();
+        //    // Act
+        //    drone.GetComponent<DroneController>().PlaceSandbag();
 
-            // Assert
-            Assert.AreEqual(sandbag.transform.position, position);
-        }
+        //    // Assert
+        //    Assert.AreEqual(sandbag.transform.position, position);
+        //}
 
-        [Test]
-        public void PlaceSandbagTest_MySandbag_Is_Null()
-        {
-            // Arrange
-            GameObject drone = CreateDrone();
-            GameObject sandbag = CreateSandbag();
+        //[Test]
+        //public void PlaceSandbagTest_MySandbag_Is_Null()
+        //{
+        //    // Arrange
+        //    GameObject drone = CreateDrone();
+        //    GameObject sandbag = CreateSandbag();
 
-            drone.GetComponent<DroneController>().LocateNearestSandbag();
-            drone.GetComponent<DroneController>().PickUpSandbag();
+        //    drone.GetComponent<DroneController>().LocateNearestSandbag();
+        //    drone.GetComponent<DroneController>().PickUpSandbag();
 
-            // Act
-            drone.GetComponent<DroneController>().PlaceSandbag();
+        //    // Act
+        //    drone.GetComponent<DroneController>().PlaceSandbag();
 
-            // Assert
-            Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, null);
-        }
+        //    // Assert
+        //    Assert.AreEqual(drone.GetComponent<DroneController>().MySandbag, null);
+        //}
 
-        [Test]
-        public void PlaceSandbagTest_MySandbag_Tag_Is_PlacedSandbag()
-        {
-            // Arrange
-            GameObject drone = CreateDrone();
-            GameObject sandbag = CreateSandbag();
+        //[Test]
+        //public void PlaceSandbagTest_MySandbag_Tag_Is_PlacedSandbag()
+        //{
+        //    // Arrange
+        //    GameObject drone = CreateDrone();
+        //    GameObject sandbag = CreateSandbag();
 
-            drone.GetComponent<DroneController>().LocateNearestSandbag();
-            drone.GetComponent<DroneController>().PickUpSandbag();
+        //    drone.GetComponent<DroneController>().LocateNearestSandbag();
+        //    drone.GetComponent<DroneController>().PickUpSandbag();
 
-            // Act
-            drone.GetComponent<DroneController>().PlaceSandbag();
+        //    // Act
+        //    drone.GetComponent<DroneController>().PlaceSandbag();
 
-            // Assert
-            Assert.AreEqual(sandbag.tag, "PlacedSandbag");
-        }
+        //    // Assert
+        //    Assert.AreEqual(sandbag.tag, "PlacedSandbag");
+        //}
 
         [SetUp]
         public void ResetScene()
