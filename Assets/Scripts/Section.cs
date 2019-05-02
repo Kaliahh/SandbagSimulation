@@ -15,9 +15,6 @@ namespace SandbagSimulation
 
         private Vector3 ErrorVector = new Vector3(-100f, -100f, -100f);
 
-        // Constructor
-        //public Section(Vector3 location) { CurrentSection = location; }
-
         // Public Methods
 
         /*
@@ -54,12 +51,7 @@ namespace SandbagSimulation
             while (pointQueue.Count > 0)
             {
                 Point current = new Point(pointQueue.Dequeue());
-                Vector3 temp = new Vector3
-                (
-                    (float)System.Math.Round(current.Position.x, 1),
-                    (float)System.Math.Round(current.Position.y, 1),
-                    (float)System.Math.Round(current.Position.z, 1)
-                );
+                Vector3 temp = Round(current.Position);
 
                 if (!visited.Contains(temp)
                     && current.WithinBorder(blueprint, sandbag.Height, MaximumPlacementDeviation)
@@ -92,7 +84,6 @@ namespace SandbagSimulation
                         else
                             places.Add(current.Position);
                     }
-
                     else
                     {
                         // Enqueue omkringliggende sandsække positioner
@@ -112,7 +103,6 @@ namespace SandbagSimulation
                     visited.Add(temp);
                 }
             }
-
             if (places.Count == 0)
                 return null;
 
@@ -143,6 +133,16 @@ namespace SandbagSimulation
 
             // No place could be accessed, return (What should be returned?)
             return ErrorVector;
+        }
+
+        private Vector3 Round(Vector3 vector)
+        {
+            return new Vector3
+                (
+                    (float)System.Math.Round(vector.x, 1),
+                    (float)System.Math.Round(vector.y, 1),
+                    (float)System.Math.Round(vector.z, 1)
+                );
         }
 
         /*
