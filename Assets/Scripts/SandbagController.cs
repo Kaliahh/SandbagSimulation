@@ -11,13 +11,9 @@ namespace SandbagSimulation
         public float Width { get; private set; }
         public float Length { get; private set; }
 
-        float Scale;
-
         // Start is called before the first frame update
         void Start()
         {
-            Scale = 0.1f;
-
             Height = 0.10f;
             Width = 0.35f;
             Length = 0.60f;
