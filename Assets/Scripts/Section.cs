@@ -88,6 +88,7 @@ namespace SandbagSimulation
 
             return places.ToArray();
         }
+
         // Indsætter de underliggende positioner i den givne kø, hvis de ikke er optaget
         private void EnqueueBelow(ref Queue<Vector3> queue, Vector3 position, Point[] belowPoints)
         {
@@ -95,6 +96,7 @@ namespace SandbagSimulation
                 if (belowPoints[i].Empty(position))
                     queue.Enqueue(belowPoints[i].Position);
         }
+
         // Indsætter de overliggende positioner, hvis der er sandsække i begge underliggende positioner
         private void EnqueueAbove(ref Queue<Vector3> queue, Vector3 position, Point[] abovePoints, Point[] adjecent)
         {
