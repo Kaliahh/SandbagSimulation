@@ -31,7 +31,7 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.SandbagPickUpLocation);
 
-            if (C.InVicinityOf(C.transform.position, C.SandbagPickUpLocation))
+            if (DroneTools.InVicinityOf(C.transform.position, C.SandbagPickUpLocation))
                 C.State = C.FindSandbagLocationState;
         }
     }
@@ -44,13 +44,41 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
-            C.LocateNearestSandbag();
+            LocateNearestSandbag(C.transform.position, C.ViewDistance);
 
             if (C.LocatedSandbag != null)
                 C.State = C.FlyToLocatedSandbagState;
 
             else
                 C.State = C.FlyToSandbagPickUpLocationState;
+        }
+
+        // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
+        public void LocateNearestSandbag(Vector3 position, float viewDistance)
+        {
+            GameObject locatedSandbag = null;
+            
+            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
+
+            float distance = viewDistance;
+
+            foreach (GameObject sandbag in sandbags)
+            {
+                Vector3 diff = sandbag.transform.position - position;
+                float currentDistance = diff.magnitude;
+
+                if (currentDistance < distance)
+                {
+                    locatedSandbag = sandbag;
+                    distance = currentDistance;
+                }
+            }
+
+            if (locatedSandbag != null)
+            {
+                C.SetDroneTargetPoint(locatedSandbag.transform.position);
+                C.SetLocatedSandbag(locatedSandbag);
+            }
         }
     }
 
@@ -62,7 +90,7 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.DroneTargetPoint);
 
-            if (C.InVicinityOf(this.C.transform.position, C.DroneTargetPoint))
+            if (DroneTools.InVicinityOf(this.C.transform.position, C.DroneTargetPoint))
                 C.State = C.PickUpLocatedSandbagState;
         }
     }
@@ -73,7 +101,12 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
-            C.PickUpSandbag();
+            GameObject droneSandbag = null;
+
+            PickUpSandbag(ref droneSandbag, C.LocatedSandbag, C);
+
+            C.MySandbag = droneSandbag;
+            
 
             if (C.MySandbag != null)
             {
@@ -82,7 +115,7 @@ namespace SandbagSimulation
                 if (C.MySection.CurrentSection == Vector3.zero)
                 {
                     C.MySection.CurrentSection = C.BlueprintCentre;
-                    C.AboveSection = C.CalculateAbovePoint(C.MySection.CurrentSection);
+                    C.AboveSection = DroneTools.CalculateAbovePoint(C.MySection.CurrentSection, C.MyBlueprint, C.SafeHeight);
                 }
             }
 
@@ -90,6 +123,26 @@ namespace SandbagSimulation
             {
                 C.State = C.FindSandbagLocationState;
             }
+        }
+
+        // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
+        // Den fundne sandsæk (LocatedSandbag) sættes til null
+        public void PickUpSandbag(ref GameObject droneSandbag, GameObject locatedSandbag, DroneController controller)
+        {
+            droneSandbag = locatedSandbag;
+            droneSandbag.tag = "PickedUpSandbag";
+            droneSandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
+            controller.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
+
+            // Gemmer en reference til SandbagController, så det er nemt at tilgå f.eks. højden af en sandsæk
+            if (controller.SandbagReference == null)
+            {
+                controller.SandbagReference = droneSandbag.GetComponent<SandbagController>();
+            }
+
+            droneSandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
+            
+            controller.SetLocatedSandbag(null);
         }
     }
 
@@ -101,7 +154,7 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.AboveSection);
 
-            if (C.InVicinityOf(C.transform.position, C.AboveSection))
+            if (DroneTools.InVicinityOf(C.transform.position, C.AboveSection))
                 C.State = C.SearchForSandbagPlaceState;
         }
     }
@@ -125,9 +178,9 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.AboveTarget);
 
-            if (C.InVicinityOf(C.transform.position, C.AboveTarget))
+            if (DroneTools.InVicinityOf(C.transform.position, C.AboveTarget))
             {
-                if (C.IsLastSandbagPlaced(C.ReturnTargetNode()) == true)
+                if (DroneTools.IsLastSandbagPlaced(C.transform.position, DroneTools.ReturnTargetNode(C.IsRightDrone, C.MyBlueprint), C.ViewDistance, C.MyBlueprint, C.SandbagReference) == true)
                 {
                     C.IsFinishedBuilding = true;
                     return;
@@ -144,6 +197,9 @@ namespace SandbagSimulation
                 }
             }
         }
+
+        
+
     }
 
     public class FlyToDroneTargetState : DroneState
@@ -154,7 +210,7 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.DroneTargetPoint);
 
-            if (C.InVicinityOf(C.transform.position, C.DroneTargetPoint))
+            if (DroneTools.InVicinityOf(C.transform.position, C.DroneTargetPoint))
                 C.State = C.PlaceMySandbagState;
         }
     }
@@ -165,8 +221,26 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
-            C.PlaceSandbag();
+            GameObject droneSandbag = C.MySandbag;
+
+            PlaceSandbag(ref droneSandbag, C.MyBlueprint, C);
+
+            C.MySandbag = droneSandbag;
+
             C.State = C.ReturnToAboveTargetState;
+        }
+
+        // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
+        public void PlaceSandbag(ref GameObject droneSandbag, Blueprint blueprint, DroneController controller)
+        {
+            droneSandbag.tag = "PlacedSandbag";
+            droneSandbag.layer = 0; // Linecasts rammer igen sandsækken
+            controller.gameObject.layer = 2; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
+
+            DroneTools.RotateSandbag(droneSandbag, blueprint);
+
+            droneSandbag.GetComponent<Rigidbody>().isKinematic = false;  // Bliver igen påvirket af tyngdekraft
+            droneSandbag = null;
         }
     }
 
@@ -178,9 +252,9 @@ namespace SandbagSimulation
         {
             C.FlyTo(C.AboveTarget);
 
-            if (C.InVicinityOf(C.transform.position, C.AboveTarget))
+            if (DroneTools.InVicinityOf(C.transform.position, C.AboveTarget))
             {
-                if (C.IsLastSandbagPlaced(C.ReturnTargetNode()) == true)
+                if (DroneTools.IsLastSandbagPlaced(C.transform.position, DroneTools.ReturnTargetNode(C.IsRightDrone, C.MyBlueprint), C.ViewDistance, C.MyBlueprint, C.SandbagReference) == true)
                 {
                     C.IsFinishedBuilding = true;
                     return;
@@ -191,17 +265,6 @@ namespace SandbagSimulation
         }
     }
 }
-
-//public IDroneState FlyToSandbagPickUpLocationState;
-//public IDroneState FindSandbagLocationState;
-//public IDroneState FlyToLocatedSandbagState;
-//public IDroneState PickUpLocatedSandbagState;
-//public IDroneState FlyToSectionState;
-//public IDroneState SearchForSandbagPlaceState;
-//public IDroneState FlyToAboveTargetState;
-//public IDroneState FlyToDroneTargetState;
-//public IDroneState PlaceMySandbagState;
-//public IDroneState ReturnToAboveTargetState;
 
 
 

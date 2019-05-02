@@ -27,7 +27,7 @@ namespace SandbagSimulation
 
         public Vector3 SandbagPickUpLocation { get; private set; }
 
-        public SandbagController SandbagReference { get; private set; }
+        public SandbagController SandbagReference { get; set; }
 
         public event EventHandler FinishedBuilding;
 
@@ -131,7 +131,7 @@ namespace SandbagSimulation
                 {
                     FlyTo(HomePosition);
 
-                    if (InVicinityOf(this.transform.position, HomePosition))
+                    if (DroneTools.InVicinityOf(this.transform.position, HomePosition))
                     {
                         IsHomeAndDone = true;
                         FinishedBuilding(this, null);
@@ -163,122 +163,75 @@ namespace SandbagSimulation
             State.Execute();
         }
 
-        #region Værktøj
 
-        // Kommentar
-        public Vector3 ReturnTargetNode() => (IsRightDrone) ? MyBlueprint.ConstructionNodes.Last() : MyBlueprint.ConstructionNodes.First();
+        
 
-        // Input: Vector3 point
-        // Output: Returnerer points x og z, men lægger digets højde og en sikkerhedshøjde til points z
-        public Vector3 CalculateAbovePoint(Vector3 point) => new Vector3(point.x, MyBlueprint.DikeHeight * 0.1f + SafeHeight, point.z);
+        #region SandbagPlaceFinder?
 
-        // Kommentar
-        public bool IsLastSandbagPlaced(Vector3 targetNode)
+        // Finder det sted dronen skal placere sandsækken. Tager højde for om den første sandsæk er placeret
+        public void FindSandbagPlace()
         {
-            if (Vector3.Distance(this.transform.position, targetNode) < ViewDistance)
+            if (HasBuildingBegun == false && IsFirstSandbagPlaced() == false)
             {
-                targetNode.y = (MyBlueprint.DikeHeight - 0.5f) * SandbagReference.Height;
+                FindFirstSandbagPlace();
+            }
 
-                bool isPlaceEmpty = Physics.Linecast(this.transform.position, targetNode, out RaycastHit hitInfo);
-
-                if (hitInfo.distance < Vector3.Distance(this.transform.position, targetNode) - SandbagReference.Length)
-                {
-                    return false;
-                }
-
-                else
-                {
-                    return isPlaceEmpty;
-                }
+            else if (HasBuildingBegun == false && IsFirstSandbagPlaced() == true)
+            {
+                HasBuildingBegun = true;
+                FindNextSandbagPlace();
             }
 
             else
             {
-                return false;
+                FindNextSandbagPlace();
             }
         }
 
-        // Checker om to positioner er i nærheden af hinanden
-        // Hvis den er, returnerer den sand, ellers returnerer den falsk
-        public bool InVicinityOf(Vector3 position1, Vector3 position2) => ((position1 - position2).magnitude < 0.1f) ? true : false;
-
-        // Roterer sandsækken i forhold til diget og det sted sandsækken skal placeres
-        private void RotateSandbag() => MySandbag.transform.Rotate(new Vector3(0, CalculateAngleToDike(), 0));
-
-        private float CalculateAngleToDike()
+        // Finder det sted hvor den første sandsæk skal placeres i diget
+        private void FindFirstSandbagPlace()
         {
-            Vector3 point1 = MyBlueprint.ConstructionNodes.First();
-            Vector3 point2 = MyBlueprint.ConstructionNodes.Last();
+            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
 
-            Vector3 dikeVector = point1 - point2;
-
-            return Vector3.SignedAngle(Vector3.right, dikeVector, Vector3.up);
-        }
-
-        #endregion
-
-
-
-        #region Skal i State
-
-        // Finder den nærmeste sandsæk, og gemmer den i LocatedSandbag
-        public void LocateNearestSandbag()
-        {
-            // TODO: Tags er måske en smule snyd. Burde i stedet kigge efter sandsække i et bestemt område
-            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
-
-            float distance = ViewDistance;
-
-            foreach (GameObject sandbag in sandbags)
+            if (PossiblePlaces == null)
             {
-                Vector3 diff = sandbag.transform.position - this.transform.position;
-                float currentDistance = diff.magnitude;
-
-                if (currentDistance < distance)
-                {
-                    LocatedSandbag = sandbag;
-                    distance = currentDistance;
-                }
+                SandbagTargetPoint.Position = new Vector3(BlueprintCentre.x, SandbagReference.Height / 2, BlueprintCentre.z);
+                SetDroneTargetPoint(SandbagTargetPoint.Position);
+                AboveTarget = DroneTools.CalculateAbovePoint(SandbagTargetPoint.Position, MyBlueprint, SafeHeight);
+                HasBuildingBegun = true;
             }
 
-            if (LocatedSandbag != null)
+            else if (PossiblePlaces != null)
             {
-                SetDroneTargetPoint(LocatedSandbag.transform.position);
+                HasBuildingBegun = true;
             }
         }
 
-        // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
-        // Den fundne sandsæk (LocatedSandbag) sættes til null
-        public void PickUpSandbag()
+        // Finder det sted hvor sandsækken skal placeres, ud fra de sandsække der allerede er placeret
+        // Hvis den ikke kan finde en mulig placering, finder den den næste sektion dronen skal arbejde på
+        private void FindNextSandbagPlace()
         {
-            MySandbag = LocatedSandbag;
-            MySandbag.tag = "PickedUpSandbag";
-            MySandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
-            this.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
+            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
 
-            // Gemmer en reference til SandbagController, så det er nemt at tilgå f.eks. højden af en sandsæk
-            if (SandbagReference == null)
+            if (PossiblePlaces == null)
             {
-                SandbagReference = MySandbag.GetComponent<SandbagController>();
+                MySection.CurrentSection = MySection.FindNextSection(ViewDistance, this.transform.position, IsRightDrone, MyBlueprint);
+                AboveSection = DroneTools.CalculateAbovePoint(MySection.CurrentSection, MyBlueprint, SafeHeight);
             }
-
-            MySandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
-            LocatedSandbag = null;
+            else
+            {
+                SetSandbagTargetPoint();
+            }
         }
 
-        // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
-        public void PlaceSandbag()
+        // Checker om den første sandsæk diget er placeret
+        // Returnerer true hvis der er en sa indsæk placeret, falsk hvis den ikke kan finde en
+        public bool IsFirstSandbagPlaced()
         {
-            MySandbag.tag = "PlacedSandbag";
-            MySandbag.layer = 0; // Linecasts rammer igen sandsækken
-            this.gameObject.layer = 2; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
+            GameObject placedSandbag = GameObject.FindGameObjectWithTag("PlacedSandbag");
 
-            RotateSandbag();
-
-            MySandbag.GetComponent<Rigidbody>().isKinematic = false;  // Bliver igen påvirket af tyngdekraft
-            MySandbag = null;
+            return (placedSandbag != null && Vector3.Distance(this.transform.position, placedSandbag.transform.position) <= ViewDistance) ? true : false;
         }
-
 
 
         public bool IsPlaceStillAvailable(Vector3 dronePosition, Point targetPoint)
@@ -327,89 +280,18 @@ namespace SandbagSimulation
 
 
 
-        #region SandbagPlaceFinder?
-
-        // Finder det sted dronen skal placere sandsækken. Tager højde for om den første sandsæk er placeret
-        public void FindSandbagPlace()
-        {
-            if (HasBuildingBegun == false && IsFirstSandbagPlaced() == false)
-            {
-                FindFirstSandbagPlace();
-            }
-
-            else if (HasBuildingBegun == false && IsFirstSandbagPlaced() == true)
-            {
-                HasBuildingBegun = true;
-                FindNextSandbagPlace();
-            }
-
-            else
-            {
-                FindNextSandbagPlace();
-            }
-        }
-
-        // Finder det sted hvor den første sandsæk skal placeres i diget
-        private void FindFirstSandbagPlace()
-        {
-            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
-
-            if (PossiblePlaces == null)
-            {
-                SandbagTargetPoint.Position = new Vector3(BlueprintCentre.x, SandbagReference.Height / 2, BlueprintCentre.z);
-                SetDroneTargetPoint(SandbagTargetPoint.Position);
-                AboveTarget = CalculateAbovePoint(SandbagTargetPoint.Position);
-                HasBuildingBegun = true;
-            }
-
-            else if (PossiblePlaces != null)
-            {
-                HasBuildingBegun = true;
-            }
-        }
-
-        // Finder det sted hvor sandsækken skal placeres, ud fra de sandsække der allerede er placeret
-        // Hvis den ikke kan finde en mulig placering, finder den den næste sektion dronen skal arbejde på
-        private void FindNextSandbagPlace()
-        {
-            PossiblePlaces = MySection.FindPlace(ViewDistance, this.transform.position, MyBlueprint);
-
-            if (PossiblePlaces == null)
-            {
-                MySection.CurrentSection = MySection.FindNextSection(ViewDistance, this.transform.position, IsRightDrone, MyBlueprint);
-                AboveSection = CalculateAbovePoint(MySection.CurrentSection);
-            }
-            else
-            {
-                SetSandbagTargetPoint();
-            }
-        }
-
-        // Checker om den første sandsæk diget er placeret
-        // Returnerer true hvis der er en sa indsæk placeret, falsk hvis den ikke kan finde en
-        public bool IsFirstSandbagPlaced()
-        {
-            GameObject placedSandbag = GameObject.FindGameObjectWithTag("PlacedSandbag");
-
-            return (placedSandbag != null && Vector3.Distance(this.transform.position, placedSandbag.transform.position) <= ViewDistance) ? true : false;
-        }
-
-        #endregion
 
 
 
 
 
 
-        
 
-        
 
-        
 
-        
 
-        
+
+
 
 
 
@@ -435,11 +317,13 @@ namespace SandbagSimulation
             if (SandbagTargetPoint.Position != new Vector3(-100, -100, -100))
             {
                 SetDroneTargetPoint(SandbagTargetPoint.Position);
-                AboveTarget = CalculateAbovePoint(SandbagTargetPoint.Position);
+                AboveTarget = DroneTools.CalculateAbovePoint(SandbagTargetPoint.Position, MyBlueprint, SafeHeight);
 
                 Debug.DrawLine(this.transform.position, SandbagTargetPoint.Position, Color.cyan);
             }
         }
+
+        public void SetLocatedSandbag(GameObject sandbag) => LocatedSandbag = sandbag;
 
         #endregion
     }
