@@ -1,61 +1,65 @@
-﻿using System.Collections;
+﻿//Denne klasse styrer visningen af de forskellige UI sider
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandbagSimulation;
 
-namespace SandbagSimulation
+public class UI : MonoBehaviour
 {
-    public class UI : MonoBehaviour
+    //UI sider
+    private GameObject MainMenu; //Startmenu UI
+    private GameObject RunTime; //UI under simulationen
+    private GameObject Results; //Resultatvindue når simulationen sluttes
+
+    private List<GameObject> UIs; //Liste med alle sider. Nemmere at kontrollere siderne via en liste
+
+    void Start()
     {
-        //UI sider
-        private GameObject MainMenu; //Startmenu UI
-        private GameObject RunTime; //UI under simulationen
-        private GameObject Results; //Resultatvindue når simulationen sluttes
+        //Referencer
+        MainMenu = GameObject.Find("MainMenu"); //Reference til StartMenu UI
+        RunTime = GameObject.Find("RunTime"); //Reference til runtime UI
+        Results = GameObject.Find("Results"); //Reference til resultatvinduet
 
-        private List<GameObject> UIs; //Liste med alle sider. Nemmere at kontrollere siderne via en liste
+        UIs = new List<GameObject> { MainMenu, RunTime, Results }; //Siderne lægges ind i listen
 
-        void Start()
+        //Opsætning
+        StartMainMenu(); //Fremvis startmenuen når programmet startes
+    }
+
+    public void StartMainMenu() //Start startmenuen
+    {
+        
+        foreach (GameObject ui in UIs)
         {
-            MainMenu = transform.Find("MainMenu").gameObject; //Reference til StartMenu UI
-            RunTime = transform.Find("RunTime").gameObject; //Reference til runtime UI
-            Results = transform.Find("Results").gameObject; //Reference til resultatvinduet
-
-            UIs = new List<GameObject> { MainMenu, RunTime, Results }; //Siderne lægges ind i listen
-
-            StartMainMenu(); //Vis start menuen når programmet startes
+            Debug.Log(ui.name);
+            //if (ui.name == "MainMenu") //Kun vis start menuen
+            //    ui.SetActive(true);
+            //else
+            //    ui.SetActive(false);
         }
+    }
 
-        public void StartMainMenu() //Show main menu. Is called when program starts or user returns to main menu
+    public void StartRunTime() //Start kørsels UI
+    {
+        foreach (GameObject ui in UIs)
         {
-            foreach (GameObject ui in UIs)
-            {
-                if (ui.name == "MainMenu") //Kun vis start menuen
-                    ui.SetActive(true);
-                else
-                    ui.SetActive(false);
-            }
+            Debug.Log(ui.name);
+            if (ui.name == "RunTime") //Kun vis kørsels UI
+                ui.SetActive(true);
+            else
+                ui.SetActive(false);
         }
+    }
 
-        public void StartRunTime() //Begin simulation
-        {
-            foreach (GameObject ui in UIs)
-            {
-                if (ui.name == "RunTime") //Kun vis start menuen
-                    ui.SetActive(true);
-                else
-                    ui.SetActive(false);
-            }
-        }
+    public void ShowResults() //Vis resultatet
+    {
+        Results.SetActive(true);
+    }
 
-        public void ShowResults() //End simulation. Is called when all sandbags are placed
-        {
-            Results.SetActive(true);
-        }
-        public void HideResults()
-        {
-            Debug.Log("Tes");
-            Results.SetActive(false);
-        }
+    public void HideResults() //Gæm resultatet væk, hvis der ønskes en forsat visning af simulationen
+    {
+        Results.SetActive(false);
     }
 }
 

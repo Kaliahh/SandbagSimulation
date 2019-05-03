@@ -7,16 +7,19 @@ using UnityEngine.UI;
 public class RunTime : MonoBehaviour
 {
     private Text Time; //Tid
-    private Text SandbagsLeft; //Amount of sandbags left before simulation is ended
+    private Text SandbagsLeft; //Antallet af sandsække tilbage
 
-    private GameObject Menu; //Menu under simulation kørsel
+    private GameObject Menu; //Kørselsmenu
+
     void Start() 
     {
         //Referencer
         Time = GameObject.Find("Time").GetComponent<Text>(); //Tid
-        SandbagsLeft = GameObject.Find("SandBags").GetComponent<Text>(); //Antallet af sandsække
-        Menu = GameObject.Find("Menu");
-        Menu.SetActive(false);
+        SandbagsLeft = GameObject.Find("SandBags").GetComponent<Text>(); //Antallet af sandsække tilbage
+        Menu = GameObject.Find("Menu"); //Kørselsmenu
+
+        //Opsætning
+        Menu.SetActive(false); //Gem kørselsmenuen væk
     }
 
     void Update() 
@@ -27,7 +30,7 @@ public class RunTime : MonoBehaviour
         }
     }
 
-    private void ToggleMenu()
+    private void ToggleMenu() //Vis eller gem kørselsmenuen
     {
         if (Menu.active) //If Menuen allerede er aktiv 
         {
@@ -39,23 +42,18 @@ public class RunTime : MonoBehaviour
         }
     }
     
-    public void ChangeTime(float seconds) 
+    public void ChangeTime(float seconds) //Opdater tiden
     {
         //Time.text = seconds.ToString();
     }
 
-    public void ChangeSandBagsLeft(float sandbags)
+    public void ChangeSandBagsLeft(float sandbags) //Opdater sandsække tilbage
     {
         //SandBagsLeft.text = seconds.ToString();
     }
 
-    //Menu Methods
-
-    public void ChangeSpeed(float speed) 
+    public void ChangeSpeed(float speed) //Sæt hastigheden på simulationen fra slideren
     {
         //GameObject a = Menu.Find("Slider");
     }
-
-
-
 }
