@@ -17,7 +17,6 @@ namespace SandbagSimulation
         void Update() 
         {
             // Standardkamara
-            // TODO: Skal gøres til en if-else if kæde 
             if (Input.GetKeyDown("1"))
             {
                 SelectCameraPos1(); // Vælg standardpostion 1 som ser diget forfra
@@ -44,13 +43,13 @@ namespace SandbagSimulation
                 MainCamera.transform.Translate(0, 0, Input.GetAxis("Vertical"));
             }
 
-            if (Input.GetMouseButton(0)) 
+            if (Input.GetMouseButton(0)) //Hvis venstremuseknap holdes nede, kan man ændre kameravinklen
             {
-                rotation.y += Input.GetAxis("Mouse X");
-                rotation.x += -Input.GetAxis("Mouse Y");
-                MainCamera.transform.eulerAngles = rotation;
+                rotation = MainCamera.transform.eulerAngles; //Tag vinklen ud og gem den som en vector2
+                rotation.y += Input.GetAxis("Mouse X"); //Adder den ønskede nye vinkel y gennem input fra musen
+                rotation.x += -Input.GetAxis("Mouse Y"); //Adder den ønskede nye vinkel x gennem input fra musen
+                MainCamera.transform.eulerAngles = rotation; //Tildel den nye vektor til vinkelen
             }
-
         }
 
         #region  Metoder til udregning af kameraets postition og vinkel henholdsvis til diget
@@ -148,12 +147,9 @@ namespace SandbagSimulation
             MainCamera.transform.position = CalculateCamera3();
             MainCamera.transform.rotation.SetLookRotation(GetComponent<SandbagSpawner>().SpawnPoint);
 
-            //TODO: Højden bruges ikke
-            float height = 20;
             MainCamera.transform.position += new Vector3(0, 1, -15);
             MainCamera.transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
-
         #endregion
     }
 }
