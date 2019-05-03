@@ -10,7 +10,7 @@ namespace SandbagSimulation
     {
         // Properties and fields
         public Vector3 CurrentSection { get; set; }
-        public float MinimumSeperation { get; private set; }
+        public float MinimumSeperation { get; set; }
         public float MaximumPlacementDeviation { get; private set; }
         public Vector3 ErrorVector { get; private set; }
 
