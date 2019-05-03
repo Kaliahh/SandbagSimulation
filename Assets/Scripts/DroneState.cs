@@ -161,12 +161,7 @@ namespace SandbagSimulation
 
     public class SearchForSandbagPlaceState : DroneState
     {
-        SandbagPlacement sandbagPlacement;
-
-        public SearchForSandbagPlaceState(DroneController controller) : base(controller)
-        {
-            sandbagPlacement = new SandbagPlacement(0f);
-        }
+        public SearchForSandbagPlaceState(DroneController controller) : base(controller) { }
 
         public override void Execute()
         {
@@ -197,7 +192,7 @@ namespace SandbagSimulation
         // Finder det sted hvor den første sandsæk skal placeres i diget
         private void FindFirstSandbagPlace()
         {
-            C.PossiblePlaces = sandbagPlacement.FindPlace(C.ViewDistance, C.transform.position, C.MyBlueprint);
+            C.PossiblePlaces = C.MySection.FindPlace(C.ViewDistance, C.transform.position, C.MyBlueprint);
 
             if (C.PossiblePlaces == null)
             {
@@ -217,16 +212,18 @@ namespace SandbagSimulation
         // Hvis den ikke kan finde en mulig placering, finder den den næste sektion dronen skal arbejde på
         private void FindNextSandbagPlace()
         {
-            C.PossiblePlaces = sandbagPlacement.FindPlace(C.ViewDistance, C.transform.position, C.MyBlueprint);
+            C.PossiblePlaces = C.MySection.FindPlace(C.ViewDistance, C.transform.position, C.MyBlueprint);
 
             if (C.PossiblePlaces == null)
             {
+                Debug.DrawLine(C.transform.position, C.transform.position + new Vector3(0, 10, 0), Color.blue, 0.5f);
                 C.MySection.CurrentSection = C.MySection.FindNextSection(C.ViewDistance, C.transform.position, C.IsRightDrone, C.MyBlueprint);
                 C.AboveSection = DroneTools.CalculateAbovePoint(C.MySection.CurrentSection, C.MyBlueprint, C.SafeHeight);
             }
+
             else
             {
-                C.SandbagTargetPoint.Position = sandbagPlacement.FindBestPlace(C.PossiblePlaces, C.transform.position, C.ViewDistance);
+                C.SandbagTargetPoint.Position = C.MySection.FindBestPlace(C.PossiblePlaces, C.transform.position, C.ViewDistance);
 
                 if (C.SandbagTargetPoint.Position != new Vector3(-100, -100, -100))
                 {
