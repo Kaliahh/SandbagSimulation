@@ -17,9 +17,9 @@ public class UI : MonoBehaviour
     void Start()
     {
         //Referencer
-        MainMenu = GameObject.Find("MainMenu"); //Reference til StartMenu UI
-        RunTime = GameObject.Find("RunTime"); //Reference til runtime UI
-        Results = GameObject.Find("Results"); //Reference til resultatvinduet
+        MainMenu = transform.Find("MainMenu").gameObject; //Reference til StartMenu UI
+        RunTime = transform.Find("RunTime").gameObject;  //Reference til runtime UI
+        Results = transform.Find("Results").gameObject;
 
         UIs = new List<GameObject> { MainMenu, RunTime, Results }; //Siderne lægges ind i listen
 
@@ -32,11 +32,10 @@ public class UI : MonoBehaviour
         
         foreach (GameObject ui in UIs)
         {
-            Debug.Log(ui.name);
-            //if (ui.name == "MainMenu") //Kun vis start menuen
-            //    ui.SetActive(true);
-            //else
-            //    ui.SetActive(false);
+            if (ui.name == "MainMenu") //Kun vis start menuen
+                ui.SetActive(true);
+            else
+                ui.SetActive(false);
         }
     }
 
