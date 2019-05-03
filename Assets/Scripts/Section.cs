@@ -10,10 +10,16 @@ namespace SandbagSimulation
     {
         // Properties and fields
         public Vector3 CurrentSection { get; set; }
-        public float MinimumSeperation { get; set; }
-        public float MaximumPlacementDeviation { get; set; }
+        public float MinimumSeperation { get; private set; }
+        public float MaximumPlacementDeviation { get; private set; }
+        public Vector3 ErrorVector { get; private set; }
 
-        private Vector3 ErrorVector = new Vector3(-100f, -100f, -100f);
+        public Section()
+        {
+            ErrorVector = new Vector3(-100, -100, -100);
+            MinimumSeperation = 1;
+            MaximumPlacementDeviation = 0.5f;
+        }
 
         // Public Methods
 
@@ -36,11 +42,8 @@ namespace SandbagSimulation
             if (startingBag.Equals(ErrorVector))
             {
                 Debug.Log("No startingpoint found");
-                Debug.DrawLine(position, position + new Vector3(0, 10, 0), Color.red, 1);
                 return null;
             }
-
-            MaximumPlacementDeviation = 0.5f; // TODO: Magisk tal
 
             Queue<Vector3> pointQueue = new Queue<Vector3>();
             List<Vector3> visited = new List<Vector3>();
@@ -165,7 +168,9 @@ namespace SandbagSimulation
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance, float sandbagHeight)
         {
             GameObject result = GameObject.FindGameObjectsWithTag("PlacedSandbag")
-                                       .FirstOrDefault(v => new Point(v.transform.position).InView(position, viewDistance, sandbagHeight));
+                                       .Where(v => new Point(v.transform.position).InView(position, viewDistance, sandbagHeight))
+                                       .OrderBy(v => Vector3.Distance(v.transform.position, position))
+                                       .FirstOrDefault();
 
             return result == null ? ErrorVector : result.transform.position;
         }
