@@ -93,7 +93,6 @@ namespace SandbagSimulation
             // Opsætning af MySection
             MySection = new Section();
             MySection.CurrentSection = Vector3.zero;
-            MySection.MinimumSeperation = 1;
 
             // Henter FlyTo method fra DroneMover, så programmet ikke behøver at referere til en anden class
             FlyTo = this.GetComponent<DroneMover>().FlyTo;
@@ -109,17 +108,6 @@ namespace SandbagSimulation
 
         private void Update()
         {
-            // Synsrækkevidde visualisering
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(0, 0, 1)  * ViewDistance);
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(0, 0, -1) * ViewDistance);
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(0, 1, 0)  * ViewDistance);
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(0, -1, 0) * ViewDistance);
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(1, 0, 0)  * ViewDistance);
-            //Debug.DrawLine(this.transform.position, this.transform.position + new Vector3(-1, 0, 0) * ViewDistance);
-
-            // Dronens nuværende sektion
-            //Debug.DrawLine(MySection.CurrentSection, MySection.CurrentSection + new Vector3(0, 10, 0), Color.blue);
-
             if (IsHomeAndDone == false)
             {
                 if (IsFinishedBuilding == false)
@@ -140,8 +128,6 @@ namespace SandbagSimulation
             }
         }
 
-        // DecisionMaker
-
         // Beslutter hvad dronen skal foretage sig for hver frame
         private void UpdateState()
         {
@@ -153,7 +139,7 @@ namespace SandbagSimulation
             }
 
             // Hvis dronen skulle få en ErrorVector, søger den igen efter et sted at placere sandsækken
-            if (SandbagTargetPoint.Position == ErrorVector)
+            if (SandbagTargetPoint.Position == MySection.ErrorVector)
             {
                 Debug.Log("Error vector");
                 SandbagTargetPoint.Position = Vector3.zero;
@@ -162,13 +148,6 @@ namespace SandbagSimulation
 
             State.Execute();
         }
-
-
-        
-
-        #region SandbagPlaceFinder?
-
-        
 
 
         public bool IsPlaceStillAvailable(Vector3 dronePosition, Point targetPoint)
@@ -212,26 +191,6 @@ namespace SandbagSimulation
 
             return foundationPoint;
         }
-
-        #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         #region Sættere
