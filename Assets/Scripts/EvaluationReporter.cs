@@ -146,11 +146,11 @@ namespace SandbagSimulation
             }
             else if (tResults.CohensD < LargeEffectLowerBound)
             {
-                predicate = "en del";
+                predicate = "moderat";
             }
             else
             {
-                predicate = "betragteligt";
+                predicate = "en del";
             }
                 
             return predicate;
