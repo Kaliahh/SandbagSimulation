@@ -48,12 +48,11 @@ namespace SandbagSimulation
             PositionalErrorsList = GetAdjustedErrorList(GetPositionalErrorsList(), ErrorDeltas.Position);
         }
 
-        // Metoden fratrækker et fejltolerance-delta for trivielle afvigelser fra hvert element i listOfErrors.
+        // Metoden fratrækker et fejltolerance-delta fra hvert element i listOfErrors.
         public List<double> GetAdjustedErrorList(List<double> listOfErrors, double errorToleranceDelta)
         {
             return listOfErrors.Select(element => Math.Max(0, element - errorToleranceDelta)).ToList();
         }
-
 
 
         #endregion
@@ -100,12 +99,14 @@ namespace SandbagSimulation
             return positionalErrorsList;
         }
 
-        /* Denne metode gennemgår listen af optimale positioner og returnerer listen af afvigelser for elementer i dike,
+
+        /* Denne metode gennemgår listen af optimale positioner og returnerer listen af afvigelser for elementer i Dike,
          * der korresponderer med en position i det optimale dige. */
         public List<double> GetErrorsForSandbagsCorrespondingToOptimalPositions()
         {
             return OptimalDikeFinder.OptimalPositions.Select(position => PositionalErrorHandler(position)).ToList();
         }
+
 
         /* Denne metode håndterer overskydende sandsække fra elimineringsprocessen i metoden GetListOfErrors 
          * som en positionel fejl svarende til en manglende sandsæk og føjer dem til positionalErrorsList. */
@@ -135,7 +136,7 @@ namespace SandbagSimulation
         }
 
 
-        /* Denne metode tager en optimalPosition, returnerer afstanden til dens nærmeste match i BuiltDikeFinder.Dike
+        /* Denne metode tager en optimalPosition, returnerer afstanden til dens nærmeste match i Dike
          * og tildeler en outparameter indekset på dens nærmeste match. */
         public double GetDistanceFromClosestMatch(Vector3 optimalPosition, out int closestMatchIndex)
         {

@@ -14,7 +14,7 @@ namespace SandbagSimulation
 
         public List<SandbagData> Dike { get; set; }
 
-        // Indhenter samtlige GameObjects med tagget "PlacedSandbag" fra simulationen og projicerer dem til en liste af SandbagData.
+        // Indhenter samtlige GameObjects med tagget "PlacedSandbag" fra simulationen og projicerer dem til en liste af typen SandbagData.
         public void FindDike()
         {
             Dike = GameObject.FindGameObjectsWithTag("PlacedSandbag").Select(sandbag => new SandbagData(sandbag)).ToList();

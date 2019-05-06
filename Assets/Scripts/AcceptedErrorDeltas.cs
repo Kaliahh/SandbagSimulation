@@ -12,6 +12,6 @@ public class AcceptedErrorDeltas
     public AcceptedErrorDeltas()
     {
         Rotation = 5.0;
-        Position = 0.03;
+        Position = 0.05;
 }
 }

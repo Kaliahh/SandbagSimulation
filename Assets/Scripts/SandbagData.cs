@@ -29,7 +29,7 @@ public class SandbagData
         Forward = forward;
     }
 
-    // Denne constructor bruges udelukkende til at gøre testning mere bekvemt.
+    // Denne constructor bruges udelukkende til at gøre tests mere bekvemme.
     public SandbagData(Vector3 position)
     {
         Position = position;

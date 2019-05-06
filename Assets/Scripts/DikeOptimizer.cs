@@ -14,7 +14,6 @@ namespace SandbagSimulation
 
         #region Fields
 
-        // Indkapslede felter, der bruges under evalueringsprocessen.
         public SandbagData OptimalRotation { get; set; }
         public List<Vector3> OptimalPositions { get; set; }
 
@@ -32,8 +31,7 @@ namespace SandbagSimulation
 
         #region FindOptimalDike
 
-        /* Ud fra blueprint beregnes den optimale rotation og position for 
-         * sandsækkene i det byggede dige */
+        /* Ud fra blueprint beregnes den optimale rotation og position for sandsækkene i det byggede dige */
         public void FindOptimalDike(Blueprint blueprint)
         {
 
@@ -61,7 +59,7 @@ namespace SandbagSimulation
 
         #region FindOptimalPositions
 
-        /* Metoden styrer beregningen af optimale positioner i diget af første samt resterende lag.
+        /* Metoden styrer beregningen af optimale positioner i diget af første og yderligere lag.
          * Resultatet er en liste af optimale positioner, som tildeles feltet OptimalPositions. */
         public void FindOptimalPositions()
         {
@@ -69,9 +67,13 @@ namespace SandbagSimulation
             var remainingLayers = new List<Vector3>();
 
             if (EvaluatedBlueprint.DikeHeight > 0)
+            {
                 firstLayer = GetFirstOptimalLayer();
+            }
             if (EvaluatedBlueprint.DikeHeight > 1)
+            {
                 remainingLayers = GetAllRemainingLayers(firstLayer);
+            }
 
             OptimalPositions = firstLayer.Concat(remainingLayers).ToList();
         }
@@ -103,7 +105,7 @@ namespace SandbagSimulation
             firstLayerResult.Add(firstBag);
         }
 
-        // Metoden føjer de resterende optimale positioner til firstLayerResult. 
+        // Metoden føjer de resterende optimale positioner i første lag til firstLayerResult. 
         public void CompleteFirstLayerFromCenter(List<Vector3> firstLayerResult)
         {
             Vector3 firstDirection = GetBuildingDirection(firstLayerResult.First(), EvaluatedBlueprint.ConstructionNodes.First()),
@@ -116,7 +118,7 @@ namespace SandbagSimulation
 
 
         /* Metoden returnerer et punkt, som er firstBagPosition projiceret i retning af construction node.
-         * Afstanden mellem firstBagPosition og returpunktet er 1024 gange afstanden mellem firstBagPosition og constructionNode. */
+         * Afstanden mellem firstBagPosition og returpunktet er 1024 gange afstanden mellem firstBagPosition og constructionNode (langt!). */
         public Vector3 GetBuildingDirection(Vector3 firstBagPosition, Vector3 constructionNode)
         {
             Vector3 direction = constructionNode - firstBagPosition;
@@ -126,7 +128,7 @@ namespace SandbagSimulation
         }
 
 
-        // Metoden føjer positioner til firstLayerResult i to retninger, indtil området mellem to waypoints er dækket af sandsække.
+        // Metoden føjer positioner til firstLayerResult i to retninger, indtil området mellem de to waypoints er dækket af sandsække.
         public void AddSandbagsUntilWaypointsAreCovered(List<Vector3> firstLayerResult, Vector3 firstDirection, Vector3 secondDirection)
         {
             var endpointForSecondDirection = EvaluatedBlueprint.ConstructionNodes.Last();
@@ -154,8 +156,9 @@ namespace SandbagSimulation
         }
 
 
-        /* Metoden føjer positioner til firstLayerResult ved at projicere i to retninger. Dette gøres fra første sandsæks position, hvis det er eneste
-         * element i listen. Ellers ud fra korrespondencen, at elementer med ulige og lige indeks > 0 hhv. bygger mod første og anden retning. */
+        /* Metoden føjer positioner til firstLayerResult ved at projicere i to retninger. 
+         * Dette gøres fra første sandsæks position, hvis det er eneste element i listen. 
+         * Ellers ud fra korrespondencen, at elementer med ulige og lige indeks > 0 hhv. bygger mod første og anden retning. */
         public void BuildFurther(Vector3 firstDirection, Vector3 secondDirection, List<Vector3> firstLayerResult)
         {
             firstLayerResult.Add(Vector3.MoveTowards(firstLayerResult[Math.Max(0, (firstLayerResult.Count - 2))], firstDirection, SandbagModel.Length));
@@ -165,7 +168,7 @@ namespace SandbagSimulation
 
 
         /* Metoden returnerer antallet af sandsække, der skal tilføjes på hver side af midten, for at kunne
-         * bære et øverste lag, der dækker waypoints. Formlen er baseret på ræsonnementet,  at diget bliver én sandsæk 
+         * bære et øverste lag, der dækker waypoints. Formlen er baseret på ræsonnementet, at diget bliver én sandsæk 
          * kortere for hvert ekstra lag, og der derfor skal tilføjes ekstra sandsække for hvert andet ekstra lag, med et givet offset. */
         public int NumberOfExtraStabilizingSandbagsRequired(List<Vector3> firstLayerResult)
         {
@@ -174,7 +177,8 @@ namespace SandbagSimulation
             return (int)Math.Floor((EvaluatedBlueprint.DikeHeight - offset) / 2.0);
         }
 
-        /* Metoden afgør ud fra sidste placerede sæks afstand til midten mellem waypoints, 
+
+        /* Metoden afgør ud fra den sidst placerede sandsæks afstand til midten mellem waypoints, 
          * om der skal ventes med at tilføjes ekstra sandsække til 2.  eller 3. lag og returnerer det nødvendige offset. */
         public int OffsetNeededDueToFinalBagExtensionBeyondWaypoint (List<Vector3> firstLayerResult)
         {
@@ -194,7 +198,8 @@ namespace SandbagSimulation
         {
             List<Vector3> remainingLayersResult = new List<Vector3>();
 
-            // Første lag sorteres således, at løkken i metoden BuildAnotherLayerOnTop itererer gennem lagene i diget fra den ene ende til den anden.
+            /* Første lag sorteres, så løkken i metoden BuildAnotherLayerOnTop 
+             * itererer gennem lagene i diget fra den ene ende til den anden. */
             var nextLayerToBeBuiltUpon = firstLayer.OrderBy(ProximityToOneOfTheWaypoints).ToList();
 
             for (int i = 2; i <= EvaluatedBlueprint.DikeHeight; i++)
@@ -207,8 +212,8 @@ namespace SandbagSimulation
         }
 
 
-        /* Metoden returnerer en liste af positioner, som ligger på den vandrette akse ligger mellem alle parvist sideliggende positioner 
-         * i layerToBeBuiltUpon og på den lodrette tildeles en ny højde ud newLayerNumber. */
+        /* Metoden returnerer en liste af positioner, som er midtpunkterne af alle elementer i layerToBeBuiltUpon 
+         * projiceret op i en ny højde ud fra newLayerNumber. */
         public List<Vector3> BuildAnotherLayerOnTop(List<Vector3> layerToBeBuiltUpon, int newLayerNumber)
         {
             var newLayer = new List<Vector3>();

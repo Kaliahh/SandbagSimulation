@@ -55,7 +55,7 @@ namespace SandbagSimulation
                     + " Iflg. statistiske analyser vender sandsækkene i samme retning som i det optimale dige"
                     + GetTTestReport(rotationResults)
                     + ReportMeanBeyondErrorMargin(rotationResults, "rotation")
-                    + " Derudover har de stort set samme placering som sandsækkene i det optimale dige"
+                    + "$Derudover har de stort set samme placering som sandsækkene i det optimale dige"
                     + GetTTestReport(positionResults)
                     + ReportMeanBeyondErrorMargin(positionResults, "position");
         }
@@ -71,6 +71,7 @@ namespace SandbagSimulation
                     + ReportMeanBeyondErrorMargin(rotationResults, "rotation");
         }
 
+
         // Denne metode returnerer tekststrengen til t-testen for position i tilfældet med én eller flere signifikante t-værdier.
         private string GetPositionReport(TTester rotationResults, TTester positionResults)
         {
@@ -78,7 +79,7 @@ namespace SandbagSimulation
 
             if (TestsAreBothSignificantWithSameEffects(rotationResults, positionResults))
             {
-                positionReport = "$Den samme grad af afvigelse gør sig gældende for sandsækkenes placering"
+                positionReport = $"$Sandsækkenes placering afviger også {GetErrorPredicate(positionResults)} fra det optimale dige"
                                  + GetTTestReport(positionResults)
                                  + ReportMeanBeyondErrorMargin(positionResults, "position");
 
@@ -113,6 +114,7 @@ namespace SandbagSimulation
                     + $" den accepterede fejlmargin på {acceptedErrorMargin}.";
         }
 
+
         /* Denne metode returnerer på baggrund af forholdene mellem de to t-tests den rette indledning til 
          * den anden sætning i rapporteringen med en eller flere signifikante t-værdier. */
         private string GetIntroToSecondSentence(TTester rotationResults, TTester positionResults)
@@ -129,7 +131,7 @@ namespace SandbagSimulation
 
 
         /* Denne metode returnerer på baggrund af signifikans og effektstørrelse for et test-resultat
-         * et vurderingsord, der angiver, hvordan testen er gået. */
+         * et prædikat, der angiver, hvordan testen er gået. */
         private string GetErrorPredicate(TTester tResults)
         {
             string predicate;
@@ -164,7 +166,7 @@ namespace SandbagSimulation
 
             if (tResults.PNullHypothesis < SignificanceLevel)
             {
-                pReport = (tResults.PNullHypothesis == 0) ? "p < 0.001" : $"p = {Math.Round(tResults.PNullHypothesis, 2)}";
+                pReport = (Math.Round(tResults.PNullHypothesis, 3) == 0) ? "p < 0.001" : $"p = {Math.Round(tResults.PNullHypothesis, 3)}";
                 pReport += $" og Cohens d = {Math.Round(tResults.CohensD, 2)}.";
             }
             else
@@ -176,7 +178,7 @@ namespace SandbagSimulation
 
 
         /* Denne metode returnerer sandhedsværdien af udsagnet, at effektstørrelsen for de to t-tests er af 
-         * samme orden iflg. konventionelle mål. */
+         * samme orden iflg. den konventionelle skala. */
         private bool TestsHaveSameEffectSizes(double rotationD, double positionD)
         {
 
@@ -194,6 +196,7 @@ namespace SandbagSimulation
             return sameEffectSize;
         }
 
+
         // Denne metode returnerer sandhedsværdien af udsagnet, at testresultaterne havde lign. valens ("Godt/Skidt").
         private bool TestsResultsHaveSimilarValence(TTester rotationResults, TTester positionResults)
         {
@@ -205,7 +208,6 @@ namespace SandbagSimulation
         // Denne metode returnerer sandhedsværdien af udsagnet, at begge tests var signifikant med >= medium effektstørrelse.
         private bool TestsAreBothSignificantWithMediumOrLargeEffects(TTester rotationResults, TTester positionResults)
         {
-
             var testsAreBothSignificant = (rotationResults.PNullHypothesis < SignificanceLevel) && (positionResults.PNullHypothesis < SignificanceLevel);
 
             var testsBothHaveAtLeastMediumEffects = (rotationResults.CohensD >= MediumEffectLowerBound) && (positionResults.CohensD >= MediumEffectLowerBound);
@@ -214,7 +216,7 @@ namespace SandbagSimulation
         }
 
 
-        // Denne metode returnerer sandhedsværdien af udsagnet, at en af de to tests var signifikant med lille effekt, mens den anden ikke var signifikant.
+        // Denne metode returnerer sandhedsværdien af udsagnet, at en af de to tests er signifikant med lille effekt, mens den anden ikke er signifikant.
         private bool OneTestsWasNonsignificantWhileTheOtherHadASmallEffect(TTester rotationResults, TTester positionResults)
         {
             var rotationSignificantWithSmallEffect = (rotationResults.PNullHypothesis < SignificanceLevel) && (rotationResults.CohensD < MediumEffectLowerBound);

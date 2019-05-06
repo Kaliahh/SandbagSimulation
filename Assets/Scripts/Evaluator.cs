@@ -12,18 +12,17 @@ namespace SandbagSimulation
     public class Evaluator
     {
 
-
         #region Fields
 
         /* DikeAnalyst finder det byggede diges afvigelse fra det optimale i
          * forhold til de enkelte sandsækkes position og rotation. */
         private DikeErrorFinder DikeAnalyst;
 
-        // De to TTester-komponenter kan udføre one-sample t-tests på DikeAnalysts resultater.
+        // De to TTester-komponenter kan udføre one-tailed one-sample t-tests på DikeAnalysts resultater.
         public TTester RotationalTTest;
         public TTester PositionalTTest;
 
-        // EvaluationReporter kan skabe en formateret tekststreng som output til t-testene.
+        // EvaluationReporter kan danne en formateret tekststreng som output til t-testene.
         private EvaluationReporter TTestReporter;
         public string EvaluationReport { get; private set; }
         #endregion
@@ -55,6 +54,7 @@ namespace SandbagSimulation
             RotationalTTest.RunTTest(DikeAnalyst.RotationalErrorsList);
             PositionalTTest.RunTTest(DikeAnalyst.PositionalErrorsList);
 
+            // TTesReporter returnerer en streng, der opsummerer resultatet af t-testene, som er direkte tilgængelig i Evaluator.
             EvaluationReport = TTestReporter.GetEvaluationReport(RotationalTTest, PositionalTTest);
         }
 

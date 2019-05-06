@@ -12,6 +12,7 @@ namespace SandbagSimulation
     {
 
         #region Fields
+
         public List<double> ListOfErrors { get;  private set; }
         public bool TTestResultsAreValid { get; private set; }
 
@@ -25,10 +26,6 @@ namespace SandbagSimulation
 
         #endregion
 
-        #region Constructor
-
-        #endregion
-
         #region RunTTest
 
         // Metoden styrer kontrolflowet i en t-test på listOfErrors og resultatet gemmes i public get/private set felter.
@@ -39,11 +36,13 @@ namespace SandbagSimulation
             ListOfErrors = listOfErrors;
             SampleSize = listOfErrors.Count;
 
-            /* Hvis samplestørrelsen er 0 eller 1, er hhv. middelværdi og standardafvigelse ikke defineret,
-             * og t-testen afbrydes derfor med TTestResultsAreValid = false som markør. */
+
+            /* Hvis samplestørrelsen er under 30, er der muligvist brud på t-testens statistiske antagelser,
+             * og processen afbrydes derfor med TTestResultsAreValid = false som markør. */
             if (SampleSize >= 30)
             {
                 ErrorMean = GetMean(ListOfErrors);
+
 
                 // Hvis ListOfErrors er fuldstændigt homogen, sættes standardafvigelse til en værdi nær nul, for at t kan beregnes.
                 if (ListOfErrors.Distinct().ToList().Count > 1)
@@ -63,7 +62,6 @@ namespace SandbagSimulation
             else
             {
                 TTestResultsAreValid = false;
-                //ErrorMean = (SampleSize == 0) ? double.NaN : ListOfErrors.First();
             }
 
         }
@@ -77,11 +75,13 @@ namespace SandbagSimulation
             return listOfErrors.Average();
         }
 
-        // Metoden returnerer standardafvigelsen ud fra en listOfErrors og en gennemsnits.
+
+        // Metoden returnerer standardafvigelsen ud fra en listOfErrors og en kvadratsum.
         public double GetStandardDeviation(double sumOfSquares, int sampleSize)
         {
             return Math.Sqrt(sumOfSquares / (sampleSize - 1));
         }
+
 
         // Metoden tager en liste af doubles samt middelværdien af dens elementer og returnerer kvadratsummen.
         public double GetSumOfSquares(List<double> listOfErrors, double errorMean)
@@ -89,11 +89,13 @@ namespace SandbagSimulation
             return listOfErrors.Select(sandbagError => Math.Pow((sandbagError - errorMean), 2)).Sum();
         }
 
-        // Metoden beregner teststørrelsen t til en one-sample t-test, hvor H0 er, at den gennemsnitlige afvigelse er 0.
+
+        // Metoden beregner teststørrelsen t til en one-sample t-test, hvor H0 er, at errorMean er 0.
         public double GetT(double hypothesizedMean, double errorMean, double standardDeviation, int sampleSize)
         {
             return (errorMean - hypothesizedMean) * (Math.Sqrt(sampleSize) / standardDeviation);
         }
+
 
         // Metoden tager teststørrelsen t samt en samplestørrelse og returnerer sandsynligheden for værdier >= t under H0.
         public double GetP(double tStatistic, int sampleSize)
@@ -104,7 +106,7 @@ namespace SandbagSimulation
         }
 
 
-        /* Denne metode (lettere modifikation af ACM #395) estimerer det et-halede areal under Student's t-fordeling med inputtets antal frihedsgrader 
+        /* Denne metode (lettere modifikation af ACM #395) estimerer det et-halede areal under Student's t-fordeling med inputtets antal frihedsgrader. 
          * Dette gøres i praksis ved at estimere den tilsvarende z-værdi under normalfordelingen og hente arealet fra metoden Gauss. */
         private double Student(double t, double degreesOfFreedom)
         {
@@ -129,11 +131,11 @@ namespace SandbagSimulation
               (0.8 * y * y + 100.0 + b) + y + 3.0) / b + 1.0) *
               Math.Sqrt(y);
 
-            return /*2.0 **/ Gauss(-y);
+            return Gauss(-y);
         }
 
 
-        // Denne metode (ACM #209) tager en z-værdi og estimerer det et-halede areal under normalfordelingen.
+        // Denne metode (ACM #209) tager en z-værdi og estimerer det et-halede areal under normalfordelingen vha. polynomisk estimering.
         private double Gauss(double z)
         {
             double y;
@@ -182,6 +184,7 @@ namespace SandbagSimulation
                 return (1.0 - p) / 2;
             }
         }
+
 
         // Metoden beregner effektstørrelsen Cohens D ud fra inputværdierne og ud fra samme nulhypotese som ovenfor.
         public double GetCohensD(double errorMean, double hypothesizedMean, double standardDeviation)
