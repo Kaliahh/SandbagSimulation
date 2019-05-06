@@ -47,13 +47,13 @@ namespace SandbagSimulation
         #region FindOptimalRotation
 
 
-        /* I det optimale dige har alle sandsække samme rotation. Deres forward-akse ligger parallelt med waypoints,
-         * deres up-akse er lodret og deres right-akse kan beregnes ud fra krydsproduktet af de to andre. */
+        /* I det optimale dige har alle sandsække samme rotation. Deres right-akse ligger parallelt med waypoints,
+         * deres up-akse er lodret og deres forward-akse kan beregnes ud fra krydsproduktet af de to andre. */
         public void FindOptimalRotation()
         {
-            var forward = EvaluatedBlueprint.ConstructionNodes.Last() - EvaluatedBlueprint.ConstructionNodes.First();
+            var right = EvaluatedBlueprint.ConstructionNodes.Last() - EvaluatedBlueprint.ConstructionNodes.First();
             var up = Vector3.up;
-            var right = Vector3.Cross(forward, up);
+            var forward = Vector3.Cross(right, up);
 
             OptimalRotation = new SandbagData(right, up, forward);
         }

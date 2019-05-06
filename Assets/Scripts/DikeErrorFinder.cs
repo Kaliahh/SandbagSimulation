@@ -15,6 +15,9 @@ namespace SandbagSimulation
         #region Fields
         public List<double> RotationalErrorsList { get; private set; }
         public List<double> PositionalErrorsList { get; private set; }
+
+        private AcceptedErrorDeltas ErrorDeltas;
+
         public Vector3 PickupPoint { get; set; }
 
         public DikeFinder BuiltDikeFinder;
@@ -26,6 +29,7 @@ namespace SandbagSimulation
         {
             BuiltDikeFinder = new DikeFinder();
             OptimalDikeFinder = new DikeOptimizer();
+            ErrorDeltas = new AcceptedErrorDeltas();
         }
         #endregion
 
@@ -40,9 +44,17 @@ namespace SandbagSimulation
 
             OptimalDikeFinder.FindOptimalDike(blueprint);
 
-            RotationalErrorsList = GetRotationalErrorsList();
-            PositionalErrorsList = GetPositionalErrorsList();
+            RotationalErrorsList = GetAdjustedErrorList(GetRotationalErrorsList(), ErrorDeltas.Rotation);
+            PositionalErrorsList = GetAdjustedErrorList(GetPositionalErrorsList(), ErrorDeltas.Position);
         }
+
+        // Metoden fratrækker et fejltolerance-delta for trivielle afvigelser fra hvert element i listOfErrors.
+        public List<double> GetAdjustedErrorList(List<double> listOfErrors, double errorToleranceDelta)
+        {
+            return listOfErrors.Select(element => Math.Max(0, element - errorToleranceDelta)).ToList();
+        }
+
+
 
         #endregion
 
@@ -134,6 +146,7 @@ namespace SandbagSimulation
 
             return closestMatchDistance;
         }
+
 
         #endregion
 

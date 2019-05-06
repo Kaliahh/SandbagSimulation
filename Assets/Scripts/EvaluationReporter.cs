@@ -10,10 +10,21 @@ namespace SandbagSimulation
     public class EvaluationReporter
     {
 
+        #region Fields
         private const double SignificanceLevel = 0.05;
         private const double MediumEffectLowerBound = 0.5;
         private const double LargeEffectLowerBound = 0.8;
+        private AcceptedErrorDeltas ErrorDeltas;
+        #endregion
 
+        #region Constructor
+        public EvaluationReporter()
+        {
+            ErrorDeltas = new AcceptedErrorDeltas();
+        }
+        #endregion
+
+        #region GetEvaluationReport
 
         // Metoden returnerer på baggrund af to sæt af t-testresultater en tekststreng, som udgør en samlet rapport af de statistiske analyser.
         public string GetEvaluationReport(TTester rotationResults, TTester positionResults)
@@ -34,22 +45,30 @@ namespace SandbagSimulation
                 return rotationReport + positionReport;
             }
         }
+        #endregion
 
+        #region Hjælpemetoder
         // Denne metode returnerer tekststrengen for tilfældet, hvor ingen t-værdier var statistisk signifikante.
         private string GetVeryGoodResultsReport(TTester rotationResults, TTester positionResults)
         {
             return "Samlet set er diget bygget optimalt."
                     + " Iflg. statistiske analyser vender sandsækkene i samme retning som i det optimale dige"
                     + GetTTestReport(rotationResults)
+                    + ReportMeanBeyondErrorMargin(rotationResults, "rotation")
                     + " Derudover har de stort set samme placering som sandsækkene i det optimale dige"
-                    + GetTTestReport(positionResults);
+                    + GetTTestReport(positionResults)
+                    + ReportMeanBeyondErrorMargin(positionResults, "position");
         }
 
 
         // Denne metode returnerer tekststrengen til t-testen for rotation i tilfældet med én eller flere signifikante t-værdier.
         private string GetRotationReport(TTester rotationResults, TTester positionResults)
         {
-            return "Sandsækkenes orientering afviger " + GetErrorPredicate(rotationResults) + " fra det optimale dige" + GetTTestReport(rotationResults);
+            return "Sandsækkenes orientering afviger " 
+                    + GetErrorPredicate(rotationResults) 
+                    + " fra det optimale dige" 
+                    + GetTTestReport(rotationResults)
+                    + ReportMeanBeyondErrorMargin(rotationResults, "rotation");
         }
 
         // Denne metode returnerer tekststrengen til t-testen for position i tilfældet med én eller flere signifikante t-værdier.
@@ -59,20 +78,40 @@ namespace SandbagSimulation
 
             if (TestsAreBothSignificantWithSameEffects(rotationResults, positionResults))
             {
-                positionReport = "$Det samme gør sig gældende for sandsækkenes placering"
-                                 + GetTTestReport(positionResults);
+                positionReport = "$Den samme grad af afvigelse gør sig gældende for sandsækkenes placering"
+                                 + GetTTestReport(positionResults)
+                                 + ReportMeanBeyondErrorMargin(positionResults, "position");
+
             }
             else
             {
                 positionReport = GetIntroToSecondSentence(rotationResults, positionResults)
                                  + GetErrorPredicate(positionResults)
                                  + " fra de optimale"
-                                 + GetTTestReport(positionResults);
+                                 + GetTTestReport(positionResults)
+                                 + ReportMeanBeyondErrorMargin(positionResults, "position");
+
             }
 
             return positionReport;
         }
 
+
+        // Metoden returnerer alt efter fejltypen og -størrelsen en rapport af den gennemsnitlige afvigelse.
+        private string ReportMeanBeyondErrorMargin(TTester tResults, string errorType)
+        {
+            var meanBeyondError = Math.Round(tResults.ErrorMean, 2);
+
+            string unitOfMeasure = (errorType == "position") ? ((meanBeyondError < 1) ? " cm" : " m") : "\u00b0";
+
+            meanBeyondError = (unitOfMeasure == " cm") ? Math.Round(100 * tResults.ErrorMean, 1) : meanBeyondError;
+
+            var acceptedErrorMargin = (errorType == "position") ? $"{100 * ErrorDeltas.Position} cm" : $"{ErrorDeltas.Rotation}\u00b0"; 
+
+            return " Afvigelserne ligger gennemsnitligt" 
+                    + (meanBeyondError > 0 ? $" {meanBeyondError}{unitOfMeasure} over" : " inden for") 
+                    + $" den accepterede fejlmargin på {acceptedErrorMargin}.";
+        }
 
         /* Denne metode returnerer på baggrund af forholdene mellem de to t-tests den rette indledning til 
          * den anden sætning i rapporteringen med en eller flere signifikante t-værdier. */
@@ -101,7 +140,7 @@ namespace SandbagSimulation
             }
             else if (tResults.CohensD < MediumEffectLowerBound)
             {
-                predicate = "kun en smule";
+                predicate = "kun en lille smule";
             }
             else if (tResults.CohensD < LargeEffectLowerBound)
             {
@@ -109,7 +148,7 @@ namespace SandbagSimulation
             }
             else
             {
-                predicate = "meget";
+                predicate = "betragteligt";
             }
                 
             return predicate;
@@ -194,7 +233,7 @@ namespace SandbagSimulation
             
             return testsAreBothSignificant && TestsHaveSameEffectSizes(rotationResults.CohensD, positionResults.CohensD);
         }
-
+        #endregion
 
     }
 }
