@@ -43,7 +43,7 @@ namespace SandbagSimulation
                 MainCamera.transform.Translate(0, 0, Input.GetAxis("Vertical"));
             }
 
-            if (Input.GetMouseButton(0)) //Hvis venstremuseknap holdes nede, kan man ændre kameravinklen
+            if (Input.GetMouseButton(1)) //Hvis venstremuseknap holdes nede, kan man ændre kameravinklen
             {
                 rotation = MainCamera.transform.eulerAngles; //Tag vinklen ud og gem den som en vector2
                 rotation.y += Input.GetAxis("Mouse X"); //Adder den ønskede nye vinkel y gennem input fra musen
