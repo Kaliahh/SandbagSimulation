@@ -10,14 +10,11 @@ public class Point
 
     public Point(Vector3 position) => Position = position;
 
-    /*
-     * Parameters: Vector3 placementLocation, Vector3 position, float viewDistance.
-     * 
-     * Return: Bool whether or not the drone at given position access the given placementLocation.
-     */
+    // Bedømmer om en drone med en given position har adgang til punktet.
+    // Returner falsk hvis der er andre droner for tæt på punktet.
     public bool Access(Vector3 dronePosition, float viewDistance, float minDistance)
     {
-        // Find Droner inden for viewdistance
+        // Find Droner inden for viewdistance.
         GameObject[] dronesInView = GameObject
             .FindGameObjectsWithTag("Drone")
             .Where(v => (Vector3.Distance(v.transform.position, dronePosition) <= viewDistance))
@@ -25,55 +22,30 @@ public class Point
 
         if (dronesInView.Length < 1)
             return true;
-
         else
             return dronesInView
                 .FirstOrDefault(v => (Vector3.Distance(v.transform.position, Position) <= minDistance)) == null ? true : false;
     }
 
-    /*
-    * Parameters: Vector3 position of the drone, Vector3 position to evaluate.
-    * 
-    * Return: Bool whether or not the target position is empty.
-    * 
-    * Vigtigt at sandsække med tagget "PickedUpSandbag" sættes i lag 2 der ignorer raycast, for at undgå at blokerer dronens syn
-    */
+    // Afgør om punktet er tomt.
     public bool Empty(Vector3 dronePosition)
     {
-        // Tegner blå linjer hvis position er tom, og en rød linje hvis den ikke er tom.
-        //if (Physics.Linecast(dronePosition, Position))
-        //    Debug.DrawLine(dronePosition, Position, Color.red, 0.75f);
-        //else
-        //    Debug.DrawLine(dronePosition, Position, Color.blue, 0.75f);
-
-        // Bruger linecast til at afgøre om der er et objekt positionen.
-        //Collider[] intersecting = Physics.OverlapSphere(Position, 0.01f);
-        //return intersecting.Length == 0;
         return !Physics.Linecast(dronePosition, Position);
     }
 
-    /*
-     * Parameters: Vector3 position of the drone, Vector3 position to evaluate, float viewDistance of the drone, float height of a sandbag
-     * 
-     * Return: Bool whether or not the target position is in view of the drone
-     */
+    // Afgør om en drone med en given position, kan se punktet.
     public bool InView(Vector3 dronePosition, float viewDistance, float sandbagHeight)
     {
-        // Check at raycast ikke finder noget lige over sandsækken
+        // Check at linecast ikke rammer noget lige over sandsækken
         float additionalHeight = 0.1f;
         Vector3 target = new Vector3(Position.x, Position.y + sandbagHeight + additionalHeight, Position.z);
         float distance = Vector3.Distance(dronePosition, target);
 
-        // True hvis der er lineOfSight og er inden for viewDistance
+        // Sand hvis der er lineOfSight og er inden for viewDistance.
         return (distance < viewDistance) ? !Physics.Linecast(dronePosition, target) : false;
     }
 
-    // Undersøger om den givne Vector3 er inden for de given grænser?
-    /*
-     * Parameters: Vector3 Position to evaluate List<Vector3> List with constructionNodes that determine the border.
-     * 
-     * Return: Bool whether or not the given position is within the given constructionNodes.
-     */
+    // Afgør om punktet er inden for grænserne givet ved blueprint.
     public bool WithinBorder(Blueprint blueprint, float sandbagHeight, float maxDistance)
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();
@@ -81,12 +53,11 @@ public class Point
 
         if (OnLine(blueprint, maxDistance) && WithinHeight(blueprint, sandbagHeight))
             return true;
-
         else
             return false;
     }
 
-    // Er et givent punkt på en linje, +/- maxdistance, givet ved blueprint. 
+    // Er et givent punkt på en linje med en acceptabel margen. 
     public bool OnLine(Blueprint blueprint, float maxDistance)
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();
@@ -109,14 +80,13 @@ public class Point
     }
 
     // Returnerer et array af tilstødende positioner til punktet.
-    public Point[] Adjecent(Blueprint blueprint, SandbagController sandbag)
+    public Point[] Adjecent(Blueprint blueprint, SandbagMeasurements sandbag)
     {
         // TODO: Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
         Point[] adjecent = new Point[2];
 
         Vector3 ad1 = (blueprint.ConstructionNodes.First() - blueprint.ConstructionNodes.Last()).normalized * sandbag.Length;
         ad1 = Position + ad1;
-
         Vector3 ad2 = (blueprint.ConstructionNodes.Last() - blueprint.ConstructionNodes.First()).normalized * sandbag.Length;
         ad2 = Position + ad2;
 
@@ -126,7 +96,8 @@ public class Point
         return adjecent;
     }
 
-    public Point[] Above(Point[] adjecent, SandbagController sandbag)
+    // Finder og returnerer et array af punkter over ([0] = venstre, [1] = højre)
+    public Point[] Above(Point[] adjecent, SandbagMeasurements sandbag)
     {
         Point[] abovePoints = new Point[2];
         Vector3 leftMiddle = Vector3.Lerp(Position, adjecent[0].Position, 0.5f);
@@ -137,7 +108,8 @@ public class Point
         return abovePoints;
     }
 
-    public Point[] Below(Point[] adjecent, SandbagController sandbag)
+    // Finder og returnerer et array af punkter nedenunder 
+    public Point[] Below(Point[] adjecent, SandbagMeasurements sandbag)
     {
         Point[] belowPoints = new Point[2];
         Vector3 leftMiddle = Vector3.Lerp(Position, adjecent[0].Position, 0.5f);

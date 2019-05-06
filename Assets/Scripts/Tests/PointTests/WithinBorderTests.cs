@@ -19,6 +19,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator WithinBorder_PointIsWithinBorder_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             List<Vector3> constructionNodes = new List<Vector3>();
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
@@ -26,15 +27,17 @@ namespace Tests
             Blueprint blueprint = new Blueprint(constructionNodes, 2);
             float maxDistance = 0.5f;
             float sandbagHeigth = 0.5f;
-
+            //Act
             yield return null;
-
-            Assert.IsTrue(point.WithinBorder(blueprint,sandbagHeigth, maxDistance));
+            bool result = point.WithinBorder(blueprint, sandbagHeigth, maxDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator WithinBorder_PointIsNotWithinHeight_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 1.5f, 10f));
             List<Vector3> constructionNodes = new List<Vector3>();
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
@@ -42,15 +45,17 @@ namespace Tests
             Blueprint blueprint = new Blueprint(constructionNodes, 2);
             float maxDistance = 0.5f;
             float sandbagHeigth = 0.5f;
-
+            //Act
             yield return null;
-
-            Assert.IsFalse(point.WithinBorder(blueprint, sandbagHeigth, maxDistance));
+            bool result = point.WithinBorder(blueprint, sandbagHeigth, maxDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator WithinBorder_PointIsNotOnLine_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(1f, 1f, 10f));
             List<Vector3> constructionNodes = new List<Vector3>();
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
@@ -58,15 +63,17 @@ namespace Tests
             Blueprint blueprint = new Blueprint(constructionNodes, 2);
             float maxDistance = 0.5f;
             float sandbagHeigth = 0.5f;
-
+            //Act
             yield return null;
-
-            Assert.IsFalse(point.WithinBorder(blueprint, sandbagHeigth, maxDistance));
+            bool result = point.WithinBorder(blueprint, sandbagHeigth, maxDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator WithinBorder_PointIsNotOnLineOrWithinHeight_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(1f, 1.5f, 10f));
             List<Vector3> constructionNodes = new List<Vector3>();
             constructionNodes.Add(new Vector3(0f, 0f, 0f));
@@ -74,10 +81,11 @@ namespace Tests
             Blueprint blueprint = new Blueprint(constructionNodes, 2);
             float maxDistance = 0.5f;
             float sandbagHeigth = 0.5f;
-
+            //Act
             yield return null;
-
-            Assert.IsFalse(point.WithinBorder(blueprint, sandbagHeigth, maxDistance));
+            bool result = point.WithinBorder(blueprint, sandbagHeigth, maxDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
 
     }

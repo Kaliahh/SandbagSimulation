@@ -18,6 +18,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator Access_OneDroneInViewBlockingAccess_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -26,25 +27,33 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 10f);
 
+            //Act
             yield return null;
-            Assert.IsFalse(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator Access_NoDrones_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             float viewDistance = 10f;
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 10f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_OneDroneInViewNotBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 15f);
@@ -53,13 +62,17 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 10f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_OneDroneNotInViewNotBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 35f);
@@ -68,12 +81,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 10f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
         [UnityTest]
         public IEnumerator Access_OneDroneNotInViewBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -82,13 +99,17 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 35f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_TwoDronesInViewBlockingAccess_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -100,12 +121,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 20f);
 
+            //Act
             yield return null;
-            Assert.IsFalse(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
         [UnityTest]
         public IEnumerator Access_TwoDronesInViewNotBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 15f);
@@ -117,13 +142,17 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 20f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_TwoDronesNotInViewNotBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 13f);
@@ -135,12 +164,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 35f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
         [UnityTest]
         public IEnumerator Access_TwoDronesNotInViewBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -152,13 +185,17 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 35f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_TwoDronesInViewOneBlockingAccess_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -170,12 +207,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 20f);
 
+            //Act
             yield return null;
-            Assert.IsFalse(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
         [UnityTest]
         public IEnumerator Access_OneDroneInViewBlockingAccessOneNotInViewBlockingAccess_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -187,12 +228,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 29f);
 
+            //Act
             yield return null;
-            Assert.IsFalse(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
         [UnityTest]
         public IEnumerator Access_OneDroneInViewNotBlockingAccessOneNotInViewBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 15f);
@@ -204,13 +249,17 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 29f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator Access_OneDroneInViewNotBlockingAccessOneNotInViewNotBlockingAccess_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 15f);
@@ -222,12 +271,16 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 29f);
 
+            //Act
             yield return null;
-            Assert.IsTrue(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsTrue(result);
         }
         [UnityTest]
         public IEnumerator Access_OneDroneInViewBlockingAccessOneNotInViewNotBlockingAccess_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 10f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 10f);
@@ -239,8 +292,11 @@ namespace Tests
             float minDistance = 2f;
             Vector3 position = new Vector3(0f, 2f, 29f);
 
+            //Act
             yield return null;
-            Assert.IsFalse(point.Access(position, viewDistance, minDistance));
+            bool result = point.Access(position, viewDistance, minDistance);
+            //Assert
+            Assert.IsFalse(result);
         }
     }
 }

@@ -21,20 +21,11 @@ namespace SandbagSimulation
             MaximumPlacementDeviation = 0.5f;
         }
 
-        // Public Methods
-
-        /*
-         * Parameters: float with the drones viewDistance, Vector3 with the drones position.
-         * 
-         * Return: Vector3[] containing the locations where it is possible for a drone to place a sandbag.
-         */
+        // Returnerer et array med alle punkter hvor det er muligt for en drone med en given position, at placere en sandsæk.
         public Vector3[] FindPlace(float viewDistance, Vector3 position, Blueprint blueprint)
         {
-            // List of alle the possible places
             List<Vector3> places = new List<Vector3>();
-
-            // Bliver kun brugt til at finde højde og bredde af sandsække, skal findes på en bedre måde (Statiske properties i SandbagController?)
-            SandbagController sandbag = Object.FindObjectOfType<SandbagController>();
+            SandbagMeasurements sandbag = new SandbagMeasurements();
 
             // Find en sandsæk til at bruge som udgangspunkt
             Vector3 startingBag = FindStartingPlace(position, viewDistance, sandbag.Height);
@@ -62,7 +53,7 @@ namespace SandbagSimulation
                 {
                     Point[] adjecent = current.Adjecent(blueprint, sandbag);
 
-                    // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
+                    // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået.
                     if (current.Empty(position)) 
                     {
                         if (current.Position.y >= sandbag.Height)
@@ -92,7 +83,7 @@ namespace SandbagSimulation
             return places.ToArray();
         }
 
-        // Indsætter de underliggende positioner i den givne kø, hvis de ikke er optaget
+        // Indsætter de underliggende positioner i den givne kø, hvis de ikke er optaget.
         private void EnqueueBelow(ref Queue<Vector3> queue, Vector3 position, Point[] belowPoints)
         {
             for (int i = 0; i < belowPoints.Length; i++)
@@ -100,7 +91,7 @@ namespace SandbagSimulation
                     queue.Enqueue(belowPoints[i].Position);
         }
 
-        // Indsætter de overliggende positioner, hvis der er sandsække i begge underliggende positioner
+        // Indsætter de overliggende positioner, hvis der er sandsække i begge underliggende positioner.
         private void EnqueueAbove(ref Queue<Vector3> queue, Vector3 position, Point[] abovePoints, Point[] adjecent)
         {
             for (int j = 0; j < abovePoints.Length; j++)
@@ -108,21 +99,16 @@ namespace SandbagSimulation
                     queue.Enqueue(abovePoints[j].Position);
         }
 
-        /*
-         * Parameters: Vector3[] containing all the possible locations, Vector3 containing the drones postion, float with the drones viewDistance.
-         * 
-         * Return: Vector3 containing the "best" location to place the sandbag
-         */
+        // Returnerer det første element i et givent array af mulige placeringer, som en drone med en given position har adgang.
         public Vector3 FindBestPlace(Vector3[] places, Vector3 position, float viewDistance)
         {
-            // Check om det givne array er gyldigt
+            // Check om det givne array er gyldigt.
             if (places.Length < 1 || places == null)
             {
                 Debug.Log("No places found");
                 return ErrorVector;
             }
 
-            // Return the first place the drone can access.
             for (int i = 0; i < places.Length; i++)
             {
                 Point point = new Point(places[i]);
@@ -130,10 +116,11 @@ namespace SandbagSimulation
                     return places[i];
             }
 
-            // No place could be accessed, return (What should be returned?)
+            // Ingen mulige placeringer.
             return ErrorVector;
         }
 
+        // Afrunder en given vektors værdier til én decimal, og returner den afrundede vektor.
         private Vector3 Round(Vector3 vector)
         {
             return new Vector3
@@ -144,11 +131,7 @@ namespace SandbagSimulation
                 );
         }
 
-        /*
-         * Parameters:
-         * 
-         * Return:
-         */
+        // Finder den section, som en drone med en given position skal arbjede i.
         public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, Blueprint blueprint)
         {
             Vector3 targetNode = isRightDrone ? blueprint.ConstructionNodes.Last() : blueprint.ConstructionNodes.First();
@@ -164,7 +147,6 @@ namespace SandbagSimulation
                 return Vector3.MoveTowards(position, targetNode, viewDistance);
         }
 
-        // Private Methods
         private Vector3 FindStartingPlace(Vector3 position, float viewDistance, float sandbagHeight)
         {
             GameObject result = GameObject.FindGameObjectsWithTag("PlacedSandbag")

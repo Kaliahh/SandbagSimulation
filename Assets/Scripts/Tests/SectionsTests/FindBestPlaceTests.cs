@@ -29,22 +29,11 @@ namespace Tests
         public void FindBestPlace_PassSinglePositionWithoutAccess_ReturnErrorVector()
         {
             // Arrange 
-
-            // Heavy and tedious setup (Please improve!)
-            // Create new section
             Section section = new Section();
-
-            // Set ViewDistance so that drone can see obstacle
             float viewDistance = 20f;
-
-            // Create array of places, with one possible location
             Vector3[] places = { new Vector3(0f, 0f, 0f) };
             Vector3 position = new Vector3(10f, 10f, 10f);
-
-            // Set the minimumSeperation
             section.MinimumSeperation = 5f;
-
-            // Create a number of drones/obstacles
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.tag = "Drone";
             cube1.transform.position = new Vector3(1f, 1f, 1f);
@@ -59,10 +48,9 @@ namespace Tests
         [Test]
         public void FindBestPlace_PassMultiplePositionWithoutAccess_ReturnErrorVector()
         {
+            //Arrange
             Section section = new Section();
             float viewDistance = 20f;
-
-            // Tre locations på linje
             Vector3 Location1 = new Vector3(0f, 0f, 0f);
             Vector3 Location2 = new Vector3(5f, 0f, 0f);
             Vector3 Location3 = new Vector3(10f, 0f, 0f);

@@ -19,6 +19,7 @@ namespace Tests
         [UnityTest]
         public IEnumerator InView_BagDirectlyBelowInView_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -28,13 +29,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 10f, 0f);
+            //Act
             yield return null;
-            Assert.IsTrue(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDirectlyBelowViewBlocked_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 1f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 1f, 0f);
@@ -49,13 +54,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 10f, 0f);
+            //Act 
             yield return null;
-            Assert.IsFalse(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDiagonallyBelowInView_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -65,13 +74,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 10f, 5f);
+            //Act
             yield return null;
-            Assert.IsTrue(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDiagonallyBelowViewBlocked_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -86,13 +99,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 10f, 5f);
+            //Act
             yield return null;
-            Assert.IsFalse(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagAndDroneSameHeightBagInView_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -102,13 +119,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 0f, 5f);
+            //Act
             yield return null;
-            Assert.IsTrue(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagAndDroneSameHeightViewBlocked_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -123,13 +144,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 0f, 5f);
+            //Act
             yield return null;
-            Assert.IsFalse(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDiagonallyBelowWithAdjecentBagsInView_ReturnTrue()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -149,13 +174,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, 1f, 1f);
+            //Act
             yield return null;
-            Assert.IsTrue(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsTrue(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDirectlyAboveDrone_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -165,13 +194,17 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, -5f, 0f);
+            //Act
             yield return null;
-            Assert.IsFalse(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsFalse(result);
         }
 
         [UnityTest]
         public IEnumerator InView_BagDiagonallyAboveDrone_ReturnFalse()
         {
+            //Arrange
             Point point = new Point(new Vector3(0f, 0f, 0f));
             GameObject cube1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube1.transform.position = new Vector3(0f, 0f, 0f);
@@ -181,8 +214,11 @@ namespace Tests
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
             Vector3 position = new Vector3(0f, -5f, 5f);
+            //Act
             yield return null;
-            Assert.IsFalse(point.InView(position, viewDistance, sandbagHeight));
+            bool result = point.InView(position, viewDistance, sandbagHeight);
+            //Assert
+            Assert.IsFalse(result);
         }
 
     }
