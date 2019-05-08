@@ -43,7 +43,6 @@ public class UI : MonoBehaviour
     {
         foreach (GameObject ui in UIs)
         {
-            Debug.Log(ui.name);
             if (ui.name == "RunTime") //Kun vis kørsels UI
                 ui.SetActive(true);
             else
