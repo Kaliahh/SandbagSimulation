@@ -1,37 +1,64 @@
-﻿using System.Collections;
+﻿//Denne klasse styrer visningen af de forskellige UI sider
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SandbagSimulation;
 
-namespace SandbagSimulation
+public class UI : MonoBehaviour
 {
-    public class UI : MonoBehaviour
+    //UI sider
+    private GameObject MainMenu; //Startmenu UI
+    private GameObject RunTime; //UI under simulationen
+    private GameObject Results; //Resultatvindue når simulationen sluttes
+
+    private List<GameObject> UIs; //Liste med alle sider. Nemmere at kontrollere siderne via en liste
+
+    void Start()
     {
-        private Text Time; //Tid
-        private Text SandbagsLeft; //Amount of sandbags left before simulation is ended
+        //Referencer
+        MainMenu = transform.Find("MainMenu").gameObject; //Reference til StartMenu UI
+        RunTime = transform.Find("RunTime").gameObject;  //Reference til runtime UI
+        Results = transform.Find("Results").gameObject;
 
-        //UI sider
-        private GameObject StartMenu; //Startmenu
-        private GameObject RunTime; //UI når simulationen kører
+        UIs = new List<GameObject> { MainMenu, RunTime, Results }; //Siderne lægges ind i listen
 
-        void Start()
-        {
-            RunTime = transform.Find("RunTime").gameObject; //Reference UI for runtime
-            StartMenu = transform.Find("StartMenu").gameObject; //Reference til StartMenu UI
-            StartMenu.SetActive(true);
-            RunTime.SetActive(false);
-        }
-        public void ChangeTime(float seconds) //Metode til at opdatere køretiden som vises på skærmen over tid
-        {
-            int Seconds = ((int)seconds);
-           RunTime.transform.Find("Time").GetComponent<Text>().text = "Time: " + Seconds; //Sætter ui teksten
-        }
+        //Opsætning
+        StartMainMenu(); //Fremvis startmenuen når programmet startes
+    }
 
-        public void SimulationStarted()
+    public void StartMainMenu() //Start startmenuen
+    {
+        
+        foreach (GameObject ui in UIs)
         {
-            StartMenu.SetActive(false);
-            RunTime.SetActive(true);
+            if (ui.name == "MainMenu") //Kun vis start menuen
+                ui.SetActive(true);
+            else
+                ui.SetActive(false);
         }
+    }
+
+    public void StartRunTime() //Start kørsels UI
+    {
+        foreach (GameObject ui in UIs)
+        {
+            Debug.Log(ui.name);
+            if (ui.name == "RunTime") //Kun vis kørsels UI
+                ui.SetActive(true);
+            else
+                ui.SetActive(false);
+        }
+    }
+
+    public void ShowResults() //Vis resultatet
+    {
+        Results.SetActive(true);
+    }
+
+    public void HideResults() //Gæm resultatet væk, hvis der ønskes en forsat visning af simulationen
+    {
+        Results.SetActive(false);
     }
 }
 

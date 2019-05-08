@@ -11,246 +11,150 @@ namespace SandbagSimulation
         // Properties and fields
         public Vector3 CurrentSection { get; set; }
         public float MinimumSeperation { get; set; }
+        public float MaximumPlacementDeviation { get; private set; }
+        public Vector3 ErrorVector { get; private set; }
 
-        private Vector3 ErrorVector = new Vector3(-100f, -100f, -100f);
+        public Section()
+        {
+            ErrorVector = new Vector3(-100, -100, -100);
+            MinimumSeperation = 1;
+            MaximumPlacementDeviation = 0.5f;
+        }
 
-        // Constructor
-        //public Section(Vector3 location) { CurrentSection = location; }
-
-        // Public Methods
-
-        /*
-         * Parameters: float with the drones viewDistance, Vector3 with the drones position.
-         * 
-         * Return: Vector3[] containing the locations where it is possible for a drone to place a sandbag.
-         */
+        // Returnerer et array med alle punkter hvor det er muligt for en drone med en given position, at placere en sandsæk.
         public Vector3[] FindPlace(float viewDistance, Vector3 position, Blueprint blueprint)
         {
-            // List of alle the possible places
             List<Vector3> places = new List<Vector3>();
+            SandbagMeasurements sandbag = new SandbagMeasurements();
 
-            // Bliver kun brugt til at finde højde og bredde af sandsække, skal findes på en bedre måde (Statiske properties i SandbagController?)
-            SandbagController sandbag = Object.FindObjectOfType<SandbagController>();
             // Find en sandsæk til at bruge som udgangspunkt
-            Vector3 startingBag = FindStartingPlace(position, viewDistance);
+            Vector3 startingBag = FindStartingPlace(position, viewDistance, sandbag.Height);
+
             if (startingBag.Equals(ErrorVector))
-                return null;
-
-            Queue<Vector3> q = new Queue<Vector3>();
-            List<Vector3> visited = new List<Vector3>(); 
-            q.Enqueue(startingBag);
-            // Breadth first search
-            while (q.Count > 0)
             {
-                Vector3 current = q.Dequeue();
-                if (!visited.Contains(current) && IsWithinBorder(current, blueprint, sandbag.Height) && Vector3.Distance(position, current) <= viewDistance)
+                Debug.Log("No startingpoint found");
+                return null;
+            }
+
+            Queue<Vector3> pointQueue = new Queue<Vector3>();
+            List<Vector3> visited = new List<Vector3>();
+
+            pointQueue.Enqueue(startingBag);
+
+            // Breadth first search
+            while (pointQueue.Count > 0)
+            {
+                Point current = new Point(pointQueue.Dequeue());
+                Vector3 temp = Round(current.Position);
+
+                if (!visited.Contains(temp)
+                    && current.WithinBorder(blueprint, sandbag.Height, MaximumPlacementDeviation)
+                    && Vector3.Distance(position, current.Position) <= viewDistance)
                 {
-                    Vector3[] adjecent = FindAdjecent(current, blueprint, sandbag);
+                    Point[] adjecent = current.Adjecent(blueprint, sandbag);
 
-                    // Centrum af de sandsække der er til højre og venstre i lagene over og under
-                    Vector3 leftMiddle = Vector3.Lerp(current, adjecent[0], 0.5f);
-                    Vector3 rightMiddle = Vector3.Lerp(current, adjecent[1], 0.5f);
-
-                    // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået
-                    if (IsEmpty(position, current))
+                    // Tilføj til liste hvis plads er tom og inden for viewDistance og ikke allerede gennemgået.
+                    if (current.Empty(position)) 
                     {
-                        // Tilføj kun hvis der er sække eller jord under dem (Midten af sækken er lavere end højden af en enkelt sandsæk)
-                        Vector3 belowLeft = new Vector3(leftMiddle.x, current.y - sandbag.Height, leftMiddle.z);
-                        Vector3 belowRight = new Vector3(rightMiddle.x, current.y - sandbag.Height, rightMiddle.z);
-                        // Hvis jorden ikke er ved y = 0, så skal jordens starthøjde lægges til sandbag.height i udtrykket (Current.y er højden af sandsækkens midte)
-                        if (IsInView(position, belowLeft, viewDistance, sandbag.Height) && IsInView(position, belowRight, viewDistance, sandbag.Height) || current.y < sandbag.Height)
-                            places.Add(current);
-                        // Tilføj placeringer under, hvis de kan er synlige
-                        if (IsInView(position, belowLeft, viewDistance, sandbag.Height) && belowLeft.y > 0)
-                            q.Enqueue(belowLeft);
-                        if (IsInView(position, belowRight, viewDistance, sandbag.Height) && belowRight.y > 0)
-                            q.Enqueue(belowRight);
+                        if (current.Position.y >= sandbag.Height)
+                        {
+                            Point[] belowPoints = current.Below(adjecent, sandbag);
+                            if (!belowPoints[0].Empty(position) && !belowPoints[1].Empty(position))
+                                places.Add(current.Position);
+                            else
+                                EnqueueBelow(ref pointQueue, position, belowPoints);
+                        }
+                        else
+                            places.Add(current.Position);
                     }
                     else
                     {
-                        // Enqueue omkringliggende sandsække positioner
-                        // Ved siden af, x-akse
-                        for(int i = 0; i < adjecent.Length; i++)
-                            q.Enqueue(adjecent[i]);
-                        // Over - Overvej at bruge Vector3.lerp
-                        q.Enqueue(new Vector3(leftMiddle.x, current.y + sandbag.Height, leftMiddle.z));
-                        q.Enqueue(new Vector3(rightMiddle.x, current.y + sandbag.Height, rightMiddle.z));
+                        Point[] abovePoints = current.Above(adjecent, sandbag);
+                        for (int i = 0; i < adjecent.Length; i++)
+                            pointQueue.Enqueue(adjecent[i].Position);
+                        EnqueueAbove(ref pointQueue, position, abovePoints, adjecent);
                     }
-                    visited.Add(current);
+                    visited.Add(temp);
                 }
             }
-            // Returner listen af placeringer som array
+            if (places.Count == 0)
+                return null;
+
             return places.ToArray();
         }
 
-        /*
-         * Parameters: Vector3[] containing all the possible locations, Vector3 containing the drones postion, float with the drones viewDistance.
-         * 
-         * Return: Vector3 containing the "best" location to place the sandbag
-         */
+        // Indsætter de underliggende positioner i den givne kø, hvis de ikke er optaget.
+        private void EnqueueBelow(ref Queue<Vector3> queue, Vector3 position, Point[] belowPoints)
+        {
+            for (int i = 0; i < belowPoints.Length; i++)
+                if (belowPoints[i].Empty(position))
+                    queue.Enqueue(belowPoints[i].Position);
+        }
+
+        // Indsætter de overliggende positioner, hvis der er sandsække i begge underliggende positioner.
+        private void EnqueueAbove(ref Queue<Vector3> queue, Vector3 position, Point[] abovePoints, Point[] adjecent)
+        {
+            for (int j = 0; j < abovePoints.Length; j++)
+                if (!adjecent[j].Empty(position))
+                    queue.Enqueue(abovePoints[j].Position);
+        }
+
+        // Returnerer det første element i et givent array af mulige placeringer, som en drone med en given position har adgang.
         public Vector3 FindBestPlace(Vector3[] places, Vector3 position, float viewDistance)
         {
-            // Check om det givne array er gyldigt
+            // Check om det givne array er gyldigt.
             if (places.Length < 1 || places == null)
+            {
+                Debug.Log("No places found");
                 return ErrorVector;
+            }
 
-            // Return the first place the drone can access.
             for (int i = 0; i < places.Length; i++)
-                if (IsAccess(places[i], position, viewDistance))
+            {
+                Point point = new Point(places[i]);
+                if (point.Access(position, viewDistance, MinimumSeperation))
                     return places[i];
+            }
 
-            // No place could be accessed, return (What should be returned?)
+            // Ingen mulige placeringer.
             return ErrorVector;
         }
 
-        /*
-         * Parameters:
-         * 
-         * Return:
-         */
+        // Afrunder en given vektors værdier til én decimal, og returner den afrundede vektor.
+        private Vector3 Round(Vector3 vector)
+        {
+            return new Vector3
+                (
+                    (float)System.Math.Round(vector.x, 1),
+                    (float)System.Math.Round(vector.y, 1),
+                    (float)System.Math.Round(vector.z, 1)
+                );
+        }
+
+        // Finder den section, som en drone med en given position skal arbjede i.
         public Vector3 FindNextSection(float viewDistance, Vector3 position, bool isRightDrone, Blueprint blueprint)
         {
-            // Sorter efter x-værdi
-            Vector3 firstNode = blueprint.ConstructionNodes.First();
-            Vector3 lastNode = blueprint.ConstructionNodes.Last();
-            Vector3 nextSection;
+            Vector3 targetNode = isRightDrone ? blueprint.ConstructionNodes.Last() : blueprint.ConstructionNodes.First();
+
+            // Samme højde som nuværende section
+            targetNode.y = CurrentSection.y;
+
             // Udregn position der er viewDistance tættere på enden. Hvilken ende afgøres af isRightDrone.
-            if (isRightDrone)
-                if (CurrentSection.Equals(lastNode))
-                    return CurrentSection;
-                else
-                    nextSection = Vector3.MoveTowards(position, lastNode, viewDistance);
+            if (CurrentSection.Equals(targetNode))
+                return CurrentSection;
+
             else
-                if (CurrentSection.Equals(firstNode))
-                    return CurrentSection;
-            else
-                nextSection = Vector3.MoveTowards(position, firstNode, viewDistance);
-
-            // Behold den samme højde
-            nextSection.y = position.y;
-            
-            return nextSection;
+                return Vector3.MoveTowards(position, targetNode, viewDistance);
         }
 
-        // Private Methods
-        /*
-         * Parameters: Vector3 placementLocation, Vector3 position, float viewDistance.
-         * 
-         * Return: Bool whether or not the drone at given position access the given placementLocation.
-         */
-        private bool IsAccess(Vector3 placementLocation, Vector3 position, float viewDistance)
-        {
-            // Linq tilgang
-            return GameObject.FindGameObjectsWithTag("Drone").
-                FirstOrDefault(v => (Vector3.Distance(v.transform.position, placementLocation) <= MinimumSeperation)) == null ? true : false;
-
-            /*
-            // List of drones that are within viewDistance, does not contain the drone with the position given af parameter.
-            List<Vector3> releventPositions = new List<Vector3>();
-
-            // her er skrevet to forskellige tilgange, der burde virke ens(Bekræft!), afgør hvilken der er hurtigere og anvend denne.
-            // Begge tilgange består umiddelbart tests.
-
-            
-            // Approach 1
-            for(int i = 0; i < drones.Length; i++)
-            {
-                Vector3 dronePosition = drones[i].transform.position;
-                // Only consider other drones
-                if (dronePosition != position)
-                    // Only consider if drone is within viewDistance
-                    if(Vector3.Distance(dronePosition, position) <= viewDistance)
-                        // Determine if drone is too close
-                        if (Vector3.Distance(dronePosition, placementLocation) <= MinimumSeperation)
-                            return false;
-            }
-            
-
-            // Approach 2
-            // Add position of drones within viewDistance to list
-            for (int i = 0; i < drones.Length; i++)
-            {
-                Vector3 dronePosition = drones[i].transform.position;
-                if (Vector3.Distance(dronePosition, position) <= viewDistance && !dronePosition.Equals(position))
-                    releventPositions.Add(dronePosition);
-            }
-            // If any of the drones in view are too close, return false
-            for (int i = 0; i < releventPositions.Count; i++)
-                if (Vector3.Distance(releventPositions[i], placementLocation) <= MinimumSeperation)
-                    return false;
-
-            // Return true if no obstacles were found
-            return true;
-            */
-        }
-
-        /*
-         * Parameters: Vector3 position of the drone, Vector3 position to evaluate.
-         * 
-         * Return: Bool whether or not the target position is empty.
-         */
-        private bool IsEmpty(Vector3 dronePosition, Vector3 target)
-        {
-            // Bruger raycast til at afgøre om der er en sandsæk i positionen
-            //return !Physics.Linecast(dronePosition, target);
-            return Physics.Raycast(dronePosition, target - dronePosition, Vector3.Distance(dronePosition, target));
-        }
-
-        /*
-         * Parameters: Vector3 position of the drone, Vector3 position to evaluate, float viewDistance of the drone, float height of a sandbag
-         * 
-         * Return: Bool whether or not the target position is in view of the drone
-         */
-        private bool IsInView(Vector3 dronePosition, Vector3 target, float viewDistance, float sandbagHeight)
-        {
-            // Check at raycast ikke finder noget lige over sandsækken
-            target = Vector3.Lerp(target, new Vector3(target.x, target.y + sandbagHeight, target.z), 0.5f);
-            float distance = Vector3.Distance(dronePosition, target);
-            // True hvis der er lineOfSight og er inden for viewDistance
-            return (distance < viewDistance) ? !IsEmpty(dronePosition, target) : false;
-            // Samme resultat, forskellige metoder.
-            //return (distance < viewDistance) ? Physics.Linecast(dronePosition, target) : false;
-        }
-
-        // Er den givne Vector3 inden for de given grænser
-        // Understøtter kun dige med bredde af 1 sæk, men kan udvides.
-        /*
-         * Parameters: Vector3 Position to evaluate List<Vector3> List with constructionNodes that determine the border.
-         * 
-         * Return: Bool whether or not the given position is within the given constructionNodes.
-         */
-        private bool IsWithinBorder(Vector3 position, Blueprint blueprint, float sandbagHeight)
-        {
-            Vector3 firstNode = blueprint.ConstructionNodes.First();
-            Vector3 lastNode = blueprint.ConstructionNodes.Last();
-            if (position.y + sandbagHeight >= blueprint.DikeHeight * sandbagHeight || position.y >= blueprint.DikeHeight * sandbagHeight)
-            {
-                if (position.z >= firstNode.z && position.z <= lastNode.z)
-                    if (position.x >= firstNode.x && position.x <= lastNode.x)
-                        return true;
-                return false;
-            }
-            else
-                return true;
-        }
-
-        private Vector3 FindStartingPlace(Vector3 position, float viewDistance)
+        private Vector3 FindStartingPlace(Vector3 position, float viewDistance, float sandbagHeight)
         {
             GameObject result = GameObject.FindGameObjectsWithTag("PlacedSandbag")
-                                       .FirstOrDefault(v => Vector3.Distance(position, v.transform.position) < viewDistance);
+                                       .Where(v => new Point(v.transform.position).InView(position, viewDistance, sandbagHeight))
+                                       .OrderBy(v => Vector3.Distance(v.transform.position, position))
+                                       .FirstOrDefault();
 
             return result == null ? ErrorVector : result.transform.position;
-        }
-
-        private Vector3[] FindAdjecent(Vector3 position, Blueprint blueprint, SandbagController sandbag)
-        {
-            Vector3[] adjecent = new Vector3[2];
-
-            adjecent[0] = Vector3.MoveTowards(position, blueprint.ConstructionNodes[0], sandbag.Length);
-            adjecent[0].y = position.y;
-            adjecent[1] = Vector3.MoveTowards(position, blueprint.ConstructionNodes[blueprint.ConstructionNodes.Count - 1], sandbag.Length);
-            adjecent[1].y = position.y;
-            return adjecent;
         }
     }
 
