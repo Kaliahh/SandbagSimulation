@@ -20,7 +20,7 @@ namespace SandbagSimulation
         public float DroneViewDistance; 
         public int NumberOfDrones;
 
-        private int NumOfFinishedDrones;
+        public int NumOfFinishedDrones;
 
         // Genereringpunkter for droner of sandsække
         public Vector3 SandbagSpawnPoint;
@@ -32,38 +32,51 @@ namespace SandbagSimulation
         public int DikeHeight;
         public Blueprint Blueprint;
 
+        //UI
+        public GameObject UI;
+
+        //Tilstand
+        public bool IsSimulationRunning;
+
+        //Tid
+        public float TotalTime;
+
+        //Evaluator
+        private Evaluator Evaluator = new Evaluator();
+        public string EvaluationReport;
+
         void Start()
         {
             NumOfFinishedDrones = 0;
             NumberOfDrones = ((int)Vector3.Distance(Node1, Node2) + 8) / 4;
-            SetupSimulation();
         }
 
         void Update()
         {
-            // Tegner en rød streg hvor diget skal ligge, kun i scene view
-            Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
-            Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.First() + new Vector3(0, 10, 0));
-            Debug.DrawLine(Blueprint.ConstructionNodes.Last(), Blueprint.ConstructionNodes.Last() + new Vector3(0, 10, 0));
-
-            if (NumOfFinishedDrones == NumberOfDrones)
+            if (IsSimulationRunning) 
             {
-                foreach (GameObject drone in Drones)
-                {
-                    if (drone.GetComponent<DroneController>().MySandbag != null)
-                    {
-                        Destroy(drone.GetComponent<DroneController>().MySandbag);
+                // Tegner en rød streg hvor diget skal ligge, kun i scene view
+                Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
+                Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.First() + new Vector3(0, 10, 0));
+                Debug.DrawLine(Blueprint.ConstructionNodes.Last(), Blueprint.ConstructionNodes.Last() + new Vector3(0, 10, 0));
+
+                if (NumOfFinishedDrones >= 5 ){//NumOfFinishedDrones == NumberOfDrones) {
+                    foreach (GameObject drone in Drones) {
+                        if (drone.GetComponent<DroneController>().MySandbag != null) {
+                            Destroy(drone.GetComponent<DroneController>().MySandbag);
+                        }
+
+                        Destroy(drone);
                     }
-
-                    Destroy(drone);
+                    EvaluateDike();
+                    
                 }
-
-                NumOfFinishedDrones = 0;
+                TotalTime += Time.deltaTime;
             }
         }
 
         // Sætter simulationen op
-        public void SetupSimulation()
+        public void BeginSimulation()
         {
             // Genererer objekter
             InitializeDrones();
@@ -74,6 +87,7 @@ namespace SandbagSimulation
 
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
+            IsSimulationRunning = true;
         }
 
         // Giver hver drone en liste der indeholder alle droner, undtaget den selv
@@ -163,6 +177,14 @@ namespace SandbagSimulation
             {
                 drone.GetComponent<DroneController>().SetViewDistance(DroneViewDistance);
             }
+        }
+
+        //Evaluer diget
+        public void EvaluateDike()
+        {
+            Evaluator.EvaluateDike(Blueprint, SandbagSpawnPoint);
+            EvaluationReport = Evaluator.EvaluationReport;
+            UI.GetComponent<UI>().ShowResults();
         }
     }
 }
