@@ -13,8 +13,12 @@ public class MainMenu : MonoBehaviour
     private GameObject TutorialScreen; //Brugsanvisningsside (Nr 2 i listen)
     private List<GameObject> Screens; //En list med overstående sider for at kontrollere visning af de forskellige
 
-    //Initialisering af simulation controller
+    //Initialisering af ui
     private GameObject UI;
+
+    //Initialisering af SimulationController
+    public SimulationController Controller;
+
 
     void Start()
     {
@@ -29,6 +33,7 @@ public class MainMenu : MonoBehaviour
 
         //Opsætning
         SelectScreen(0); //Fremvis introduktionsside
+        SetSliders();
     }
 
     //Menu Methods
@@ -51,6 +56,12 @@ public class MainMenu : MonoBehaviour
         //UI.GetComponent<UI>().Quit();
     }
 
+    public void SetSliders() 
+    {
+        SliderNumberOfDrones(Controller.NumberOfDrones);
+        SliderSpeed(Controller.DroneSpeed);
+    }
+
     //New Simulation Methods
     public void SliderNumberOfDrones(float value)
     {
@@ -61,8 +72,7 @@ public class MainMenu : MonoBehaviour
         text.text = "Number of Drones: " + Value.ToString(); //Ændrer teksten
 
         //Sender værdien til simulationkontrolleren
-        Debug.Log("Ændrer Antalet af droner. IKKE IMPLEMTERET");
-        //SimulationController.GetComponent<SimulationController>().NumberOfDrones = Value;
+        Controller.GetComponent<SimulationController>().NumberOfDrones = Value;
     }
 
     public void SliderSpeed(float value)
@@ -74,13 +84,13 @@ public class MainMenu : MonoBehaviour
         text.text = "Drone Speed: " + Value.ToString(); //Ændrer teksten
 
         //Sender værdien til simulationkontrolleren
-        Debug.Log("Ændrer droners hastighed. IKKE IMPLEMTERET");
-        //SimulationController.GetComponent<SimulationController>().DroneSpeed = Value;
+        Controller.GetComponent<SimulationController>().DroneSpeed = Value;
     }
 
     public void StartSimulation() //Kaldt fra start simulationsknappen fra nysimulationssiden
     {
         UI.GetComponent<UI>().StartRunTime();
+        Controller.BeginSimulation();
     }
 }
 

@@ -6,16 +6,19 @@ using UnityEngine.UI;
 
 public class RunTime : MonoBehaviour
 {
-    private Text Time; //Tid
-    private Text SandbagsLeft; //Antallet af sandsække tilbage
+    //Variabler
+    private Text TimeText; //Tid
+    private Text DronesText; //Antallet af sandsække tilbage
 
+    //Referencer
     private GameObject Menu; //Kørselsmenu
+    public GameObject SimulationController; //Simulationskontrol
 
     void Start() 
     {
         //Referencer
-        Time = GameObject.Find("Time").GetComponent<Text>(); //Tid
-        SandbagsLeft = GameObject.Find("SandBags").GetComponent<Text>(); //Antallet af sandsække tilbage
+        TimeText = GameObject.Find("Time").GetComponent<Text>(); //Tid
+        DronesText = GameObject.Find("Drones").GetComponent<Text>(); //Antallet af sandsække tilbage
         Menu = GameObject.Find("Menu"); //Kørselsmenu
 
         //Opsætning
@@ -28,7 +31,11 @@ public class RunTime : MonoBehaviour
         {
             ToggleMenu();
         }
+        ChangeTime(SimulationController.GetComponent<SimulationController>().TotalTime);
+        ChangeFinishedDrones(SimulationController.GetComponent<SimulationController>().NumOfFinishedDrones, SimulationController.GetComponent<SimulationController>().NumberOfDrones);
+
     }
+        
 
     private void ToggleMenu() //Vis eller gem kørselsmenuen
     {
@@ -44,16 +51,24 @@ public class RunTime : MonoBehaviour
     
     public void ChangeTime(float seconds) //Opdater tiden
     {
-        //Time.text = seconds.ToString();
+        int TextMinuttes = (int)(seconds / 60);
+        int TextSeconds = (int)(seconds % 60);
+
+        TimeText.text = 
+            (TextMinuttes < 10 ? "0" + TextMinuttes.ToString() : TextMinuttes.ToString()) +
+            ":" +
+            (TextSeconds < 10 ? "0" + TextSeconds.ToString() : TextSeconds.ToString());
+        //TimeText.text = "Time: " +  + ":" + TextSeconds % 60;
     }
 
-    public void ChangeSandBagsLeft(float sandbags) //Opdater sandsække tilbage
+    public void ChangeFinishedDrones(int finishedDrones, int totalDrones) //Sæt hastigheden på simulationen fra slideren
     {
-        //SandBagsLeft.text = seconds.ToString();
+        DronesText.text = "FinishedDrones: " + finishedDrones + "/" + totalDrones;
     }
 
-    public void ChangeSpeed(float speed) //Sæt hastigheden på simulationen fra slideren
+    public void ChangeSimulationSpeed(float speed) //Sæt hastigheden på simulationen fra slideren
     {
-        //GameObject a = Menu.Find("Slider");
+        Menu.gameObject.transform.Find("Slider").gameObject.transform.Find("Text").GetComponent<Text>().text = speed + "x";
+        Time.timeScale = speed;
     }
 }
