@@ -44,7 +44,7 @@ namespace SandbagSimulation
             drone.GetComponent<DroneController>().SetBlueprint(CreateBlueprint(node1, node2, dikeHeight));
             drone.GetComponent<DroneController>().SetSpeed(8);
             drone.GetComponent<DroneController>().SetViewDistance(4);
-            drone.GetComponent<DroneController>().SetSandbagPickUpLocation(new Vector3(1, 0, 0));
+            drone.GetComponent<DroneController>().SetSandbagPickUpLocation(new Vector3(-1, 0, 0));
 
             //drone.AddComponent<Scaler>();
             //drone.AddComponent<Rotator>();
