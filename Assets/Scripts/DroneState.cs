@@ -113,13 +113,8 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
-            GameObject droneSandbag = null;
-
-            PickUpSandbag(ref droneSandbag, C.LocatedSandbag, C);
-
-            C.MySandbag = droneSandbag;
+            PickUpSandbag(C.LocatedSandbag, C);
             
-
             if (C.MySandbag != null)
             {
                 C.State = C.FlyToSectionState;
@@ -139,23 +134,23 @@ namespace SandbagSimulation
 
         // Gemmer den fundne sandsæk i MySandbag, og den skal nu transporteres
         // Den fundne sandsæk (LocatedSandbag) sættes til null
-        public void PickUpSandbag(ref GameObject droneSandbag, GameObject locatedSandbag, DroneController controller)
+        private void PickUpSandbag(GameObject locatedSandbag, DroneController controller)
         {
-            if (Vector3.Distance(locatedSandbag.transform.position, controller.transform.position) < 0.2f)
+            if (Vector3.Distance(locatedSandbag.transform.position, controller.transform.position) <= controller.DroneSandbagDistance + 0.2f)
             {
-                droneSandbag = locatedSandbag;
-                droneSandbag.tag = "PickedUpSandbag";
-                droneSandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
+                controller.MySandbag = locatedSandbag;
+                controller.MySandbag.tag = "PickedUpSandbag";
+                controller.MySandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
                 controller.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
-                droneSandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
+                controller.MySandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
 
                 controller.SetLocatedSandbag(null);
             }
 
             else
             {
-                droneSandbag = null;
+                controller.MySandbag = null;
             }
         }
     }
@@ -187,7 +182,7 @@ namespace SandbagSimulation
         }
 
         // Finder det sted dronen skal placere sandsækken. Tager højde for om den første sandsæk er placeret
-        private void FindSandbagPlace()
+        public void FindSandbagPlace()
         {
             if (C.HasBuildingBegun == false && IsFirstSandbagPlaced() == false)
             {
@@ -289,9 +284,6 @@ namespace SandbagSimulation
                 }
             }
         }
-
-        
-
     }
 
     public class FlyToDroneTargetState : DroneState
@@ -313,26 +305,22 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
-            GameObject droneSandbag = C.MySandbag;
-
-            PlaceSandbag(ref droneSandbag, C.MyBlueprint, C);
-
-            C.MySandbag = droneSandbag;
+            DropSandbag(C.MyBlueprint, C);
 
             C.State = C.ReturnToAboveTargetState;
         }
 
         // Placerer MySandbag i et givent punkt, og sætter referencen til sandsækken (MySandbag) til null
-        public void PlaceSandbag(ref GameObject droneSandbag, Blueprint blueprint, DroneController controller)
+        public void DropSandbag(Blueprint blueprint, DroneController controller)
         {
-            droneSandbag.tag = "PlacedSandbag";
-            droneSandbag.layer = 0; // Linecasts rammer igen sandsækken
+            controller.MySandbag.tag = "PlacedSandbag";
+            controller.MySandbag.layer = 0; // Linecasts rammer igen sandsækken
             controller.gameObject.layer = 2; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
-            RotateSandbag(droneSandbag, blueprint);
+            RotateSandbag(controller.MySandbag, blueprint);
 
-            droneSandbag.GetComponent<Rigidbody>().isKinematic = false;  // Bliver igen påvirket af tyngdekraft
-            droneSandbag = null;
+            controller.MySandbag.GetComponent<Rigidbody>().isKinematic = false;  // Bliver igen påvirket af tyngdekraft
+            controller.MySandbag = null;
         }
     }
 
