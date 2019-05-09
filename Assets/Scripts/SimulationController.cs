@@ -60,17 +60,25 @@ namespace SandbagSimulation
                 Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.First() + new Vector3(0, 10, 0));
                 Debug.DrawLine(Blueprint.ConstructionNodes.Last(), Blueprint.ConstructionNodes.Last() + new Vector3(0, 10, 0));
 
-                if (NumOfFinishedDrones >= 5 ){//NumOfFinishedDrones == NumberOfDrones) {
-                    foreach (GameObject drone in Drones) {
-                        if (drone.GetComponent<DroneController>().MySandbag != null) {
+                if (NumOfFinishedDrones == NumberOfDrones)
+                {
+                    foreach (GameObject drone in Drones)
+                    {
+                        if (drone.GetComponent<DroneController>().MySandbag != null)
+                        {
                             Destroy(drone.GetComponent<DroneController>().MySandbag);
                         }
 
                         Destroy(drone);
                     }
+
+                    NumOfFinishedDrones = 0;
+
                     EvaluateDike();
-                    
+
+                    IsSimulationRunning = false;
                 }
+
                 TotalTime += Time.deltaTime;
             }
         }
@@ -92,18 +100,13 @@ namespace SandbagSimulation
         // Instansierer droner i en række 
         public void InitializeDrones() 
         {
-            // float j = 0;
             Drones = new List<GameObject>();
 
             bool isRightDrone = true;
 
             for (int i = 0; i < NumberOfDrones; i++)
             {
-                // TODO: Lav gitteret (i varierende størrelse)
-                //if (i % 3 == 0)
-                //    j++;
-
-                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x/* + j * 3*/, DroneSpawnPoint.y, DroneSpawnPoint.z + /* (i % 3) */ i * 5);
+                Vector3 NewDroneSpawnPoint = new Vector3(DroneSpawnPoint.x, DroneSpawnPoint.y, DroneSpawnPoint.z + i * 5);
 
                 Drones.Add(Instantiate(Drone, NewDroneSpawnPoint, Quaternion.identity));
                 Drones[i].GetComponent<DroneController>().IsRightDrone = isRightDrone;
