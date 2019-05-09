@@ -27,7 +27,7 @@ namespace Tests
         #region State
 
         [UnityTest]
-        public IEnumerator DroneController_State_1_InitialIsFlyToSandbagPickUpLocationState()
+        public IEnumerator DroneController_State_00_InitialIsFlyToSandbagPickUpLocationState()
         {
             // Arrange
             GameObject drone = CreateDrone();
@@ -44,7 +44,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_2_FlyToSandbagPickUpLocationState_To_FindSandbagLocationState()
+        public IEnumerator DroneController_State_01_FlyToSandbagPickUpLocationState_To_FindSandbagLocationState()
         {
             // Arrange 
             GameObject drone = CreateDrone();
@@ -59,10 +59,6 @@ namespace Tests
                 yield return null;
             }
 
-            yield return null;
-
-            drone.GetComponent<DroneController>().State.Execute();
-
             IDroneState actual = drone.GetComponent<DroneController>().State;
 
             IDroneState expected = drone.GetComponent<DroneController>().FindSandbagLocationState;
@@ -74,7 +70,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_3_FindSandbagLocationState_To_FlyToLocatedSandbagState()
+        public IEnumerator DroneController_State_021_FindSandbagLocationState_To_FlyToLocatedSandbagState_LocatedSandbagIsNotNull()
         {
             // Arrange 
             GameObject drone = CreateDrone();
@@ -90,8 +86,6 @@ namespace Tests
             sandbag.transform.position = new Vector3(2, 0, 0);
 
             // Act
-            drone.GetComponent<DroneController>().State.Execute();
-            
             yield return null;
 
             IDroneState actual = drone.GetComponent<DroneController>().State;
@@ -105,7 +99,31 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_4_FlyToLocatedSandbagState_To_PickUpLocatedSandbagState()
+        public IEnumerator DroneController_State_022_FindSandbagLocationState_To_FlyToSandbagPickUpLocationState_LocatedSandbagIsNull()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            drone.GetComponent<DroneController>().State = drone.GetComponent<DroneController>().FindSandbagLocationState;
+
+            // Act
+
+            yield return null;
+
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().FlyToSandbagPickUpLocationState;
+
+            // Assert
+            Assert.AreEqual(expected.GetType(), actual.GetType());
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_State_03_FlyToLocatedSandbagState_To_PickUpLocatedSandbagState()
         {
             // Arrange 
             GameObject drone = CreateDrone();
@@ -118,7 +136,7 @@ namespace Tests
 
             yield return null;
 
-            sandbag.transform.position = new Vector3(10, 0, 0);
+            sandbag.transform.position = new Vector3(1, 0, 0);
 
             drone.GetComponent<DroneController>().SetLocatedSandbag(sandbag);
 
@@ -141,7 +159,7 @@ namespace Tests
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_5_PickUpLocatedSandbagState_To_FlyToSectionState()
+        public IEnumerator DroneController_State_041_PickUpLocatedSandbagState_To_FlyToSectionState_SandbagWithinRange_MySandbagIsNotNull()
         {
             // Arrange 
             GameObject drone = CreateDrone();
@@ -152,7 +170,34 @@ namespace Tests
 
             GameObject sandbag = CreateSandbag();
 
+            sandbag.transform.position = new Vector3(0.1f, 0, 0);
+
+            drone.GetComponent<DroneController>().SetLocatedSandbag(sandbag);
+
+            // Act
             yield return null;
+
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().FlyToSectionState;
+
+            // Assert
+            Assert.AreEqual(expected.GetType(), actual.GetType());
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_State_042_PickUpLocatedSandbagState_To_FindSandbagLocationState_SandbagOutOfRange_MySandbagIsNull()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            drone.GetComponent<DroneController>().State = drone.GetComponent<DroneController>().PickUpLocatedSandbagState;
+
+            GameObject sandbag = CreateSandbag();
 
             sandbag.transform.position = new Vector3(10, 0, 0);
 
@@ -161,92 +206,147 @@ namespace Tests
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().FindSandbagLocationState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_6_FlyToSectionState_To_SearchForSandbagPlaceState()
+        public IEnumerator DroneController_State_05_FlyToSectionState_To_SearchForSandbagPlaceState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
 
-            // Act
             yield return null;
 
+            drone.GetComponent<DroneController>().State = drone.GetComponent<DroneController>().FlyToSectionState;
+
+            drone.GetComponent<DroneController>().AboveSection = new Vector3(1, 0, 0);
+
+            // Act
+            while (drone.GetComponent<DroneController>().State.GetType() == drone.GetComponent<DroneController>().FlyToSectionState.GetType())
+            {
+                yield return null;
+            }
+
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_7_SearchForSandbagPlaceState_To_FlyToAboveTargetState()
+        public IEnumerator DroneController_State_06_SearchForSandbagPlaceState_To_FlyToAboveTargetState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            drone.GetComponent<DroneController>().State = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
 
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().FlyToAboveTargetState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_8_FlyToAboveTargetState_To_FlyToDroneTargetState()
+        public IEnumerator DroneController_State_07_FlyToAboveTargetState_To_FlyToDroneTargetState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
 
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_9_FlyToDroneTargetState_To_PlaceMySandbagState()
+        public IEnumerator DroneController_State_08_FlyToDroneTargetState_To_PlaceMySandbagState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
 
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_10_PlaceMySandbagState_To_ReturnToAboveTargetState()
+        public IEnumerator DroneController_State_09_PlaceMySandbagState_To_ReturnToAboveTargetState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
 
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }
 
         [UnityTest]
-        public IEnumerator DroneController_State_11_ReturnToAboveTargetState_To_FlyToSandbagPickUpLocationState()
+        public IEnumerator DroneController_State_10_ReturnToAboveTargetState_To_FlyToSandbagPickUpLocationState()
         {
             // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
 
             // Act
             yield return null;
 
+            IDroneState actual = drone.GetComponent<DroneController>().State;
+
+            IDroneState expected = drone.GetComponent<DroneController>().SearchForSandbagPlaceState;
+
             // Assert
-            Assert.Fail();
+            Assert.AreEqual(expected.GetType(), actual.GetType());
 
             yield return null;
         }

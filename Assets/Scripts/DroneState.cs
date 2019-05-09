@@ -141,14 +141,22 @@ namespace SandbagSimulation
         // Den fundne sandsæk (LocatedSandbag) sættes til null
         public void PickUpSandbag(ref GameObject droneSandbag, GameObject locatedSandbag, DroneController controller)
         {
-            droneSandbag = locatedSandbag;
-            droneSandbag.tag = "PickedUpSandbag";
-            droneSandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
-            controller.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
+            if (Vector3.Distance(locatedSandbag.transform.position, controller.transform.position) < 0.2f)
+            {
+                droneSandbag = locatedSandbag;
+                droneSandbag.tag = "PickedUpSandbag";
+                droneSandbag.layer = 2; // Dronen kan Linecaste igennem sandsækken
+                controller.gameObject.layer = 0; // Sørger for at dronerne ikke kommer alt for meget i vejen for hinanden
 
-            droneSandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
-            
-            controller.SetLocatedSandbag(null);
+                droneSandbag.GetComponent<Rigidbody>().isKinematic = true; // Sørger for at dens velocity bliver dræbt, bliver ikke påvirket af tyngdekraft
+
+                controller.SetLocatedSandbag(null);
+            }
+
+            else
+            {
+                droneSandbag = null;
+            }
         }
     }
 
@@ -179,7 +187,7 @@ namespace SandbagSimulation
         }
 
         // Finder det sted dronen skal placere sandsækken. Tager højde for om den første sandsæk er placeret
-        public void FindSandbagPlace()
+        private void FindSandbagPlace()
         {
             if (C.HasBuildingBegun == false && IsFirstSandbagPlaced() == false)
             {
@@ -246,7 +254,7 @@ namespace SandbagSimulation
 
         // Checker om den første sandsæk diget er placeret
         // Returnerer true hvis der er en sa indsæk placeret, falsk hvis den ikke kan finde en
-        public bool IsFirstSandbagPlaced()
+        private bool IsFirstSandbagPlaced()
         {
             GameObject placedSandbag = GameObject.FindGameObjectWithTag("PlacedSandbag");
 
