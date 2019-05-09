@@ -17,17 +17,13 @@ public class Results : MonoBehaviour
     public GameObject SimulationController;
     public GameObject Runtime;
 
-    // Start is called before the first frame update
     void Start()
     {
         //Referencer
         TotalTime = GameObject.Find("TotalTime").GetComponent<Text>();
         Position = GameObject.Find("Position").GetComponent<Text>();
         Rotation = GameObject.Find("Rotation").GetComponent<Text>();
-    }
 
-    private void Update()
-    {
         EvaluationReport = SimulationController.GetComponent<SimulationController>().EvaluationReport;
         PrintString();
         Debug.Log(SimulationController.GetComponent<SimulationController>().EvaluationReport);
