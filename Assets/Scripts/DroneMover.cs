@@ -7,14 +7,13 @@ using System.Linq;
 
 namespace SandbagSimulation
 {
+    // Bevæger dronen hen 
     public class DroneMover : MonoBehaviour
     {
         public float Speed;
-        private float Step;
 
-        public List<GameObject> OtherDrones;
-
-        // Flytter GameObject et Step mod Vector3 target i løbet af en enkelt frame.
+        /* Flytter dronen mod et givent punkt.
+         * Afstanden udregnes ud fra Speed og deltaTime */
         public void FlyTo(Vector3 target)
         {
             Vector3 direction = target - this.transform.position;
@@ -28,6 +27,8 @@ namespace SandbagSimulation
             }
         }
 
+        /* Sætter dronens sandsæk til at være i et punkt under den,
+         * og sørger for at sandsækken ikke roterer */
         private void MoveSandbag()
         {
             Vector3 sandbagTarget = new Vector3(this.transform.position.x, this.transform.position.y - this.GetComponent<DroneController>().DroneSandbagDistance, this.transform.position.z);

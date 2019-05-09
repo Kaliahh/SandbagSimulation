@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 5058359658988735209}
   - component: {fileID: 7237551316120336151}
   - component: {fileID: 8426632041600724918}
-  - component: {fileID: 3403334914809765587}
   m_Layer: 2
   m_Name: PrettyDrone
   m_TagString: Drone
@@ -97,8 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 270218e6f3459e6438e1bdac769e15b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsRightDrone: 0
-  IsFinishedBuilding: 0
 --- !u!114 &5058359658988735208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,7 +134,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Speed: 5
-  OtherDrones: []
 --- !u!65 &8426632041600724918
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,17 +146,4 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 0.017320508, y: 0.020000005, z: 0.020000001}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &3403334914809765587
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5058359658988768331}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Radius: 0.03
   m_Center: {x: 0, y: 0, z: 0}

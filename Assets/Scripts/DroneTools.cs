@@ -5,15 +5,16 @@ using UnityEngine;
 
 namespace SandbagSimulation
 {
+    // En "værktøjskasse" af metoder som dronen kan bruge
     public static class DroneTools
     {
+        // Returnerer den Blueprint Node dronen skal arbejde hen imod
         public static Vector3 ReturnTargetNode(bool isRightDrone, Blueprint blueprint) => (isRightDrone) ? blueprint.ConstructionNodes.Last() : blueprint.ConstructionNodes.First();
 
-        // Input: Vector3 point
-        // Output: Returnerer points x og z, men lægger digets højde og en sikkerhedshøjde til points z
+        // Returnerer points x og z, men lægger digets højde og en sikkerhedshøjde til points z
         public static Vector3 CalculateAbovePoint(Vector3 point, Blueprint blueprint, float safeHeight)
         {
-             return new Vector3(point.x, blueprint.DikeHeight * 0.1f + safeHeight, point.z);
+             return new Vector3(point.x, blueprint.DikeHeight * new SandbagMeasurements().Height + safeHeight, point.z);
         }
 
         // Checker om to positioner er i nærheden af hinanden
@@ -23,6 +24,7 @@ namespace SandbagSimulation
         // Roterer sandsækken i forhold til diget og det sted sandsækken skal placeres
         public static void RotateSandbag(GameObject sandbag, Blueprint blueprint) => sandbag.transform.Rotate(new Vector3(0, CalculateAngleToDike(blueprint), 0));
 
+        // Udregner vinklen der er parallel med diget
         private static float CalculateAngleToDike(Blueprint blueprint)
         {
             Vector3 point1 = blueprint.ConstructionNodes.First();
@@ -33,7 +35,9 @@ namespace SandbagSimulation
             return Vector3.SignedAngle(Vector3.right, dikeVector, Vector3.up);
         }
 
-        public static bool IsLastSandbagPlaced(Vector3 position, Vector3 targetNode, float viewDistance, Blueprint blueprint, SandbagController sandbag)
+        /* Linecaster til den sidste sandsæk der skal placeres i diget.
+         * Hvis den rammer noget, returneres sand */
+        public static bool IsLastSandbagPlaced(Vector3 position, Vector3 targetNode, float viewDistance, Blueprint blueprint, SandbagMeasurements sandbag)
         {
             if (Vector3.Distance(position, targetNode) < viewDistance)
             {

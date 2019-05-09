@@ -70,23 +70,9 @@ namespace SandbagSimulation
             SetDroneSpeed();
             SetDroneViewDistance();
             InitializeBlueprints();
-            GiveDroneList();
 
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
-        }
-
-        // Giver hver drone en liste der indeholder alle droner, undtaget den selv
-        public void GiveDroneList()
-        {
-            foreach (GameObject drone in Drones)
-            {
-                List<GameObject> list = Drones
-                    .Where(p => p != drone)
-                    .ToList();
-
-                drone.GetComponent<DroneController>().SetOtherDrones(list);
-            }
         }
 
         // Instansierer droner i en række 
