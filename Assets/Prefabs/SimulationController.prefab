@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4966222987121981439}
   - component: {fileID: 8767965665596435404}
   m_Layer: 0
-  m_Name: SimulationController 1
+  m_Name: SimulationController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -50,11 +50,16 @@ MonoBehaviour:
   DroneSpeed: 10
   DroneViewDistance: 4
   NumberOfDrones: 4
+  NumOfFinishedDrones: 0
   SandbagSpawnPoint: {x: 0, y: 0.2, z: 0}
   DroneSpawnPoint: {x: -5, y: 1, z: 0}
   Node2: {x: 10, y: 0, z: 10}
   Node1: {x: 10, y: 0, z: -10}
   DikeHeight: 4
+  UI: {fileID: 0}
+  IsSimulationRunning: 0
+  TotalTime: 0
+  EvaluationReport: 
 --- !u!114 &4966222987121981439
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,7 +74,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Sandbag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
   SpawnPoint: {x: 2, y: 0.5, z: 2}
-  WaitTime: 0.5
+  WaitTime: 0.3
 --- !u!114 &8767965665596435404
 MonoBehaviour:
   m_ObjectHideFlags: 0
