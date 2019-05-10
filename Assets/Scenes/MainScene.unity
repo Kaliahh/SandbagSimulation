@@ -393,6 +393,11 @@ PrefabInstance:
       propertyPath: Node1.z
       value: -4
       objectReference: {fileID: 0}
+    - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
+        type: 3}
+      propertyPath: DikeHeight
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8767965665596435404, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: MainCamera
