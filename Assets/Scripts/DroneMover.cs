@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+// TODO: Fortsæt test her
 
 namespace SandbagSimulation
 {
@@ -31,7 +32,7 @@ namespace SandbagSimulation
          * og sørger for at sandsækken ikke roterer */
         private void MoveSandbag()
         {
-            Vector3 sandbagTarget = new Vector3(this.transform.position.x, this.transform.position.y - this.GetComponent<DroneController>().DroneSandbagDistance, this.transform.position.z);
+            Vector3 sandbagTarget = this.transform.position - new Vector3(0, this.GetComponent<DroneController>().DroneSandbagDistance, 0);
 
             this.GetComponent<DroneController>().MySandbag.transform.position = sandbagTarget;
             this.GetComponent<DroneController>().MySandbag.transform.rotation = Quaternion.identity;
