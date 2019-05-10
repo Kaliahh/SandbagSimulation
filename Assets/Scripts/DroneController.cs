@@ -165,7 +165,7 @@ namespace SandbagSimulation
             Debug.DrawLine(dronePosition, targetPoint.Position, (isTargetPointEmpty) ? Color.white : Color.red, 0.5f);
 
             // Hvis pladsen er tom, tjek de to pladser under, hvis sandsækken skal lægges oven på andre sandsække
-            if (isTargetPointEmpty == true && targetPoint.Position.y > SandbagReference.Height)
+            if (isTargetPointEmpty == true && targetPoint.Position.y > SandbagReference.Height * 0.75f)
             {
                 return PlaceHasFoundation(dronePosition, targetPoint.Position);
             }
@@ -183,15 +183,17 @@ namespace SandbagSimulation
             Vector3 foundationPoint1 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.First(), MyBlueprint.ConstructionNodes.Last());
             Vector3 foundationPoint2 = FindFoundationPoint(targetPoint, MyBlueprint.ConstructionNodes.Last(), MyBlueprint.ConstructionNodes.First());
 
-            bool firstHasFoundation = Physics.Linecast(dronePosition, foundationPoint1);
-            bool secondHasFoundation = Physics.Linecast(dronePosition, foundationPoint2);
+            bool isFoundationOneThere = Physics.Linecast(dronePosition, foundationPoint1);
+            bool isFoundationTwoThere = Physics.Linecast(dronePosition, foundationPoint2);
 
-            return firstHasFoundation && secondHasFoundation;
+            Debug.DrawLine(dronePosition, foundationPoint1, (isFoundationOneThere) ? Color.white : Color.red, 0.5f);
+            Debug.DrawLine(dronePosition, foundationPoint2, (isFoundationTwoThere) ? Color.white : Color.red, 0.5f);
+
+            return isFoundationOneThere && isFoundationTwoThere;
         }
 
         /* Regner punktet skråt ned under et andet punkt, i retning af en given Blueprint Node
          * Returnerer dette punkt */
-
         private Vector3 FindFoundationPoint(Vector3 targetPoint, Vector3 blueprintNodeFrom, Vector3 blueprintNodeTo)
         {
             Vector3 foundationPoint = (blueprintNodeTo - blueprintNodeFrom).normalized * SandbagReference.Length / 2;
