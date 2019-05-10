@@ -490,7 +490,6 @@ namespace Tests
 
         private void EventHandlerPlaceholder(object sender, EventArgs e) { }
 
-        #endregion
 
         #region SearchForSandbagPlaceState metoder
 
@@ -651,6 +650,243 @@ namespace Tests
 
             yield return null;
         }
+
+        #endregion
+
+        #endregion
+
+        #region Metoder
+
+        #region IsPlaceStillAvailable
+
+        [UnityTest]
+        public IEnumerator DroneController_IsPlaceStillAvailable_PlaceIsAvailable_ReturnTrue()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            Point point = new Point(new Vector3(2, 0, 0));
+
+            // Act
+            var actual = controller.IsPlaceStillAvailable(controller.transform.position, point);
+
+            // Assert
+            Assert.IsTrue(actual);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_IsPlaceStillAvailable_PlaceIsNotAvailable_ReturnFalse()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            Point point = new Point(new Vector3(2, 0, 0));
+
+
+            GameObject sandbag = CreateSandbag();
+
+            sandbag.transform.position = point.Position;
+
+            yield return null;
+
+            // Act
+            var actual = controller.IsPlaceStillAvailable(controller.transform.position, point);
+
+            // Assert
+            Assert.IsFalse(actual);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_IsPlaceStillAvailable_PlaceIsAvailable_HasFoundation_ReturnTrue()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            controller.transform.position = new Vector3(0, 3, 0);
+
+            // Placering der skal tjekkes
+            Point point = new Point(new Vector3(0, (new SandbagMeasurements().Height / 2) * 2, 0));
+
+            // Sandsække der understøtter placeringen der bliver tjekket
+            Point[] foundationPoints = point.Below(point.Adjecent(controller.MyBlueprint, new SandbagMeasurements()), new SandbagMeasurements());
+
+            GameObject foundation1 = CreateSandbag();
+            foundation1.transform.position = foundationPoints[0].Position;
+
+            GameObject foundation2 = CreateSandbag();
+            foundation2.transform.position = foundationPoints[1].Position;
+
+            yield return null;
+
+            // Act
+            var actual = controller.IsPlaceStillAvailable(controller.transform.position, point);
+
+            // Assert
+            Assert.IsTrue(actual);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_IsPlaceStillAvailable_PlaceIsAvailable_HasPartialFoundation_ReturnFalse()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            controller.transform.position = new Vector3(0, 3, 0);
+
+            // Placering der skal tjekkes
+            Point point = new Point(new Vector3(0, (new SandbagMeasurements().Height / 2) * 2, 0));
+
+            // Sandsække der understøtter placeringen der bliver tjekket
+            Point[] foundationPoints = point.Below(point.Adjecent(controller.MyBlueprint, new SandbagMeasurements()), new SandbagMeasurements());
+
+            GameObject foundation1 = CreateSandbag();
+            foundation1.transform.position = foundationPoints[0].Position;
+
+            yield return null;
+
+            // Act
+            var actual = controller.IsPlaceStillAvailable(controller.transform.position, point);
+
+            // Assert
+            Assert.IsFalse(actual);
+
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_IsPlaceStillAvailable_PlaceIsAvailable_HasNoFoundation_ReturnFalse()
+        {
+            // Arrange 
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            controller.transform.position = new Vector3(0, 3, 0);
+
+            // Placering der skal tjekkes
+            Point point = new Point(new Vector3(0, (new SandbagMeasurements().Height / 2) * 2, 0));
+
+            yield return null;
+
+            // Act
+            var actual = controller.IsPlaceStillAvailable(controller.transform.position, point);
+
+            // Assert
+            Assert.IsFalse(actual);
+
+            yield return null;
+        }
+
+        #endregion
+
+        #region SetSandbagTargetPoint
+
+        [UnityTest]
+        public IEnumerator DroneController_SetSandbagTargetPoint_PlaceAvailable_SandbagTargetPointNotNull()
+        {
+            // Arrange
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            controller.PossiblePlaces = new Vector3[] { new Vector3(0, new SandbagMeasurements().Height / 2, 0) };
+
+            // Act
+            yield return null;
+
+            controller.SetSandbagTargetPoint();
+
+            // Assert
+            Vector3 actual = controller.SandbagTargetPoint.Position;
+
+            Vector3 expected = new Vector3(0, new SandbagMeasurements().Height / 2, 0);
+
+            Assert.AreEqual(expected, actual);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator DroneController_SetSandbagTargetPoint_NoPlaceAvailable_SandbagTargetPointIsErrorVector()
+        {
+            // Arrange
+            GameObject drone = CreateDrone();
+
+            yield return null;
+
+            DroneController controller = drone.GetComponent<DroneController>();
+
+            drone.SetActive(false);
+
+            controller.PossiblePlaces = null;
+
+            controller.PossiblePlaces = new Vector3[] { new Vector3(2, new SandbagMeasurements().Height / 2, 0) };
+
+            GameObject blockingDrone = CreateDrone();
+
+            blockingDrone.transform.position = controller.PossiblePlaces[0] + new Vector3(0, 1, 0);
+
+            yield return null;
+
+            // Act
+            yield return null;
+
+            controller.SetSandbagTargetPoint();
+
+            // Assert
+            Vector3 actual = controller.SandbagTargetPoint.Position;
+
+            Vector3 expected = controller.MySection.ErrorVector;
+
+            Assert.AreEqual(expected, actual);
+            yield return null;
+
+        }
+
+        #endregion
+
+        #region UpdateState
+
+
+
+        #endregion
 
         #endregion
 
