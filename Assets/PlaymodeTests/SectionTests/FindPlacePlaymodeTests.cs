@@ -8,7 +8,6 @@ using UnityEditor.SceneManagement;
 using System;
 using System.Diagnostics;
 using Debug = UnityEngine.Debug;
-using NSubstitute;
 
 namespace Tests
 {
