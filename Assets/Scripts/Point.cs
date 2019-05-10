@@ -100,8 +100,10 @@ public class Point
     public Point[] Above(Point[] adjecent, SandbagMeasurements sandbag)
     {
         Point[] abovePoints = new Point[2];
+
         Vector3 leftMiddle = Vector3.Lerp(Position, adjecent[0].Position, 0.5f);
         Vector3 rightMiddle = Vector3.Lerp(Position, adjecent[1].Position, 0.5f);
+
         abovePoints[0] = new Point(new Vector3(leftMiddle.x, Position.y + sandbag.Height, leftMiddle.z));
         abovePoints[1] = new Point(new Vector3(rightMiddle.x, Position.y + sandbag.Height, rightMiddle.z));
 
@@ -112,8 +114,10 @@ public class Point
     public Point[] Below(Point[] adjecent, SandbagMeasurements sandbag)
     {
         Point[] belowPoints = new Point[2];
+
         Vector3 leftMiddle = Vector3.Lerp(Position, adjecent[0].Position, 0.5f);
         Vector3 rightMiddle = Vector3.Lerp(Position, adjecent[1].Position, 0.5f);
+
         belowPoints[0] = new Point(new Vector3(leftMiddle.x, Position.y - sandbag.Height, leftMiddle.z));
         belowPoints[1] = new Point(new Vector3(rightMiddle.x, Position.y - sandbag.Height, rightMiddle.z));
 
