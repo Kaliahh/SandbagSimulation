@@ -105,7 +105,7 @@ namespace SandbagSimulation
             // Check om det givne array er gyldigt.
             if (places.Length < 1 || places == null)
             {
-                Debug.Log("No places found");
+                //Debug.Log("No places found");
                 return ErrorVector;
             }
 

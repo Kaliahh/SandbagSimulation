@@ -242,7 +242,7 @@ namespace SandbagSimulation
                     C.SetDroneTargetPoint(C.SandbagTargetPoint.Position);
                     C.AboveTarget = CalculateAbovePoint(C.SandbagTargetPoint.Position, C.MyBlueprint, C.SafeHeight);
 
-                    Debug.DrawLine(C.transform.position, C.SandbagTargetPoint.Position, Color.cyan);
+                    //Debug.DrawLine(C.transform.position, C.SandbagTargetPoint.Position, Color.cyan);
                 }
             }
         }

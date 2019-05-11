@@ -146,7 +146,7 @@ namespace SandbagSimulation
             // Hvis dronen skulle få en ErrorVector, søger den igen efter et sted at placere sandsækken
             if (SandbagTargetPoint.Position == MySection.ErrorVector)
             {
-                Debug.Log("Error vector");
+                //Debug.Log("Error vector");
                 SandbagTargetPoint.Position = Vector3.zero;
                 State = SearchForSandbagPlaceState;
             }
@@ -229,7 +229,7 @@ namespace SandbagSimulation
                 SetDroneTargetPoint(SandbagTargetPoint.Position);
                 AboveTarget = CalculateAbovePoint(SandbagTargetPoint.Position, MyBlueprint, SafeHeight);
 
-                Debug.DrawLine(this.transform.position, SandbagTargetPoint.Position, Color.cyan);
+                //Debug.DrawLine(this.transform.position, SandbagTargetPoint.Position, Color.cyan);
             }
         }
 
