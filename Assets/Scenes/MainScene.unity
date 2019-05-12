@@ -403,6 +403,11 @@ PrefabInstance:
       propertyPath: MainCamera
       value: 
       objectReference: {fileID: 534669904}
+    - target: {fileID: 4966222987121981439, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
+        type: 3}
+      propertyPath: SpawnPoint.y
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9423da6ba7b4e224b909b7f6ddcf47b6, type: 3}
 --- !u!1 &170076733
