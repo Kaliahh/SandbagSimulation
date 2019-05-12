@@ -56,7 +56,7 @@ namespace SandbagSimulation
             if (IsSimulationRunning) 
             {
                 // Tegner en rød streg hvor diget skal ligge, kun i scene view
-                Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
+                //Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.Last(), Color.red);
                 Debug.DrawLine(Blueprint.ConstructionNodes.First(), Blueprint.ConstructionNodes.First() + new Vector3(0, 10, 0));
                 Debug.DrawLine(Blueprint.ConstructionNodes.Last(), Blueprint.ConstructionNodes.Last() + new Vector3(0, 10, 0));
 
@@ -128,7 +128,6 @@ namespace SandbagSimulation
         private void FinishedDronesCounter(object sender, EventArgs e)
         {
             NumOfFinishedDrones++;
-            Debug.Log(NumOfFinishedDrones);
         }
 
         // Genererer blueprints og giver dem til dronerne

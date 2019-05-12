@@ -26,7 +26,7 @@ public class Results : MonoBehaviour
 
         EvaluationReport = SimulationController.GetComponent<SimulationController>().EvaluationReport;
         PrintString();
-        Debug.Log(SimulationController.GetComponent<SimulationController>().EvaluationReport);
+        //Debug.Log(SimulationController.GetComponent<SimulationController>().EvaluationReport);
     }
 
     private void PrintString() //Resultatet er en enkel streng fra evaluator.
@@ -47,7 +47,7 @@ public class Results : MonoBehaviour
             Rotation.text = EvaluationReport.Split('$')[0];
             Position.text = EvaluationReport.Split('$')[1];
             
-            Debug.Log("Kørt");
+            //Debug.Log("Kørt");
         }
 
     }

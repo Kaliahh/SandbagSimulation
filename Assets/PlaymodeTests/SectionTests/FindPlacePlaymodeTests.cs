@@ -142,7 +142,7 @@ namespace Tests
             cube2.transform.position = new Vector3(0f, 0f, 10f + length);
             cube2.AddComponent(typeof(SandbagController));
 
-            Debug.Log(cube1.transform.position.ToString() + " " + cube2.transform.position.ToString());
+            //Debug.Log(cube1.transform.position.ToString() + " " + cube2.transform.position.ToString());
 
             yield return new WaitForFixedUpdate();
 
