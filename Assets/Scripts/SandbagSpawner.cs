@@ -1,18 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
 namespace SandbagSimulation
 {
+    /* Instantierer en sandsæk efter et givent antal sekunder, og så længe der ikke er nogen sandsække 
+     * i nærheden af det sted de instantieres */
     public class SandbagSpawner : MonoBehaviour
     {
         public GameObject Sandbag;
         public Vector3 SpawnPoint;
 
         float Counter = 0;
-        public float WaitTime = 0.5f;
+        float WaitTime = 0.3f;
+
+        void Start()
+        {
+            Sandbag = this.GetComponent<SimulationController>().SandBag;
+        }
 
         void Update()
         {
@@ -31,13 +39,16 @@ namespace SandbagSimulation
             }
         }
 
+        // Instantierer en sandsæk
         void SpawnSandbag() => Instantiate(Sandbag, SpawnPoint, Quaternion.identity); // Sandsækken får ingen rotation
 
-        // Tjekker om der er en sandsæk i spawnpointet
-        // Returnerer sand hvis der ingen sandsæk er
+        /* Tjekker om der er en sandsæk i spawnpointet
+         * Returnerer sand hvis der ingen sandsæk er */
         bool SpawnPointIsFree()
         {
-            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag");
+            GameObject[] sandbags = GameObject.FindGameObjectsWithTag("Sandbag")
+                .Where(s => Vector3.Distance(s.transform.position, SpawnPoint) < 1)
+                .ToArray();
 
             if (sandbags.Length == 0)
             {

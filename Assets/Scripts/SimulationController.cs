@@ -92,9 +92,16 @@ namespace SandbagSimulation
             SetDroneViewDistance();
             InitializeBlueprints();
 
+            this.gameObject.AddComponent<SandbagSpawner>();
+
             this.GetComponent<SandbagSpawner>().SpawnPoint = SandbagSpawnPoint;
             SetDroneSandbagPickUpLocation();
             IsSimulationRunning = true;
+        }
+
+        public void EndSimulation()
+        {
+            throw new NotImplementedException();
         }
 
         // Instansierer droner i en række 

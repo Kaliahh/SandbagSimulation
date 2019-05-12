@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3028431066369426082}
   - component: {fileID: 3028431066369426083}
-  - component: {fileID: 4966222987121981439}
   - component: {fileID: 8767965665596435404}
   m_Layer: 0
   m_Name: SimulationController
@@ -60,21 +59,6 @@ MonoBehaviour:
   IsSimulationRunning: 0
   TotalTime: 0
   EvaluationReport: 
---- !u!114 &4966222987121981439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3028431066369426080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17db941bdd53001489ab92c542e389bb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Sandbag: {fileID: 6797641153722488307, guid: 5b3014d77e2bc0743963166ce9cb2831, type: 3}
-  SpawnPoint: {x: 2, y: 0.5, z: 2}
-  WaitTime: 0.3
 --- !u!114 &8767965665596435404
 MonoBehaviour:
   m_ObjectHideFlags: 0
