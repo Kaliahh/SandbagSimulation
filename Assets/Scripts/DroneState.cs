@@ -12,11 +12,10 @@ namespace SandbagSimulation
         void Execute();
     }
 
-    /* Overordnet tilstandsklasse der indeholder en reference til en DroneController,
-     * der implementerer IDroneState. Denne reference vil blive kaldt C i de kommende klasser */
+    /* Overordnet tilstandsklasse der indeholder en reference til en DroneController.
+     * Denne reference vil blive kaldt C i de kommende klasser. */
     public abstract class DroneState : IDroneState
     {
-        // public GameObject Drone { get; private set; }
         public DroneController C { get; private set; }
 
         public DroneState(DroneController controller)
@@ -170,7 +169,8 @@ namespace SandbagSimulation
         }
     }
 
-    // TODO: Fortsæt kommentar her
+    /* Søger efter et sted at placere sandsækken, ved hjælp af Section.FindPlace() og Section.FindBestPlace.
+     * Efter der er blevet fundet en placering, sættes State til at flyve hen over denne placering */
     public class SearchForSandbagPlaceState : DroneState
     {
         public SearchForSandbagPlaceState(DroneController controller) : base(controller) { }
@@ -257,6 +257,12 @@ namespace SandbagSimulation
         }
     }
 
+    /* Flyver dronen hen til over det punkt hvor den skal placere sandsækken.
+     * Herefter tjekker den om den sidste sandsæk i dens side af diget er blevet placeret.
+     * Hvis det er sandt, stopper den, og flvyer hjem. Er det ikke sandt, tjekker den om den stadigvæk kan placere
+     * sandsækken i den position den fandt tidligere. Kan den ikke det, sættes State tilbage til at 
+     * finde en placering. Er placeringen stadigvæk til rådighed, sættes State til at flyve dronen
+     * ned til lige over det punkt sandsækken skal placeres */
     public class FlyToAboveTargetState : DroneState
     {
         public FlyToAboveTargetState(DroneController controller) : base(controller) { }
@@ -286,6 +292,8 @@ namespace SandbagSimulation
         }
     }
 
+    /* Flyver dronen hen til lige over sandsækkens placering.
+     * Når den er kommet tæt nok på, sættes State til at placere sandsækken */
     public class FlyToDroneTargetState : DroneState
     {
         public FlyToDroneTargetState(DroneController controller) : base(controller) { }
@@ -299,6 +307,8 @@ namespace SandbagSimulation
         }
     }
 
+    /* Placerer sandsækken i den placering dronen har fundet. 
+     * State sættes derefter til at flyve dronen tilbage til punktet over sandsækkens placering */
     public class PlaceMySandbagState : DroneState
     {
         public PlaceMySandbagState(DroneController controller) : base(controller) { }
@@ -324,6 +334,10 @@ namespace SandbagSimulation
         }
     }
 
+    /* Flyver dronen op over diget. Når den er kommet op, tjekker den om den sidste
+     * sandsæk i dens ende af diget er placeret. Er den det, stopper dronen og flyver hjem.
+     * Er diget ikke færdigt, sættes State til at flyve dronen tilbage til der hvor den
+     * kan samle sandsække op, den første tilstand */
     public class ReturnToAboveTargetState : DroneState
     {
         public ReturnToAboveTargetState(DroneController controller) : base(controller) { }

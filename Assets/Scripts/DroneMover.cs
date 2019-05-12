@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-// TODO: Fortsæt test her
-
 namespace SandbagSimulation
 {
-    // Bevæger dronen hen 
+    // Bevæger dronen hen mod et givent punkt
     public class DroneMover : MonoBehaviour
     {
         public float Speed;
