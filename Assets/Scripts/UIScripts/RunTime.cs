@@ -52,7 +52,7 @@ public class RunTime : MonoBehaviour
         }
     }
 
-    // Opdater tiden
+    // Opdater tiden. Udskriver et nul foran, hvis talet har et cifer.
     public void ChangeTime(float seconds) 
     {
         int TextMinuttes = (int)(seconds / 60);
@@ -67,7 +67,7 @@ public class RunTime : MonoBehaviour
     // Sæt hastigheden på simulationen fra slideren
     public void ChangeFinishedDrones(int finishedDrones, int totalDrones) 
     {
-        DronesText.text = "FinishedDrones: " + finishedDrones + "/" + totalDrones;
+        DronesText.text = "Droner færdige: " + finishedDrones + "/" + totalDrones;
     }
 
     // Sæt hastigheden på simulationen fra slideren
