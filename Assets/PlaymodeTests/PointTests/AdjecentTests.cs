@@ -14,7 +14,12 @@ namespace Tests
         [SetUp]
         public void ResetScene()
         {
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+            var list = GameObject.FindObjectsOfType<GameObject>();
+
+            foreach (var item in list)
+            {
+                GameObject.Destroy(item);
+            }
         }
 
         [UnityTest]
