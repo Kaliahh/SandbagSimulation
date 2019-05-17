@@ -237,7 +237,7 @@ namespace SandbagSimulation
             {
                 C.SandbagTargetPoint.Position = C.MySection.FindBestPlace(C.PossiblePlaces, C.transform.position, C.ViewDistance);
 
-                if (C.SandbagTargetPoint.Position != new Vector3(-100, -100, -100))
+                if (C.SandbagTargetPoint.Position != C.MySection.ErrorVector)
                 {
                     C.SetDroneTargetPoint(C.SandbagTargetPoint.Position);
                     C.AboveTarget = CalculateAbovePoint(C.SandbagTargetPoint.Position, C.MyBlueprint, C.SafeHeight);
