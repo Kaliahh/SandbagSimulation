@@ -13,7 +13,12 @@ namespace Tests
         [SetUp]
         public void ResetScene()
         {
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+            var list = GameObject.FindObjectsOfType<GameObject>();
+
+            foreach (var item in list)
+            {
+                GameObject.Destroy(item);
+            }
         }
 
         [UnityTest]
@@ -98,7 +103,7 @@ namespace Tests
 
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
-            Vector3 position = new Vector3(0f, 10f, 5f);
+            Vector3 position = new Vector3(0f, 10f, 2f);
             //Act
             yield return null;
             bool result = point.InView(position, viewDistance, sandbagHeight);
@@ -213,7 +218,7 @@ namespace Tests
 
             float sandbagHeight = 0.5f;
             float viewDistance = 20f;
-            Vector3 position = new Vector3(0f, -5f, 5f);
+            Vector3 position = new Vector3(0f, -5f, 2f);
             //Act
             yield return null;
             bool result = point.InView(position, viewDistance, sandbagHeight);

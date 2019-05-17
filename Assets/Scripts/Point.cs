@@ -57,7 +57,10 @@ public class Point
             return false;
     }
 
-    // Er et givent punkt på en linje med en acceptabel margen. 
+    // Er et givent punkt på en linje med en acceptabel margen.
+    // Udregner afstanden fra et punkt til en linje, og afgør om det er inden for en acceptabel afstand. Der ses bort fra højden.
+    // Kilde: Randy Gaul https://www.randygaul.net/2014/07/23/distance-point-to-line-segment/
+    // Postet 23/07 2014. Set 10/05 2019
     public bool OnLine(Blueprint blueprint, float maxDistance)
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();

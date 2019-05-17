@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 namespace Tests
@@ -12,7 +13,12 @@ namespace Tests
         [SetUp]
         public void ResetScene()
         {
-            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
+            var list = GameObject.FindObjectsOfType<GameObject>();
+
+            foreach (var item in list)
+            {
+                GameObject.Destroy(item);
+            }
         }
 
         [UnityTest]
