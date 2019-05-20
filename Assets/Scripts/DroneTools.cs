@@ -45,7 +45,7 @@ namespace SandbagSimulation
 
                 bool isPlaceEmpty = Physics.Linecast(position, targetNode, out RaycastHit hitInfo);
 
-                if (hitInfo.distance < Vector3.Distance(position, targetNode) - sandbag.Length)
+                if (hitInfo.distance < Vector3.Distance(position, targetNode) - sandbag.Length / 2)
                 {
                     return false;
                 }

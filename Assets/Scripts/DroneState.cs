@@ -177,8 +177,21 @@ namespace SandbagSimulation
 
         public override void Execute()
         {
+            Vector3 flag = new Vector3(0, -100, 0);
+
+            C.AboveTarget = flag;
+
             FindSandbagPlace();
-            C.State = C.FlyToAboveTargetState;
+
+            if (C.AboveTarget != flag)
+            {
+                C.State = C.FlyToAboveTargetState;
+            }
+
+            else
+            {
+                C.State = C.FlyToSectionState;
+            }
         }
 
         // Finder det sted dronen skal placere sandsækken. Tager højde for om den første sandsæk er placeret
@@ -204,20 +217,10 @@ namespace SandbagSimulation
         // Finder det sted hvor den første sandsæk skal placeres i diget
         private void FindFirstSandbagPlace()
         {
-            C.PossiblePlaces = C.MySection.FindPlace(C.ViewDistance, C.transform.position, C.MyBlueprint);
-
-            if (C.PossiblePlaces == null)
-            {
-                C.SandbagTargetPoint.Position = new Vector3(C.BlueprintCentre.x, C.SandbagReference.Height / 2, C.BlueprintCentre.z);
-                C.SetDroneTargetPoint(C.SandbagTargetPoint.Position);
-                C.AboveTarget = CalculateAbovePoint(C.SandbagTargetPoint.Position, C.MyBlueprint, C.SafeHeight);
-                C.HasBuildingBegun = true;
-            }
-
-            else if (C.PossiblePlaces != null)
-            {
-                C.HasBuildingBegun = true;
-            }
+            C.SandbagTargetPoint.Position = new Vector3(C.BlueprintCentre.x, C.SandbagReference.Height / 2, C.BlueprintCentre.z);
+            C.SetDroneTargetPoint(C.SandbagTargetPoint.Position);
+            C.AboveTarget = CalculateAbovePoint(C.SandbagTargetPoint.Position, C.MyBlueprint, C.SafeHeight);
+            C.HasBuildingBegun = true;
         }
 
         // Finder det sted hvor sandsækken skal placeres, ud fra de sandsække der allerede er placeret
@@ -231,6 +234,8 @@ namespace SandbagSimulation
                 Debug.DrawLine(C.transform.position, C.transform.position + new Vector3(0, 10, 0), Color.blue, 0.5f);
                 C.MySection.CurrentSection = C.MySection.FindNextSection(C.ViewDistance, C.transform.position, C.IsRightDrone, C.MyBlueprint);
                 C.AboveSection = CalculateAbovePoint(C.MySection.CurrentSection, C.MyBlueprint, C.SafeHeight);
+
+                C.State = C.FlyToSectionState;
             }
 
             else
@@ -242,7 +247,9 @@ namespace SandbagSimulation
                     C.SetDroneTargetPoint(C.SandbagTargetPoint.Position);
                     C.AboveTarget = CalculateAbovePoint(C.SandbagTargetPoint.Position, C.MyBlueprint, C.SafeHeight);
 
-                    //Debug.DrawLine(C.transform.position, C.SandbagTargetPoint.Position, Color.cyan);
+                    C.State = C.FlyToAboveTargetState;
+
+                    Debug.DrawLine(C.transform.position, C.SandbagTargetPoint.Position, Color.cyan);
                 }
             }
         }
