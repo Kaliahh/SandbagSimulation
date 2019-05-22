@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.57481706, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -327,7 +327,7 @@ PrefabInstance:
     - target: {fileID: 2960172563109363281, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
       propertyPath: m_Text
-      value: Intruktion
+      value: Instruktion
       objectReference: {fileID: 0}
     - target: {fileID: 2960172563129565189, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
@@ -354,6 +354,16 @@ PrefabInstance:
       propertyPath: m_Text
       value: 'Droneantal: 0'
       objectReference: {fileID: 0}
+    - target: {fileID: 2960172562477407098, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_FontData.m_FontSize
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960172562477407098, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_FontData.m_MinSize
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2960172563881341056, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
       propertyPath: m_Text
@@ -378,6 +388,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Text
       value: Tilbage til menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4539519632517761653, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4539519632517761653, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925723655684100283, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1925723655684100283, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -25
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0ea40a3dd09e594a96ae123c25ef696, type: 3}
@@ -456,12 +486,12 @@ PrefabInstance:
     - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: Node2.z
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: Node1.z
-      value: -4
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
