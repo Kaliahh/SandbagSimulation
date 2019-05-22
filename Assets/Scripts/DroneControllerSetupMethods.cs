@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +13,9 @@ namespace SandbagSimulation
 
             drone.AddComponent<DroneMover>();
             drone.AddComponent<BoxCollider>();
+
+            CapsuleCollider collider = drone.GetComponent<CapsuleCollider>();
+            GameObject.Destroy(collider);
 
             drone.GetComponent<DroneController>().SetBlueprint(CreateBlueprint(node1, node2, dikeHeight));
             drone.GetComponent<DroneController>().SetSpeed(8);
@@ -40,6 +43,9 @@ namespace SandbagSimulation
 
             drone.AddComponent<DroneMover>();
             drone.AddComponent<BoxCollider>();
+
+            CapsuleCollider collider = drone.GetComponent<CapsuleCollider>();
+            GameObject.Destroy(collider);
 
             drone.GetComponent<DroneController>().SetBlueprint(CreateBlueprint(node1, node2, dikeHeight));
             drone.GetComponent<DroneController>().SetSpeed(8);
