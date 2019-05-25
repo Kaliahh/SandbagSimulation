@@ -69,7 +69,7 @@ public class MainMenu : MonoBehaviour
                                              //Ændrer teksten så brugeren ved hvor meget den står på
         GameObject gameobject = NewSimulationScreen.transform.Find("NumberOfDrones").gameObject; //Reference til GameObjectet med slideren
         Text text = gameobject.transform.Find("Text").GetComponent<Text>(); //Finder teksten
-        text.text = "Dronerantal: " + Value.ToString(); //Ændrer teksten
+        text.text = "Antal droner: " + Value.ToString(); //Ændrer teksten
 
         //Sender værdien til simulationkontrolleren
         Controller.GetComponent<SimulationController>().NumberOfDrones = Value;
@@ -81,7 +81,7 @@ public class MainMenu : MonoBehaviour
                                              //Ændrer teksten så brugeren ved hvor meget den står på
         GameObject gameobject = NewSimulationScreen.transform.Find("Speed").gameObject; //Reference til GameObjectet med slideren
         Text text = gameobject.transform.Find("Text").GetComponent<Text>(); //Finder teksten
-        text.text = "Dronehastighed: " + Value.ToString(); //Ændrer teksten
+        text.text = "Dronernes hastighed: " + Value.ToString(); //Ændrer teksten
 
         //Sender værdien til simulationkontrolleren
         Controller.GetComponent<SimulationController>().DroneSpeed = Value;

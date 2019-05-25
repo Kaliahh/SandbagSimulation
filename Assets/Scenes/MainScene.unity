@@ -352,7 +352,7 @@ PrefabInstance:
     - target: {fileID: 2960172562477407098, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
       propertyPath: m_Text
-      value: 'Droneantal: 0'
+      value: 'Antal droner: 0'
       objectReference: {fileID: 0}
     - target: {fileID: 2960172562477407098, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
@@ -408,6 +408,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1996269554449550152, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0ea40a3dd09e594a96ae123c25ef696, type: 3}
@@ -496,6 +501,11 @@ PrefabInstance:
     - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: DikeHeight
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3028431066369426083, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
+        type: 3}
+      propertyPath: DroneViewDistance
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8767965665596435404, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,

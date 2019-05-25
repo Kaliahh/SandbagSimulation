@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -42,13 +42,14 @@ namespace SandbagSimulation
         public float TotalTime;
 
         //Evaluator
-        private Evaluator Evaluator = new Evaluator();
+        private Evaluator Evaluator;
         public string EvaluationReport;
 
         void Start()
         {
             NumOfFinishedDrones = 0;
             NumberOfDrones = ((int)Vector3.Distance(Node1, Node2) + 8) / 4;
+            Evaluator = new Evaluator();
         }
 
         void Update()

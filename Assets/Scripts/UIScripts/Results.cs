@@ -7,12 +7,10 @@ using SandbagSimulation;
 public class Results : MonoBehaviour
 {
     //Eksempler
-    public string EvaluationReport = "1234567890$1234567890\u2265"; //Varible til evalueringsstrengen som bliver hentet fra evaluator
-    public int TimeString = 200;
+    public string EvaluationReport = "1234567890$1234567890\u2265"; // Varible til evalueringsstrengen som bliver hentet fra evaluator
 
-    private Text TotalTime; //Tekstblok til tid
-    private Text Position; //Tekstblok til position evaluering. Bruges også hvis diget er optimalt.
-    private Text Rotation; //Tekstblok til rotation evaluering
+    private Text Position;  // Tekstblok til position evaluering. Bruges også hvis diget er optimalt.
+    private Text Rotation;  // Tekstblok til rotation evaluering
 
     public GameObject SimulationController;
     public GameObject Runtime;
@@ -20,7 +18,6 @@ public class Results : MonoBehaviour
     void Start()
     {
         //Referencer
-        TotalTime = GameObject.Find("TotalTime").GetComponent<Text>();
         Position = GameObject.Find("Position").GetComponent<Text>();
         Rotation = GameObject.Find("Rotation").GetComponent<Text>();
 
@@ -29,25 +26,21 @@ public class Results : MonoBehaviour
         //Debug.Log(SimulationController.GetComponent<SimulationController>().EvaluationReport);
     }
 
-    private void PrintString() //Resultatet er en enkel streng fra evaluator.
+    //Resultatet er en enkel streng fra evaluator.
+    private void PrintString() 
     {
-        //Skriver tiden
-        TotalTime.text = "Det tog " + TimeString + " sekunder.";
-
-        //Hvis diget er optimal ingen $
+        // Hvis diget er optimal ingen $, udskriv hele strengen
         if (!EvaluationReport.Contains("$"))
         {
-            Rotation.text = EvaluationReport; //Udskriver hele strengen
+            Rotation.text = EvaluationReport; 
             Position.text = null;
         }
 
-        //Hvis diget mangler findes $. Del strengen op der.
+        // Hvis diget mangler findes $. Del strengen op der.
         else
         {
             Rotation.text = EvaluationReport.Split('$')[0];
             Position.text = EvaluationReport.Split('$')[1];
-            
-            //Debug.Log("Kørt");
         }
 
     }
