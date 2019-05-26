@@ -189,7 +189,7 @@ namespace SandbagSimulation
 
             var distanceFromWaypointToMiddle = Vector3.Distance(waypoint, firstLayerResult.First());
 
-            return (distanceFromFinalBagToMiddle > distanceFromWaypointToMiddle) ? 1 : 0;
+            return (distanceFromFinalBagToMiddle >= distanceFromWaypointToMiddle) ? 1 : 0;
         }
 
 
@@ -200,7 +200,7 @@ namespace SandbagSimulation
 
             /* Første lag sorteres, så løkken i metoden BuildAnotherLayerOnTop 
              * itererer gennem lagene i diget fra den ene ende til den anden. */
-            var nextLayerToBeBuiltUpon = firstLayer.OrderBy(ProximityToOneOfTheWaypoints).ToList();
+            var nextLayerToBeBuiltUpon = firstLayer.OrderBy(position => Vector3.Distance(position, firstLayer.Last())).ToList();
 
             for (int i = 2; i <= EvaluatedBlueprint.DikeHeight; i++)
             {
@@ -229,12 +229,6 @@ namespace SandbagSimulation
             }
 
             return newLayer.Select(position => { position.y = newHeight; return position; }).ToList();
-        }
-
-        // Metoden returnerer afstanden mellem inputparameteren position og det første waypoint i blueprint. 
-        public float ProximityToOneOfTheWaypoints(Vector3 position)
-        {
-            return Vector3.Distance(position, EvaluatedBlueprint.ConstructionNodes.First());
         }
 
         #endregion
