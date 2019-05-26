@@ -1103,37 +1103,6 @@ namespace Tests
             }
         }
 
-        public class ProximityToOneOfTheWaypointsTests
-        {
-            [SetUp]
-            public void ResetScene()
-            {
-                EditorSceneManager.NewScene(NewSceneSetup.EmptyScene);
-            }
-
-
-            [Test]
-            public void ProximityToOneOfTheWaypoints_WhenCalled_ReturnsDistanceBetweenPositionAndWaypoint()
-            {
-                // Arrange. 
-                var MyDikeOptimizer = new DikeOptimizer();
-
-                var constructionNodes = Enumerable.Range(0, 2).Select(x => new Vector3(x * 10, x * 10, x * 10)).ToList();
-                MyDikeOptimizer.EvaluatedBlueprint = new Blueprint(constructionNodes, 1);
-
-                var position = new Vector3(34, 64, 12);
-
-                var expectedDistance = Vector3.Distance(position, MyDikeOptimizer.EvaluatedBlueprint.ConstructionNodes.First());
-
-                // Act.
-                var resultDistance = MyDikeOptimizer.ProximityToOneOfTheWaypoints(position);
-
-                // Assert.
-                Assert.AreEqual(resultDistance, expectedDistance);
-
-            }
-        }
-
         public class GetAllRemainingLayersTests
         {
             [SetUp]
@@ -1154,7 +1123,7 @@ namespace Tests
                 MyDikeOptimizer.EvaluatedBlueprint = new Blueprint(constructionNodes, 3);
 
                 List<Vector3> firstLayer = MyDikeOptimizer.GetFirstOptimalLayer();
-                var sortedFirstLayer = MyDikeOptimizer.GetFirstOptimalLayer().OrderBy(MyDikeOptimizer.ProximityToOneOfTheWaypoints).ToList();
+                var sortedFirstLayer = MyDikeOptimizer.GetFirstOptimalLayer().OrderBy(position => Vector3.Distance(position, firstLayer.Last())).ToList();
                 var secondLayer = MyDikeOptimizer.BuildAnotherLayerOnTop(sortedFirstLayer, 2);
                 var thirdLayer = MyDikeOptimizer.BuildAnotherLayerOnTop(secondLayer, 3);
                 var expectedResultList = secondLayer.Concat(thirdLayer).ToList();
@@ -1228,7 +1197,7 @@ namespace Tests
 
 
                 var firstLayer = MyDikeOptimizer.GetFirstOptimalLayer();
-                var layerToBeBuiltUpon = firstLayer.OrderBy(MyDikeOptimizer.ProximityToOneOfTheWaypoints).ToList();
+                var layerToBeBuiltUpon = firstLayer.OrderBy(position => Vector3.Distance(position, firstLayer.Last())).ToList();
                 var newLayerNumber = 3;
 
 
@@ -1253,7 +1222,8 @@ namespace Tests
                 var constructionNodes = Enumerable.Range(0, 2).Select(x => new Vector3(x * 10, x * 10, x * 10)).ToList();
                 MyDikeOptimizer.EvaluatedBlueprint = new Blueprint(constructionNodes, 2);
 
-                var firstLayer = MyDikeOptimizer.GetFirstOptimalLayer().OrderBy(MyDikeOptimizer.ProximityToOneOfTheWaypoints).ToList();
+                var firstLayer = MyDikeOptimizer.GetFirstOptimalLayer();
+                firstLayer = firstLayer.OrderBy(position => Vector3.Distance(position, firstLayer.Last())).ToList();
                 var secondLayer = MyDikeOptimizer.BuildAnotherLayerOnTop(firstLayer, 2);
 
                 var newLayerNumber = 3;
