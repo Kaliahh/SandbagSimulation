@@ -60,20 +60,26 @@ public class Point
     // Er et givent punkt på en linje med en acceptabel margen.
     // Udregner afstanden fra et punkt til en linje, og afgør om det er inden for en acceptabel afstand. Der ses bort fra højden.
     // Kilde: Randy Gaul https://www.randygaul.net/2014/07/23/distance-point-to-line-segment/
-    // Postet 23/07 2014. Set 10/05 2019
+    // Postet 23/07-2014. Senest tilgået 10/05-2019
     public bool OnLine(Blueprint blueprint, float maxDistance)
     {
         Vector3 firstNode = blueprint.ConstructionNodes.First();
         Vector3 lastNode = blueprint.ConstructionNodes.Last();
 
-        // TODO: Skal gøres mere læsbar, en masse magiske variabel navne
-        Vector2 n = new Vector2(lastNode.x, lastNode.z) - new Vector2(firstNode.x, firstNode.z);
-        Vector2 pa = new Vector2(firstNode.x, firstNode.z) - new Vector2(Position.x, Position.z);
+        // Find længden af diget
+        Vector2 length = new Vector2(lastNode.x, lastNode.z) - new Vector2(firstNode.x, firstNode.z);
 
-        Vector2 c = n * (Vector2.Dot(n, pa) / Vector2.Dot(n, n));
-        Vector2 d = pa - c;
+        // Find vektor fra den ene ende af diget til positionen
+        Vector2 positionToFirstNode = new Vector2(firstNode.x, firstNode.z) - new Vector2(Position.x, Position.z);
 
-        return (float)System.Math.Sqrt(Vector2.Dot(d, d)) <= maxDistance ? true : false;
+        // Find den ortogonale vektor på linjen
+        Vector2 orthogonalVector = length * (Vector2.Dot(length, positionToFirstNode) / Vector2.Dot(length, length));
+
+        // Find afstanden mellem linjen og punktet
+        Vector2 distanceFromLine = positionToFirstNode - orthogonalVector;
+
+        // Returner om afstanden mellem linjen og punktet er under den maksimale afstand
+        return distanceFromLine.magnitude <= maxDistance ? true : false;
     }
 
     // Afgør om punktet er under højden givet af blueprint.
@@ -85,7 +91,6 @@ public class Point
     // Returnerer et array af tilstødende positioner til punktet.
     public Point[] Adjecent(Blueprint blueprint, SandbagMeasurements sandbag)
     {
-        // TODO: Kunne lave retur-typen om til et dictionary for at gøre det mere læsevenligt
         Point[] adjecent = new Point[2];
 
         Vector3 ad1 = (blueprint.ConstructionNodes.First() - blueprint.ConstructionNodes.Last()).normalized * sandbag.Length;
