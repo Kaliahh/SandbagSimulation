@@ -53,7 +53,7 @@ namespace SandbagSimulation
         }
 
         #region  Metoder til udregning af kameraets postition og vinkel henholdsvis til diget
-
+    
         // Finder midten af et givent dige, i form af et blueprint
         private Vector3 FindMiddleOfDike()
         {
@@ -82,7 +82,16 @@ namespace SandbagSimulation
             result += new Vector3(0, blueprint.DikeHeight / 2, 0);
             return result;
 
-        } // TODO: Hvorfor står det her? "Finder digets position som bruges alle standardkameraer"
+        }
+
+        public float FindDikeLength()
+        {
+            //Udregner længden af diget i z aksen
+            float Result = Math.Abs(GetComponent<SimulationController>().Node1.z - GetComponent<SimulationController>().Node2.z);
+            return Result;
+        }
+        
+
 
         // Udregn placering af standardkamera 1
         private Vector3 CalculateCamera1Pos() 
@@ -100,8 +109,9 @@ namespace SandbagSimulation
             // Kameratet bliver placeret i midten af diget med en højde så kameraet svæver over diget
             Vector3 result = FindMiddleOfDike();
 
-            // Tilføjer en højde
-            result = result + new Vector3(0, 20, 0);
+            // Tilføjer en højde på kameret baseret på diget længden
+            float Dikelenght = Math.Abs(GetComponent<SimulationController>().Node1.z - GetComponent<SimulationController>().Node2.z); //Udregner længden af diget i z aksen
+            result = result + (new Vector3(0, 1.5f, 0) * Dikelenght);
 
             return result;
         }
@@ -110,15 +120,7 @@ namespace SandbagSimulation
         private Vector3 CalculateCamera3() 
         {
             // Kameratet bliver placeret i diget midte og roteres således at diget ses fra siden af
-            Vector3 result = FindMiddleOfDike();
-            Vector3 spawn = GetComponent<SandbagSpawner>().SpawnPoint;
-
-            // TODO: Gør det her ikke det samme to gange?
-            // Peg kameraet mod sandsække genereringspunkt
-            MainCamera.transform.LookAt(spawn);
-
-            // Roter kameraet 90 grader
-            MainCamera.transform.LookAt(spawn);
+            Vector3 result = FindMiddleOfDike() + new Vector3(0, 0, -2)*FindDikeLength();
 
             return result;
         }
@@ -130,8 +132,9 @@ namespace SandbagSimulation
         // Standardposition 1: Forfra
         private void SelectCameraPos1() 
         {
-            MainCamera.transform.position = CalculateCamera1Pos();
-            MainCamera.transform.LookAt(FindMiddleOfDike());
+            MainCamera.transform.position = CalculateCamera1Pos(); //Sætter kameraet i midten af hvor sandsække genereres
+            MainCamera.transform.LookAt(FindMiddleOfDike()); //Vender kameraet således at det kigger på diget
+            MainCamera.transform.position += new Vector3(-1, 1, 0); //Offset for at den ikke sidder inde i dronerne.
         }
 
         // Stardardposition 2: Ovenfra
@@ -146,9 +149,7 @@ namespace SandbagSimulation
         {
             MainCamera.transform.position = CalculateCamera3();
             MainCamera.transform.rotation.SetLookRotation(GetComponent<SandbagSpawner>().SpawnPoint);
-
-            MainCamera.transform.position += new Vector3(0, 1, -15);
-            MainCamera.transform.eulerAngles = new Vector3(0f, 0f, 0f);
+            MainCamera.transform.eulerAngles = new Vector3(0f, 0f, 0f); //Rotation sættes til 0 så kameraet vender mod diget
         }
         #endregion
     }
