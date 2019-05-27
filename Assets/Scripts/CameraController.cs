@@ -120,7 +120,7 @@ namespace SandbagSimulation
         private Vector3 CalculateCamera3() 
         {
             // Kameratet bliver placeret i diget midte og roteres således at diget ses fra siden af
-            Vector3 result = FindMiddleOfDike() + new Vector3(0, 0, -2)*FindDikeLength();
+            Vector3 result = FindMiddleOfDike() + new Vector3(0, 0, -1.25f)     *    (float)Math.Pow(FindDikeLength(), 0.85); //Skalerer. Potens fordi der kræves mindre og mindre zoom når diget bliver længere
 
             return result;
         }
