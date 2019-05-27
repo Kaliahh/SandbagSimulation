@@ -275,13 +275,11 @@ namespace Tests
 
         #region IsLastSandbagPlaced
 
-        // public static bool IsLastSandbagPlaced(Vector3 position, Vector3 targetNode, float viewDistance, Blueprint blueprint, SandbagMeasurements sandbag)
-
         [UnityTest]
         public IEnumerator DroneTools_IsLastSandbagPlaced_LastIsPlaced_WithinViewDistance_ReturnTrue()
         {
             // Arrange
-            Vector3 position = Vector3.zero;
+            Vector3 position = new Vector3(0, 2, 0);
 
             float viewDistance = 8;
 
