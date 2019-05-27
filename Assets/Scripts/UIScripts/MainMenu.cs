@@ -52,8 +52,7 @@ public class MainMenu : MonoBehaviour
 
     public void Quit()
     {
-        Debug.Log("Quitting, not implemented");
-        //UI.GetComponent<UI>().Quit();
+       Application.Quit();
     }
 
     public void SetSliders() 

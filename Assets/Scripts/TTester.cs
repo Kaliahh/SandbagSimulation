@@ -106,8 +106,9 @@ namespace SandbagSimulation
         }
 
 
-        /* Denne metode (lettere modifikation af ACM #395) estimerer det et-halede areal under Student's t-fordeling med inputtets antal frihedsgrader. 
+        /* Denne metode estimerer det et-halede areal under Student's t-fordeling med inputtets antal frihedsgrader. 
          * Dette gøres i praksis ved at estimere den tilsvarende z-værdi under normalfordelingen og hente arealet fra metoden Gauss. */
+        // G. W. Hill (1970): "Algorithm 395 Student's t-distribution". By permission of the Association for Computing Machinery, Inc. (ACM).
         private double Student(double t, double degreesOfFreedom)
         {
             double n = degreesOfFreedom;
@@ -135,7 +136,8 @@ namespace SandbagSimulation
         }
 
 
-        // Denne metode (ACM #209) tager en z-værdi og estimerer det et-halede areal under normalfordelingen vha. polynomisk estimering.
+        // Denne metode tager en z-værdi og estimerer det et-halede areal under normalfordelingen vha. polynomisk estimering.
+        // D. Ibbetson (1963): "Algorithm 209 Gauss". By permission of the Association for Computing Machinery, Inc. (ACM).
         private double Gauss(double z)
         {
             double y;
