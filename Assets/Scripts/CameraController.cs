@@ -10,8 +10,10 @@ namespace SandbagSimulation
     public class CameraController : MonoBehaviour
     {
         // Referencer
+        
         public Camera MainCamera; // Kameraet som skal flyttes rundt
         private Vector2 rotation = new Vector2(0, 0); // Vektor til fri kamara med varibler på hvor musen har rykket sig
+        public float CameraSpeed;
 
         // Indlæser bruger input
         void Update() 
@@ -35,12 +37,12 @@ namespace SandbagSimulation
             // Fri kamera knapper
             if (Input.GetButton("Horizontal")) 
             {
-                MainCamera.transform.Translate(Input.GetAxis("Horizontal"), 0, 0);
+                MainCamera.transform.Translate(Input.GetAxis("Horizontal")*CameraSpeed, 0, 0);
             }
 
             if (Input.GetButton("Vertical")) 
             {
-                MainCamera.transform.Translate(0, 0, Input.GetAxis("Vertical"));
+                MainCamera.transform.Translate(0, 0, Input.GetAxis("Vertical")*CameraSpeed);
             }
 
             if (Input.GetMouseButton(1)) //Hvis venstremuseknap holdes nede, kan man ændre kameravinklen
@@ -120,7 +122,7 @@ namespace SandbagSimulation
         private Vector3 CalculateCamera3() 
         {
             // Kameratet bliver placeret i diget midte og roteres således at diget ses fra siden af
-            Vector3 result = FindMiddleOfDike() + new Vector3(0, 0, -1.25f)     *    (float)Math.Pow(FindDikeLength(), 0.85); //Skalerer. Potens fordi der kræves mindre og mindre zoom når diget bliver længere
+            Vector3 result = FindMiddleOfDike() + new Vector3(0, 0, -1.25f)     *    (float)Math.Pow(FindDikeLength(), 0.90); //Skalerer. Potens fordi der kræves mindre og mindre zoom når diget bliver længere
 
             return result;
         }
