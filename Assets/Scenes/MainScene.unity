@@ -438,7 +438,8 @@ PrefabInstance:
         endt simulation:\nN\xE5r simulationen er endt vises resultaterne for simulationen
         i et vindue. Vinduet kan gemmes v\xE6k og du kan nu se p\xE5 diget eller g\xE5
         tilbage til menuen.\n\nDu er n\xF8dt til at genstarte programmet for at k\xF8re
-        en ny simulation."
+        en ny simulation.\n\nStandardkamerataster: 1,2,3\tFri kamera: W,A,S,D + H\xF8jremuseknap.\n\nUnder
+        k\xF8rslen kan menuen \xE5bnes p\xE5: Esc knappen.\n"
       objectReference: {fileID: 0}
     - target: {fileID: 2960172563309482479, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
