@@ -414,10 +414,31 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1996269554940447714, guid: e0ea40a3dd09e594a96ae123c25ef696,
+    - target: {fileID: 1996269554940302720, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960172563634691637, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 350
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960172563634691637, guid: e0ea40a3dd09e594a96ae123c25ef696,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960172563634691636, guid: e0ea40a3dd09e594a96ae123c25ef696,
         type: 3}
       propertyPath: m_Text
-      value: Resultater
+      value: "Velkommen til simulationen.\n\nFor at starte en ny simulation:\n1. Tryk
+        p\xE5 \"Ny simulation\" knappen.\n2. Indtast dine \xF8nskede v\xE6rdier (Start
+        v\xE6rdierne er de anbefalede\n3. Derefter tryk p\xE5 \"P\xE5begynd simulation\"
+        for at starte simulationen\n\nEfter endt simulation:\nN\xE5r simulationen
+        er endt vises resultaterne for simulation i et vindue. Vinduet kan gemmes
+        v\xE6k og du kan nu se p\xE5 diget eller g\xE5 tilbage til menuen.\n\nDu er
+        n\xF8dt til at genstarte programmet efter hver simulation."
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0ea40a3dd09e594a96ae123c25ef696, type: 3}
