@@ -21,14 +21,20 @@ public class Results : MonoBehaviour
         Position = GameObject.Find("Position").GetComponent<Text>();
         Rotation = GameObject.Find("Rotation").GetComponent<Text>();
 
-        EvaluationReport = SimulationController.GetComponent<SimulationController>().EvaluationReport;
-        PrintString();
+        
         //Debug.Log(SimulationController.GetComponent<SimulationController>().EvaluationReport);
+    }
+
+    void Update()
+    {
+        PrintString();
     }
 
     //Resultatet er en enkel streng fra evaluator.
     private void PrintString() 
     {
+        EvaluationReport = SimulationController.GetComponent<SimulationController>().EvaluationReport;
+
         // Hvis diget er optimal ingen $, udskriv hele strengen
         if (!EvaluationReport.Contains("$"))
         {
