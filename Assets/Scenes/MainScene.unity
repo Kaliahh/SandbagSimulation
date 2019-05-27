@@ -544,6 +544,11 @@ PrefabInstance:
       propertyPath: MainCamera
       value: 
       objectReference: {fileID: 534669904}
+    - target: {fileID: 8767965665596435404, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
+        type: 3}
+      propertyPath: CameraSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4966222987121981439, guid: 9423da6ba7b4e224b909b7f6ddcf47b6,
         type: 3}
       propertyPath: SpawnPoint.y
